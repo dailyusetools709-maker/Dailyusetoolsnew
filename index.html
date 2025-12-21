@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Calculators - Your Complete Tool Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: white;
+            margin: 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.9;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: white;
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="40" stroke="%234f46e5" stroke-width="1" fill="none" opacity="0.1"/><circle cx="20" cy="20" r="15" stroke="%237c3aed" stroke-width="1" fill="none" opacity="0.1"/></svg>');
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #64748b;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 40px auto 0;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.15);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+        }
+        
+        /* Calculator Categories */
+        .categories {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 32px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(79, 70, 229, 0.1);
+            border-color: #c7d2fe;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+        
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .financial .category-icon {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        }
+        
+        .fitness .category-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        }
+        
+        .math .category-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        }
+        
+        .other .category-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        }
+        
+        .category-header h3 {
+            font-size: 22px;
+            margin: 0;
+        }
+        
+        .tools-list {
+            list-style: none;
+        }
+        
+        .tools-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        
+        .tools-list li:hover {
+            color: #4f46e5;
+            padding-left: 5px;
+        }
+        
+        .tools-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .tools-list i {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        /* All Calculators Section */
+        .all-calculators {
+            padding: 60px 0;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .all-calculators .section-title h2::after {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .calculator-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(79, 70, 229, 0.1);
+        }
+        
+        .calculator-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .calculator-info h4 {
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .calculator-info p {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 60px 0;
+        }
+        
+        .features .section-title h2::after {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 28px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: #cbd5e1;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 25px;
+            font-size: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: #4f46e5;
+            bottom: 0;
+            left: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-card {
+                padding: 25px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h2 {
+                font-size: 28px;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <h1>All Calculators</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="#financial">Financial</a>
+                <a href="#fitness">Fitness & Health</a>
+                <a href="#math">Math</a>
+                <a href="#other">Other Calculators</a>
+                <a href="#all">All Tools</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Your Complete Collection of Online Calculators</h2>
+            <p>Access over 40 specialized calculators for finance, health, math, and everyday tasks. All tools are free, easy to use, and require no installation.</p>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search for a calculator...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Categories -->
+    <section class="categories" id="financial">
+        <div class="container">
+            <div class="section-title">
+                <h2>Financial Calculators</h2>
+            </div>
+            <div class="category-grid">
+                <div class="category-card financial">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Financial Tools</h3>
+                    </div>
+                    <ul class="tools-list">
+                        <li><i class="fas fa-caret-right"></i> Mortgage Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Loan Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Auto Loan Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Interest Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Payment Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Retirement Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Amortization Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Investment Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Inflation Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Finance Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Income Tax Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Compound Interest Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Salary Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Interest Rate Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Sales Tax Calculator</li>
+                    </ul>
+                </div>
+
+                <div class="category-card fitness" id="fitness">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h3>Fitness & Health Calculators</h3>
+                    </div>
+                    <ul class="tools-list">
+                        <li><i class="fas fa-caret-right"></i> BMI Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Calorie Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Body Fat Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> BMR Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Ideal Weight Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Pace Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Pregnancy Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Pregnancy Conception Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Due Date Calculator</li>
+                    </ul>
+                </div>
+
+                <div class="category-card math" id="math">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-square-root-alt"></i>
+                        </div>
+                        <h3>Math Calculators</h3>
+                    </div>
+                    <ul class="tools-list">
+                        <li><i class="fas fa-caret-right"></i> Scientific Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Fraction Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Percentage Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Random Number Generator</li>
+                        <li><i class="fas fa-caret-right"></i> Triangle Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Standard Deviation Calculator</li>
+                    </ul>
+                </div>
+
+                <div class="category-card other" id="other">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-th"></i>
+                        </div>
+                        <h3>Other Calculators</h3>
+                    </div>
+                    <ul class="tools-list">
+                        <li><i class="fas fa-caret-right"></i> Age Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Date Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Time Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Hours Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> GPA Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Grade Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Concrete Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Subnet Calculator</li>
+                        <li><i class="fas fa-caret-right"></i> Password Generator</li>
+                        <li><i class="fas fa-caret-right"></i> Conversion Calculator</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Calculators Section -->
+    <section class="all-calculators" id="all">
+        <div class="container">
+            <div class="section-title">
+                <h2>All Calculators</h2>
+            </div>
+            <div class="calculator-grid" id="calculatorGrid">
+                <!-- Calculator cards will be dynamically inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Our Calculators?</h2>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>All calculations are done locally in your browser. We don't store any of your personal data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Friendly</h3>
+                    <p>All calculators work perfectly on any device - desktop, tablet, or mobile phone.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Fast & Accurate</h3>
+                    <p>Get instant, precise results without any delays or complicated setups.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Easy to Use</h3>
+                    <p>Simple, intuitive interfaces designed for users of all experience levels.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>All Calculators</h3>
+                    <p>Your one-stop destination for all types of online calculators. Free, accurate, and easy to use tools for everyday calculations.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#financial">Financial Calculators</a></li>
+                        <li><a href="#fitness">Health Calculators</a></li>
+                        <li><a href="#math">Math Calculators</a></li>
+                        <li><a href="#other">Other Tools</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Popular Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Mortgage Calculator</a></li>
+                        <li><a href="#">BMI Calculator</a></li>
+                        <li><a href="#">Age Calculator</a></li>
+                        <li><a href="#">Scientific Calculator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> support@allcalculators.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Tech Street, Digital City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 All Calculators. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // All calculators data
+        const allCalculators = [
+            // Financial Calculators
+            { name: "Mortgage Calculator", category: "financial", icon: "fas fa-home", description: "Calculate monthly mortgage payments" },
+            { name: "Loan Calculator", category: "financial", icon: "fas fa-hand-holding-usd", description: "Calculate loan payments and interest" },
+            { name: "Auto Loan Calculator", category: "financial", icon: "fas fa-car", description: "Calculate auto loan payments" },
+            { name: "Interest Calculator", category: "financial", icon: "fas fa-percentage", description: "Calculate simple and compound interest" },
+            { name: "Payment Calculator", category: "financial", icon: "fas fa-credit-card", description: "Calculate payment schedules" },
+            { name: "Retirement Calculator", category: "financial", icon: "fas fa-umbrella-beach", description: "Plan for your retirement savings" },
+            { name: "Amortization Calculator", category: "financial", icon: "fas fa-table", description: "Create amortization schedules" },
+            { name: "Investment Calculator", category: "financial", icon: "fas fa-chart-line", description: "Calculate investment growth" },
+            { name: "Inflation Calculator", category: "financial", icon: "fas fa-chart-bar", description: "Calculate inflation impact" },
+            { name: "Finance Calculator", category: "financial", icon: "fas fa-calculator", description: "General financial calculations" },
+            { name: "Income Tax Calculator", category: "financial", icon: "fas fa-file-invoice-dollar", description: "Estimate income tax" },
+            { name: "Compound Interest Calculator", category: "financial", icon: "fas fa-chart-pie", description: "Calculate compound interest" },
+            { name: "Salary Calculator", category: "financial", icon: "fas fa-money-check-alt", description: "Calculate take-home salary" },
+            { name: "Interest Rate Calculator", category: "financial", icon: "fas fa-percent", description: "Calculate interest rates" },
+            { name: "Sales Tax Calculator", category: "financial", icon: "fas fa-receipt", description: "Calculate sales tax" },
+            
+            // Fitness & Health Calculators
+            { name: "BMI Calculator", category: "fitness", icon: "fas fa-weight", description: "Calculate Body Mass Index" },
+            { name: "Calorie Calculator", category: "fitness", icon: "fas fa-apple-alt", description: "Calculate daily calorie needs" },
+            { name: "Body Fat Calculator", category: "fitness", icon: "fas fa-user", description: "Estimate body fat percentage" },
+            { name: "BMR Calculator", category: "fitness", icon: "fas fa-fire", description: "Calculate Basal Metabolic Rate" },
+            { name: "Ideal Weight Calculator", category: "fitness", icon: "fas fa-balance-scale", description: "Determine ideal weight range" },
+            { name: "Pace Calculator", category: "fitness", icon: "fas fa-running", description: "Calculate running/walking pace" },
+            { name: "Pregnancy Calculator", category: "fitness", icon: "fas fa-baby", description: "Track pregnancy milestones" },
+            { name: "Pregnancy Conception Calculator", category: "fitness", icon: "fas fa-calendar-alt", description: "Calculate conception date" },
+            { name: "Due Date Calculator", category: "fitness", icon: "fas fa-calendar-check", description: "Calculate due date" },
+            
+            // Math Calculators
+            { name: "Scientific Calculator", category: "math", icon: "fas fa-square-root-alt", description: "Advanced scientific calculations" },
+            { name: "Fraction Calculator", category: "math", icon: "fas fa-divide", description: "Calculate with fractions" },
+            { name: "Percentage Calculator", category: "math", icon: "fas fa-percentage", description: "Calculate percentages" },
+            { name: "Random Number Generator", category: "math", icon: "fas fa-dice", description: "Generate random numbers" },
+            { name: "Triangle Calculator", category: "math", icon: "fas fa-shapes", description: "Calculate triangle properties" },
+            { name: "Standard Deviation Calculator", category: "math", icon: "fas fa-chart-area", description: "Calculate standard deviation" },
+            
+            // Other Calculators
+            { name: "Age Calculator", category: "other", icon: "fas fa-birthday-cake", description: "Calculate age in years/months/days" },
+            { name: "Date Calculator", category: "other", icon: "fas fa-calendar", description: "Calculate date differences" },
+            { name: "Time Calculator", category: "other", icon: "fas fa-clock", description: "Calculate time differences" },
+            { name: "Hours Calculator", category: "other", icon: "fas fa-business-time", description: "Calculate work hours" },
+            { name: "GPA Calculator", category: "other", icon: "fas fa-graduation-cap", description: "Calculate Grade Point Average" },
+            { name: "Grade Calculator", category: "other", icon: "fas fa-award", description: "Calculate test grades" },
+            { name: "Concrete Calculator", category: "other", icon: "fas fa-hard-hat", description: "Calculate concrete needed" },
+            { name: "Subnet Calculator", category: "other", icon: "fas fa-network-wired", description: "Calculate subnet information" },
+            { name: "Password Generator", category: "other", icon: "fas fa-key", description: "Generate secure passwords" },
+            { name: "Conversion Calculator", category: "other", icon: "fas fa-exchange-alt", description: "Convert between units" }
+        ];
+
+        // Function to display all calculators
+        function displayAllCalculators() {
+            const calculatorGrid = document.getElementById('calculatorGrid');
+            calculatorGrid.innerHTML = '';
+            
+            allCalculators.forEach(calculator => {
+                const calculatorCard = document.createElement('div');
+                calculatorCard.className = 'calculator-card';
+                calculatorCard.innerHTML = `
+                    <div class="calculator-icon">
+                        <i class="${calculator.icon}"></i>
+                    </div>
+                    <div class="calculator-info">
+                        <h4>${calculator.name}</h4>
+                        <p>${calculator.description}</p>
+                    </div>
+                `;
+                calculatorGrid.appendChild(calculatorCard);
+            });
+        }
+
+        // Function to search calculators
+        function searchCalculators() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            // If search is empty, show all calculators
+            if (!searchTerm.trim()) {
+                displayAllCalculators();
+                return;
+            }
+            
+            // Filter calculators based on search term
+            const filteredCalculators = allCalculators.filter(calculator => 
+                calculator.name.toLowerCase().includes(searchTerm) || 
+                calculator.description.toLowerCase().includes(searchTerm) ||
+                calculator.category.toLowerCase().includes(searchTerm)
+            );
+            
+            // Display filtered calculators
+            const calculatorGrid = document.getElementById('calculatorGrid');
+            calculatorGrid.innerHTML = '';
+            
+            if (filteredCalculators.length === 0) {
+                calculatorGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">No calculators found matching your search. Try a different term.</p>';
+                return;
+            }
+            
+            filteredCalculators.forEach(calculator => {
+                const calculatorCard = document.createElement('div');
+                calculatorCard.className = 'calculator-card';
+                calculatorCard.innerHTML = `
+                    <div class="calculator-icon">
+                        <i class="${calculator.icon}"></i>
+                    </div>
+                    <div class="calculator-info">
+                        <h4>${calculator.name}</h4>
+                        <p>${calculator.description}</p>
+                    </div>
+                `;
+                calculatorGrid.appendChild(calculatorCard);
+            });
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display all calculators initially
+            displayAllCalculators();
+            
+            // Add search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', searchCalculators);
+            
+            // Add smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add hover effect to category cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
