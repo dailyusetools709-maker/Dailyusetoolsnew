@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator | Calculate Your Monthly Payments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .calculator-section {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .info-section {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            border-color: #4a6491;
+            outline: none;
+        }
+        
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e1e5eb;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #4a6491;
+            cursor: pointer;
+        }
+        
+        .value-display {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 70px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #1a2530, #3a5370);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #4a6491;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .result-label {
+            color: #666;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            background-color: #fffde7;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #e67e22;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .info-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .info-list {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+        }
+        
+        .tip-box {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .tip-title {
+            color: #2980b9;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .loan-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .loan-type {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .loan-type i {
+            font-size: 1.8rem;
+            color: #4a6491;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .calculator-section, .info-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Loan Calculator</h1>
+            <p>Calculate your monthly loan payments, total interest, and amortization schedule. Make informed borrowing decisions with our easy-to-use calculator.</p>
+        </header>
+        
+        <div class="content">
+            <section class="calculator-section">
+                <h2 class="section-title">Calculate Your Loan</h2>
+                
+                <div class="input-group">
+                    <label for="loanAmount">Loan Amount ($)</label>
+                    <div class="range-container">
+                        <input type="range" id="loanAmountRange" min="1000" max="100000" step="1000" value="25000">
+                        <span class="value-display">$<span id="loanAmountValue">25,000</span></span>
+                    </div>
+                    <input type="number" id="loanAmount" min="1000" max="1000000" step="1000" value="25000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Annual Interest Rate (%)</label>
+                    <div class="range-container">
+                        <input type="range" id="interestRateRange" min="1" max="20" step="0.1" value="5.5">
+                        <span class="value-display"><span id="interestRateValue">5.5</span>%</span>
+                    </div>
+                    <input type="number" id="interestRate" min="1" max="30" step="0.1" value="5.5">
+                </div>
+                
+                <div class="input-group">
+                    <label for="loanTerm">Loan Term (Years)</label>
+                    <div class="range-container">
+                        <input type="range" id="loanTermRange" min="1" max="30" step="1" value="10">
+                        <span class="value-display"><span id="loanTermValue">10</span> years</span>
+                    </div>
+                    <input type="number" id="loanTerm" min="1" max="30" step="1" value="10">
+                </div>
+                
+                <div class="input-group">
+                    <label for="loanType">Loan Type</label>
+                    <select id="loanType">
+                        <option value="personal">Personal Loan</option>
+                        <option value="mortgage">Mortgage Loan</option>
+                        <option value="auto">Auto Loan</option>
+                        <option value="student">Student Loan</option>
+                        <option value="business">Business Loan</option>
+                    </select>
+                </div>
+                
+                <button id="calculateBtn" class="calculate-btn">
+                    <i class="fas fa-calculator"></i> Calculate Monthly Payment
+                </button>
+                
+                <div id="resultContainer" class="result-container" style="display: none;">
+                    <h3 class="result-title">Loan Summary</h3>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Payment</span>
+                        <span class="result-value" id="monthlyPayment">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Interest Paid</span>
+                        <span class="result-value" id="totalInterest">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Amount Paid</span>
+                        <span class="result-value" id="totalAmount">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Loan Type</span>
+                        <span class="result-value" id="loanTypeResult">Personal Loan</span>
+                    </div>
+                    <div class="tip-box">
+                        <div class="tip-title">
+                            <i class="fas fa-lightbulb"></i> Tip
+                        </div>
+                        <p>Consider making extra payments to reduce your total interest paid. Even an extra $50 per month could save you <span id="interestSavings" class="highlight">$0.00</span> in interest over the loan term.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="info-section">
+                <h2 class="section-title">About Loan Calculator</h2>
+                
+                <div class="info-box">
+                    <h3 class="info-title">What is a Loan Calculator?</h3>
+                    <p>A loan calculator helps you determine the monthly payment amount for a loan based on the principal amount, interest rate, and loan term. It also calculates the total interest you'll pay over the life of the loan.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3 class="info-title">How It Works</h3>
+                    <p>Our calculator uses the standard loan amortization formula:</p>
+                    <p style="text-align: center; margin: 15px 0; font-weight: bold; background: #f0f0f0; padding: 10px; border-radius: 5px;">
+                        M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1 ]
+                    </p>
+                    <p>Where:</p>
+                    <ul class="info-list">
+                        <li><strong>M</strong> = Monthly payment</li>
+                        <li><strong>P</strong> = Principal loan amount</li>
+                        <li><strong>i</strong> = Monthly interest rate (annual rate ÷ 12)</li>
+                        <li><strong>n</strong> = Total number of payments (loan term in years × 12)</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <h3 class="info-title">Loan Types Explained</h3>
+                    <div class="loan-types">
+                        <div class="loan-type">
+                            <i class="fas fa-user"></i>
+                            <h4>Personal Loan</h4>
+                            <p>Unsecured loans for various personal expenses</p>
+                        </div>
+                        <div class="loan-type">
+                            <i class="fas fa-home"></i>
+                            <h4>Mortgage</h4>
+                            <p>Secured loans for purchasing property</p>
+                        </div>
+                        <div class="loan-type">
+                            <i class="fas fa-car"></i>
+                            <h4>Auto Loan</h4>
+                            <p>Secured loans for vehicle purchases</p>
+                        </div>
+                        <div class="loan-type">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h4>Student Loan</h4>
+                            <p>For education expenses, often with lower rates</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3 class="info-title">Factors Affecting Your Loan</h3>
+                    <ul class="info-list">
+                        <li><strong>Credit Score:</strong> Higher scores typically qualify for lower interest rates</li>
+                        <li><strong>Loan Term:</strong> Longer terms reduce monthly payments but increase total interest</li>
+                        <li><strong>Down Payment:</strong> Larger down payments reduce the principal amount</li>
+                        <li><strong>Interest Rate Type:</strong> Fixed rates stay the same; variable rates can change</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>Disclaimer: This loan calculator provides estimates for informational purposes only. Actual loan terms may vary based on lender requirements and individual circumstances.</p>
+            <p>© 2023 Loan Calculator. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loanAmountInput = document.getElementById('loanAmount');
+        const loanAmountRange = document.getElementById('loanAmountRange');
+        const loanAmountValue = document.getElementById('loanAmountValue');
+        
+        const interestRateInput = document.getElementById('interestRate');
+        const interestRateRange = document.getElementById('interestRateRange');
+        const interestRateValue = document.getElementById('interestRateValue');
+        
+        const loanTermInput = document.getElementById('loanTerm');
+        const loanTermRange = document.getElementById('loanTermRange');
+        const loanTermValue = document.getElementById('loanTermValue');
+        
+        const loanTypeSelect = document.getElementById('loanType');
+        const calculateBtn = document.getElementById('calculateBtn');
+        
+        const resultContainer = document.getElementById('resultContainer');
+        const monthlyPaymentEl = document.getElementById('monthlyPayment');
+        const totalInterestEl = document.getElementById('totalInterest');
+        const totalAmountEl = document.getElementById('totalAmount');
+        const loanTypeResultEl = document.getElementById('loanTypeResult');
+        const interestSavingsEl = document.getElementById('interestSavings');
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Update range inputs when number inputs change
+        loanAmountInput.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            loanAmountRange.value = value;
+            loanAmountValue.textContent = value.toLocaleString();
+        });
+        
+        loanAmountRange.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            loanAmountInput.value = value;
+            loanAmountValue.textContent = value.toLocaleString();
+        });
+        
+        interestRateInput.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            interestRateRange.value = value;
+            interestRateValue.textContent = value.toFixed(1);
+        });
+        
+        interestRateRange.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            interestRateInput.value = value;
+            interestRateValue.textContent = value.toFixed(1);
+        });
+        
+        loanTermInput.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            loanTermRange.value = value;
+            loanTermValue.textContent = value;
+        });
+        
+        loanTermRange.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            loanTermInput.value = value;
+            loanTermValue.textContent = value;
+        });
+        
+        // Calculate loan function
+        function calculateLoan() {
+            // Get input values
+            const principal = parseFloat(loanAmountInput.value);
+            const annualInterestRate = parseFloat(interestRateInput.value);
+            const years = parseInt(loanTermInput.value);
+            const loanType = loanTypeSelect.options[loanTypeSelect.selectedIndex].text;
+            
+            // Validate inputs
+            if (principal <= 0 || annualInterestRate <= 0 || years <= 0) {
+                alert("Please enter valid positive values for all fields.");
+                return;
+            }
+            
+            // Calculate monthly payment
+            const monthlyInterestRate = annualInterestRate / 100 / 12;
+            const numberOfPayments = years * 12;
+            
+            // Loan payment formula: M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1 ]
+            const monthlyPayment = principal * 
+                (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / 
+                (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            
+            // Calculate total amounts
+            const totalAmountPaid = monthlyPayment * numberOfPayments;
+            const totalInterestPaid = totalAmountPaid - principal;
+            
+            // Calculate potential savings with extra $50 payment
+            const extraPayment = 50;
+            const newMonthlyPayment = monthlyPayment + extraPayment;
+            
+            // Solve for new term with extra payment
+            // Using formula: n = log(M / (M - P * i)) / log(1 + i)
+            const newNumberOfPayments = Math.log(newMonthlyPayment / (newMonthlyPayment - principal * monthlyInterestRate)) / Math.log(1 + monthlyInterestRate);
+            const newTotalAmountPaid = newMonthlyPayment * newNumberOfPayments;
+            const interestSavings = totalAmountPaid - newTotalAmountPaid;
+            
+            // Display results
+            monthlyPaymentEl.textContent = formatCurrency(monthlyPayment);
+            totalInterestEl.textContent = formatCurrency(totalInterestPaid);
+            totalAmountEl.textContent = formatCurrency(totalAmountPaid);
+            loanTypeResultEl.textContent = loanType;
+            interestSavingsEl.textContent = formatCurrency(interestSavings);
+            
+            // Show result container
+            resultContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Set up event listeners
+        calculateBtn.addEventListener('click', calculateLoan);
+        
+        // Calculate on page load
+        window.addEventListener('load', calculateLoan);
+        
+        // Update loan type display when changed
+        loanTypeSelect.addEventListener('change', function() {
+            const loanTypeText = loanTypeSelect.options[loanTypeSelect.selectedIndex].text;
+            
+            // Update interest rate based on loan type (for demonstration)
+            const rates = {
+                'personal': 8.5,
+                'mortgage': 4.5,
+                'auto': 5.5,
+                'student': 3.5,
+                'business': 6.5
+            };
+            
+            const loanType = loanTypeSelect.value;
+            if (rates[loanType]) {
+                interestRateInput.value = rates[loanType];
+                interestRateRange.value = rates[loanType];
+                interestRateValue.textContent = rates[loanType].toFixed(1);
+                
+                // Recalculate with new rate
+                setTimeout(calculateLoan, 100);
+            }
+        });
+        
+        // Format number inputs with commas as user types
+        loanAmountInput.addEventListener('blur', function() {
+            this.value = parseInt(this.value).toLocaleString('en-US');
+        });
+        
+        loanAmountInput.addEventListener('focus', function() {
+            this.value = parseInt(this.value.replace(/,/g, ''));
+        });
+    </script>
+</body>
+</html>

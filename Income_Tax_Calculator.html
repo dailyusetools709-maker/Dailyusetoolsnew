@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Tax Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --tax-color: #9b59b6;
+            --refund-color: #2ecc71;
+            --deduction-color: #e67e22;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--tax-color));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .device-support {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .device-support i {
+            margin-right: 5px;
+        }
+        
+        .calculator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+        
+        .results-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--tax-color);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .range-container input[type="range"] {
+            flex: 1;
+        }
+        
+        .range-value {
+            min-width: 70px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--tax-color);
+        }
+        
+        .tax-regime-toggle {
+            display: flex;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 20px;
+        }
+        
+        .regime-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .regime-option.active {
+            background-color: white;
+            color: var(--tax-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .deductions-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        
+        .deduction-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .deduction-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .deduction-label i {
+            color: var(--deduction-color);
+        }
+        
+        .deduction-input {
+            width: 150px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background-color: var(--tax-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #8e44ad;
+        }
+        
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e1e1e1;
+        }
+        
+        .tax-summary {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--tax-color);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            padding-top: 10px;
+        }
+        
+        .summary-label {
+            color: #555;
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .tax-breakdown {
+            margin-bottom: 25px;
+        }
+        
+        .breakdown-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .tax-slabs {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tax-slabs th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .tax-slabs td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tax-slabs tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tax-slabs tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .highlight-row {
+            background-color: #e8f4fc !important;
+            font-weight: 600;
+        }
+        
+        .effective-tax-rate {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .tax-rate-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--tax-color);
+            margin: 10px 0;
+        }
+        
+        .tax-illustration {
+            display: flex;
+            height: 40px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .tax-part {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .income-part {
+            background-color: var(--secondary-color);
+        }
+        
+        .tax-paid-part {
+            background-color: var(--tax-color);
+        }
+        
+        .net-income-part {
+            background-color: var(--refund-color);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--tax-color);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+            }
+            
+            .tax-slabs {
+                font-size: 0.9rem;
+            }
+            
+            .tax-slabs th, .tax-slabs td {
+                padding: 10px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .tax-rate-value {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .device-support {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .deduction-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .deduction-input {
+                width: 100%;
+            }
+        }
+        
+        /* Animation for results */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Income Tax Calculator</h1>
+            <p>Calculate your income tax liability for FY 2024-25 with support for both tax regimes. Get detailed breakdowns and tax-saving insights.</p>
+            <div class="device-support">
+                <div><i class="fab fa-windows"></i> Windows Compatible</div>
+                <div><i class="fab fa-android"></i> Android Supported</div>
+                <div><i class="fas fa-mobile-alt"></i> Fully Responsive</div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-edit"></i> Tax Inputs</h2>
+                
+                <div class="tax-regime-toggle">
+                    <div class="regime-option active" data-regime="new">New Tax Regime</div>
+                    <div class="regime-option" data-regime="old">Old Tax Regime</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="annual-income">Annual Income (₹)</label>
+                    <div class="range-container">
+                        <input type="range" id="income-range" min="300000" max="3000000" step="50000" value="1000000">
+                        <span class="range-value" id="income-value">₹10,00,000</span>
+                    </div>
+                    <input type="hidden" id="annual-income">
+                </div>
+                
+                <div class="input-group">
+                    <label for="age-group">Age Group</label>
+                    <select id="age-group">
+                        <option value="below60">Below 60 years</option>
+                        <option value="60to80">60 to 80 years</option>
+                        <option value="above80">Above 80 years</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="financial-year">Financial Year</label>
+                    <select id="financial-year">
+                        <option value="2024-25">2024-25 (AY 2025-26)</option>
+                        <option value="2023-24">2023-24 (AY 2024-25)</option>
+                    </select>
+                </div>
+                
+                <div class="deductions-section">
+                    <h3 style="color: var(--deduction-color); margin-bottom: 15px;"><i class="fas fa-hand-holding-usd"></i> Deductions (Old Regime Only)</h3>
+                    
+                    <div class="deduction-item">
+                        <div class="deduction-label">
+                            <i class="fas fa-home"></i>
+                            <span>House Rent Allowance (HRA)</span>
+                        </div>
+                        <input type="number" class="deduction-input" id="hra" placeholder="₹" value="0">
+                    </div>
+                    
+                    <div class="deduction-item">
+                        <div class="deduction-label">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Medical Insurance (80D)</span>
+                        </div>
+                        <input type="number" class="deduction-input" id="medical" placeholder="₹" value="0">
+                    </div>
+                    
+                    <div class="deduction-item">
+                        <div class="deduction-label">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Education Loan (80E)</span>
+                        </div>
+                        <input type="number" class="deduction-input" id="education-loan" placeholder="₹" value="0">
+                    </div>
+                    
+                    <div class="deduction-item">
+                        <div class="deduction-label">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            <span>Donations (80G)</span>
+                        </div>
+                        <input type="number" class="deduction-input" id="donations" placeholder="₹" value="0">
+                    </div>
+                    
+                    <div class="deduction-item">
+                        <div class="deduction-label">
+                            <i class="fas fa-rupee-sign"></i>
+                            <span>Standard Deduction</span>
+                        </div>
+                        <input type="number" class="deduction-input" id="standard-deduction" placeholder="₹" value="50000">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="calculate-tax">
+                        <i class="fas fa-calculator"></i> Calculate Tax
+                    </button>
+                    <button class="btn btn-secondary" id="reset-calculator">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Tax Results</h2>
+                
+                <div class="tax-summary fade-in" id="tax-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Annual Income</span>
+                        <span class="summary-value" id="summary-income">₹10,00,000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Deductions</span>
+                        <span class="summary-value" id="summary-deductions">₹50,000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Taxable Income</span>
+                        <span class="summary-value" id="summary-taxable-income">₹9,50,000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Tax Liability</span>
+                        <span class="summary-value" id="summary-tax-liability">₹78,000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Net Income (After Tax)</span>
+                        <span class="summary-value" id="summary-net-income">₹9,22,000</span>
+                    </div>
+                </div>
+                
+                <div class="tax-breakdown">
+                    <h3 class="breakdown-title">Tax Slab Breakdown</h3>
+                    <table class="tax-slabs" id="tax-slabs-table">
+                        <thead>
+                            <tr>
+                                <th>Income Slab</th>
+                                <th>Tax Rate</th>
+                                <th>Tax Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Tax slabs will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="effective-tax-rate">
+                    <div>Effective Tax Rate</div>
+                    <div class="tax-rate-value" id="effective-tax-rate">7.80%</div>
+                    <div>Tax as percentage of your annual income</div>
+                    
+                    <div class="tax-illustration" id="tax-illustration">
+                        <div class="tax-part income-part" style="width: 100%;">Annual Income: ₹10,00,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-balance-scale"></i>
+                <h3>Dual Regime Support</h3>
+                <p>Compare both old and new tax regimes to choose the most beneficial option for you.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Detailed Breakdown</h3>
+                <p>Get slab-wise tax calculation and understand how each portion of your income is taxed.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Mobile Optimized</h3>
+                <p>Fully responsive design that works perfectly on Android phones and Windows devices.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Privacy First</h3>
+                <p>All calculations happen locally in your browser. Your financial data never leaves your device.</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="container">
+        <p>Income Tax Calculator &copy; <span id="current-year">2024</span> | Designed for Windows and Android devices</p>
+        <p>This tool provides estimates only. Consult a tax professional for accurate tax filing advice.</p>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Tax regime toggle
+        const regimeOptions = document.querySelectorAll('.regime-option');
+        let currentRegime = 'new';
+        
+        regimeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                regimeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                currentRegime = option.getAttribute('data-regime');
+                
+                // Enable/disable deductions based on regime
+                const deductions = document.querySelectorAll('.deduction-input');
+                deductions.forEach(deduction => {
+                    deduction.disabled = currentRegime === 'new';
+                    deduction.style.opacity = currentRegime === 'new' ? '0.5' : '1';
+                });
+                
+                // Recalculate tax if values exist
+                if (document.getElementById('annual-income').value) {
+                    calculateTax();
+                }
+            });
+        });
+        
+        // Income range slider
+        const incomeRange = document.getElementById('income-range');
+        const incomeValue = document.getElementById('income-value');
+        
+        incomeRange.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            incomeValue.textContent = formatCurrency(value);
+            document.getElementById('annual-income').value = value;
+        });
+        
+        // Format currency in Indian format
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+        
+        // Calculate total deductions
+        function calculateDeductions() {
+            if (currentRegime === 'new') {
+                // New regime only allows standard deduction
+                return parseInt(document.getElementById('standard-deduction').value) || 50000;
+            }
+            
+            // Old regime allows all deductions
+            let total = 0;
+            total += parseInt(document.getElementById('hra').value) || 0;
+            total += parseInt(document.getElementById('medical').value) || 0;
+            total += parseInt(document.getElementById('education-loan').value) || 0;
+            total += parseInt(document.getElementById('donations').value) || 0;
+            total += parseInt(document.getElementById('standard-deduction').value) || 50000;
+            
+            // Maximum deductions under old regime
+            const maxDeductions = {
+                'medical': 25000, // 80D for individuals
+                'standard-deduction': 50000
+            };
+            
+            return Math.min(total, 200000); // Practical limit
+        }
+        
+        // Tax slabs for different regimes and age groups
+        const taxSlabs = {
+            'new': {
+                'below60': [
+                    { min: 0, max: 300000, rate: 0 },
+                    { min: 300000, max: 600000, rate: 5 },
+                    { min: 600000, max: 900000, rate: 10 },
+                    { min: 900000, max: 1200000, rate: 15 },
+                    { min: 1200000, max: 1500000, rate: 20 },
+                    { min: 1500000, max: Infinity, rate: 30 }
+                ],
+                '60to80': [
+                    { min: 0, max: 300000, rate: 0 },
+                    { min: 300000, max: 600000, rate: 5 },
+                    { min: 600000, max: 900000, rate: 10 },
+                    { min: 900000, max: 1200000, rate: 15 },
+                    { min: 1200000, max: 1500000, rate: 20 },
+                    { min: 1500000, max: Infinity, rate: 30 }
+                ],
+                'above80': [
+                    { min: 0, max: 300000, rate: 0 },
+                    { min: 300000, max: 600000, rate: 5 },
+                    { min: 600000, max: 900000, rate: 10 },
+                    { min: 900000, max: 1200000, rate: 15 },
+                    { min: 1200000, max: 1500000, rate: 20 },
+                    { min: 1500000, max: Infinity, rate: 30 }
+                ]
+            },
+            'old': {
+                'below60': [
+                    { min: 0, max: 250000, rate: 0 },
+                    { min: 250000, max: 500000, rate: 5 },
+                    { min: 500000, max: 1000000, rate: 20 },
+                    { min: 1000000, max: Infinity, rate: 30 }
+                ],
+                '60to80': [
+                    { min: 0, max: 300000, rate: 0 },
+                    { min: 300000, max: 500000, rate: 5 },
+                    { min: 500000, max: 1000000, rate: 20 },
+                    { min: 1000000, max: Infinity, rate: 30 }
+                ],
+                'above80': [
+                    { min: 0, max: 500000, rate: 0 },
+                    { min: 500000, max: 1000000, rate: 20 },
+                    { min: 1000000, max: Infinity, rate: 30 }
+                ]
+            }
+        };
+        
+        // Calculate tax based on income and slabs
+        function calculateTax() {
+            const annualIncome = parseInt(incomeRange.value);
+            const ageGroup = document.getElementById('age-group').value;
+            const deductions = calculateDeductions();
+            const taxableIncome = Math.max(0, annualIncome - deductions);
+            
+            // Get appropriate tax slabs
+            const slabs = taxSlabs[currentRegime][ageGroup];
+            let totalTax = 0;
+            let remainingIncome = taxableIncome;
+            const slabTaxes = [];
+            
+            // Calculate tax for each slab
+            for (let i = 0; i < slabs.length; i++) {
+                const slab = slabs[i];
+                const slabRange = Math.min(slab.max, remainingIncome) - slab.min;
+                
+                if (slabRange > 0 && remainingIncome > slab.min) {
+                    const slabTaxable = Math.min(slabRange, remainingIncome - slab.min);
+                    const slabTax = (slabTaxable * slab.rate) / 100;
+                    totalTax += slabTax;
+                    
+                    slabTaxes.push({
+                        min: slab.min,
+                        max: slab.max === Infinity ? 'Above' : slab.max,
+                        rate: slab.rate,
+                        amount: slabTax,
+                        taxableInSlab: slabTaxable
+                    });
+                }
+            }
+            
+            // Add cess (4% health and education cess)
+            const cess = totalTax * 0.04;
+            totalTax += cess;
+            
+            // Update summary
+            document.getElementById('summary-income').textContent = formatCurrency(annualIncome);
+            document.getElementById('summary-deductions').textContent = formatCurrency(deductions);
+            document.getElementById('summary-taxable-income').textContent = formatCurrency(taxableIncome);
+            document.getElementById('summary-tax-liability').textContent = formatCurrency(Math.round(totalTax));
+            document.getElementById('summary-net-income').textContent = formatCurrency(annualIncome - Math.round(totalTax));
+            
+            // Update tax slabs table
+            updateTaxSlabsTable(slabTaxes, cess);
+            
+            // Update effective tax rate
+            const effectiveRate = ((totalTax / annualIncome) * 100).toFixed(2);
+            document.getElementById('effective-tax-rate').textContent = effectiveRate + '%';
+            
+            // Update tax visualization
+            updateTaxVisualization(annualIncome, Math.round(totalTax));
+            
+            // Show results with animation
+            document.getElementById('tax-summary').classList.add('fade-in');
+        }
+        
+        // Update tax slabs table
+        function updateTaxSlabsTable(slabTaxes, cess) {
+            const tableBody = document.querySelector('#tax-slabs-table tbody');
+            tableBody.innerHTML = '';
+            
+            let totalTaxBeforeCess = 0;
+            
+            slabTaxes.forEach((slab, index) => {
+                const row = document.createElement('tr');
+                
+                // Highlight the slab where most income falls
+                const isHighlight = index === slabTaxes.length - 1;
+                if (isHighlight) {
+                    row.classList.add('highlight-row');
+                }
+                
+                let slabRangeText;
+                if (slab.max === 'Above') {
+                    slabRangeText = `Above ₹${slab.min.toLocaleString('en-IN')}`;
+                } else {
+                    slabRangeText = `₹${slab.min.toLocaleString('en-IN')} - ₹${slab.max.toLocaleString('en-IN')}`;
+                }
+                
+                row.innerHTML = `
+                    <td>${slabRangeText}</td>
+                    <td>${slab.rate}%</td>
+                    <td>${formatCurrency(Math.round(slab.amount))}</td>
+                `;
+                
+                tableBody.appendChild(row);
+                totalTaxBeforeCess += slab.amount;
+            });
+            
+            // Add cess row
+            const cessRow = document.createElement('tr');
+            cessRow.innerHTML = `
+                <td colspan="2"><strong>Health & Education Cess (4%)</strong></td>
+                <td>${formatCurrency(Math.round(cess))}</td>
+            `;
+            tableBody.appendChild(cessRow);
+            
+            // Add total row
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `
+                <td colspan="2"><strong>Total Tax Liability</strong></td>
+                <td><strong>${formatCurrency(Math.round(totalTaxBeforeCess + cess))}</strong></td>
+            `;
+            tableBody.appendChild(totalRow);
+        }
+        
+        // Update tax visualization
+        function updateTaxVisualization(annualIncome, taxAmount) {
+            const netIncome = annualIncome - taxAmount;
+            const taxPercentage = (taxAmount / annualIncome) * 100;
+            const netPercentage = 100 - taxPercentage;
+            
+            const visualization = document.getElementById('tax-illustration');
+            visualization.innerHTML = '';
+            
+            // Create income part
+            const incomePart = document.createElement('div');
+            incomePart.className = 'tax-part income-part';
+            incomePart.style.width = '100%';
+            incomePart.textContent = `Annual Income: ${formatCurrency(annualIncome)}`;
+            visualization.appendChild(incomePart);
+            
+            // Create breakdown visualization on click
+            visualization.addEventListener('click', function() {
+                this.innerHTML = '';
+                
+                const netPart = document.createElement('div');
+                netPart.className = 'tax-part net-income-part';
+                netPart.style.width = netPercentage + '%';
+                netPart.textContent = `Net Income: ${formatCurrency(netIncome)}`;
+                visualization.appendChild(netPart);
+                
+                const taxPart = document.createElement('div');
+                taxPart.className = 'tax-part tax-paid-part';
+                taxPart.style.width = taxPercentage + '%';
+                taxPart.textContent = `Tax Paid: ${formatCurrency(taxAmount)}`;
+                visualization.appendChild(taxPart);
+                
+                // Revert after 3 seconds
+                setTimeout(() => {
+                    updateTaxVisualization(annualIncome, taxAmount);
+                }, 3000);
+            });
+        }
+        
+        // Calculate tax button
+        document.getElementById('calculate-tax').addEventListener('click', calculateTax);
+        
+        // Reset calculator
+        document.getElementById('reset-calculator').addEventListener('click', function() {
+            incomeRange.value = 1000000;
+            incomeValue.textContent = '₹10,00,000';
+            document.getElementById('annual-income').value = 1000000;
+            document.getElementById('age-group').value = 'below60';
+            document.getElementById('financial-year').value = '2024-25';
+            
+            // Reset deductions
+            document.getElementById('hra').value = 0;
+            document.getElementById('medical').value = 0;
+            document.getElementById('education-loan').value = 0;
+            document.getElementById('donations').value = 0;
+            document.getElementById('standard-deduction').value = 50000;
+            
+            // Reset to new regime
+            regimeOptions.forEach(opt => opt.classList.remove('active'));
+            document.querySelector('.regime-option[data-regime="new"]').classList.add('active');
+            currentRegime = 'new';
+            
+            // Recalculate with default values
+            calculateTax();
+        });
+        
+        // Initialize calculator with default values
+        document.getElementById('annual-income').value = incomeRange.value;
+        calculateTax();
+        
+        // Touch support for mobile devices
+        document.addEventListener('touchstart', function() {}, {passive: true});
+        
+        // Add animation to results when they appear
+        const observerOptions = {
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.tax-summary, .tax-slabs, .effective-tax-rate').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amortization Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .calculator-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-container {
+            flex: 1;
+            min-width: 350px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        
+        .summary-container {
+            flex: 1;
+            min-width: 350px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .slider-container {
+            margin-top: 10px;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .slider-value {
+            text-align: right;
+            margin-top: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .summary-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .summary-title {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .summary-highlight {
+            background-color: #e3f2fd;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .summary-highlight .summary-title {
+            font-size: 1rem;
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .summary-highlight .summary-value {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+        
+        .amortization-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .amortization-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .amortization-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+        }
+        
+        .amortization-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .amortization-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .payment-number {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .principal {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .interest {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .balance {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .page-info {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .page-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .description {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .description h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .description p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .description ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .description li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-wrapper {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .amortization-table {
+                font-size: 0.9rem;
+            }
+            
+            .amortization-table th,
+            .amortization-table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Amortization Calculator</h1>
+            <p>Calculate your loan amortization schedule with a complete breakdown of principal and interest payments over the entire loan term.</p>
+        </header>
+        
+        <div class="calculator-wrapper">
+            <div class="input-container">
+                <h2 class="section-title">Loan Details</h2>
+                
+                <div class="input-group">
+                    <label for="loanAmount">Loan Amount ($)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                        <input type="number" id="loanAmount" min="1000" max="10000000" step="1000" value="250000">
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="loanAmountSlider" class="slider" min="1000" max="10000000" step="1000" value="250000">
+                        <div class="slider-value">$<span id="loanAmountValue">250,000</span></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Annual Interest Rate (%)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-percent"></i>
+                        <input type="number" id="interestRate" min="0.1" max="20" step="0.1" value="4.5">
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="interestRateSlider" class="slider" min="0.1" max="20" step="0.1" value="4.5">
+                        <div class="slider-value"><span id="interestRateValue">4.5</span>%</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loanTerm">Loan Term (years)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="number" id="loanTerm" min="1" max="40" step="1" value="30">
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="loanTermSlider" class="slider" min="1" max="40" step="1" value="30">
+                        <div class="slider-value"><span id="loanTermValue">30</span> years</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="startDate">Loan Start Date</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-day"></i>
+                        <input type="date" id="startDate" value="2024-01-01">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Generate Amortization Schedule
+                    </button>
+                    <button class="reset-btn" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="summary-container">
+                <h2 class="section-title">Loan Summary</h2>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-title">Monthly Payment</div>
+                        <div class="summary-value">$<span id="monthlyPayment">1,266.71</span></div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-title">Total Interest</div>
+                        <div class="summary-value">$<span id="totalInterest">206,016.00</span></div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-title">Total Payment</div>
+                        <div class="summary-value">$<span id="totalPayment">456,016.00</span></div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-title">Pay-off Date</div>
+                        <div class="summary-value" id="payoffDate">Jan 2054</div>
+                    </div>
+                </div>
+                
+                <div class="summary-highlight">
+                    <div class="summary-title">Interest to Principal Ratio</div>
+                    <div class="summary-value" id="interestRatio">45.2% Interest / 54.8% Principal</div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="amortizationChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="amortization-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="schedule">Amortization Schedule</div>
+                <div class="tab" data-tab="yearly">Yearly Summary</div>
+            </div>
+            
+            <div class="tab-content active" id="schedule-tab">
+                <div class="table-controls">
+                    <div class="page-info">Showing payments <span id="pageStart">1</span> - <span id="pageEnd">12</span> of <span id="totalPayments">360</span></div>
+                    <div class="page-nav">
+                        <button class="page-btn" id="firstPage" disabled><i class="fas fa-angle-double-left"></i></button>
+                        <button class="page-btn" id="prevPage" disabled><i class="fas fa-chevron-left"></i></button>
+                        <button class="page-btn" id="nextPage"><i class="fas fa-chevron-right"></i></button>
+                        <button class="page-btn" id="lastPage"><i class="fas fa-angle-double-right"></i></button>
+                    </div>
+                </div>
+                
+                <table class="amortization-table" id="amortizationTable">
+                    <thead>
+                        <tr>
+                            <th>Payment #</th>
+                            <th>Payment Date</th>
+                            <th>Payment Amount</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Total Interest</th>
+                            <th>Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="amortizationBody">
+                        <!-- Table rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="yearly-tab">
+                <table class="amortization-table" id="yearlyTable">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Principal Paid</th>
+                            <th>Interest Paid</th>
+                            <th>Total Paid</th>
+                            <th>Remaining Balance</th>
+                            <th>% Interest</th>
+                        </tr>
+                    </thead>
+                    <tbody id="yearlyBody">
+                        <!-- Yearly summary rows will be generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="description">
+            <h2>Understanding Amortization</h2>
+            <p>An amortization schedule is a table that shows the breakdown of each loan payment into principal and interest over the life of the loan. With each payment, you pay down the principal balance while also paying interest on the remaining balance.</p>
+            
+            <div class="highlight">
+                <p><strong>How amortization works:</strong> In the early years of a loan, most of your payment goes toward interest. As you pay down the principal, the interest portion decreases and more of your payment goes toward reducing the principal balance.</p>
+            </div>
+            
+            <h3>Key Components of an Amortization Schedule:</h3>
+            <ul>
+                <li><strong>Payment Number:</strong> The sequential number of each payment</li>
+                <li><strong>Payment Date:</strong> When each payment is due</li>
+                <li><strong>Payment Amount:</strong> The total amount paid (principal + interest)</li>
+                <li><strong>Principal:</strong> The portion of the payment that reduces the loan balance</li>
+                <li><strong>Interest:</strong> The cost of borrowing, calculated on the remaining balance</li>
+                <li><strong>Total Interest:</strong> Cumulative interest paid to date</li>
+                <li><strong>Remaining Balance:</strong> The outstanding loan amount after the payment</li>
+            </ul>
+            
+            <h3>Benefits of Understanding Your Amortization Schedule:</h3>
+            <ul>
+                <li><strong>Financial Planning:</strong> See how much interest you'll pay over the life of the loan</li>
+                <li><strong>Early Payoff Strategy:</strong> Identify how extra payments can shorten your loan term</li>
+                <li><strong>Tax Planning:</strong> Understand how much mortgage interest may be deductible</li>
+                <li><strong>Refinancing Decisions:</strong> Determine if refinancing makes sense based on interest paid vs. saved</li>
+            </ul>
+            
+            <p>This calculator assumes a fixed interest rate and equal monthly payments. For adjustable-rate mortgages or loans with irregular payments, consult with your lender for an accurate amortization schedule.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get DOM elements
+        const loanAmountInput = document.getElementById('loanAmount');
+        const loanAmountSlider = document.getElementById('loanAmountSlider');
+        const loanAmountValue = document.getElementById('loanAmountValue');
+        
+        const interestRateInput = document.getElementById('interestRate');
+        const interestRateSlider = document.getElementById('interestRateSlider');
+        const interestRateValue = document.getElementById('interestRateValue');
+        
+        const loanTermInput = document.getElementById('loanTerm');
+        const loanTermSlider = document.getElementById('loanTermSlider');
+        const loanTermValue = document.getElementById('loanTermValue');
+        
+        const startDateInput = document.getElementById('startDate');
+        
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        const monthlyPaymentElement = document.getElementById('monthlyPayment');
+        const totalInterestElement = document.getElementById('totalInterest');
+        const totalPaymentElement = document.getElementById('totalPayment');
+        const payoffDateElement = document.getElementById('payoffDate');
+        const interestRatioElement = document.getElementById('interestRatio');
+        
+        // Amortization table elements
+        const amortizationBody = document.getElementById('amortizationBody');
+        const yearlyBody = document.getElementById('yearlyBody');
+        const pageStartElement = document.getElementById('pageStart');
+        const pageEndElement = document.getElementById('pageEnd');
+        const totalPaymentsElement = document.getElementById('totalPayments');
+        
+        // Page navigation elements
+        const firstPageBtn = document.getElementById('firstPage');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+        const lastPageBtn = document.getElementById('lastPage');
+        
+        // Tab elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Chart variables
+        let amortizationChart;
+        let amortizationSchedule = [];
+        let yearlySummary = [];
+        let currentPage = 1;
+        let paymentsPerPage = 12;
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Format number with commas
+        function formatNumber(number) {
+            return new Intl.NumberFormat('en-US').format(number);
+        }
+        
+        // Format date
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                year: 'numeric'
+            }).format(date);
+        }
+        
+        // Format full date
+        function formatFullDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }).format(date);
+        }
+        
+        // Update slider value display
+        function updateSliderValue(slider, displayElement, isCurrency = false) {
+            if (isCurrency) {
+                displayElement.textContent = formatNumber(slider.value);
+            } else {
+                displayElement.textContent = slider.value;
+            }
+        }
+        
+        // Calculate amortization schedule
+        function calculateAmortizationSchedule() {
+            const loanAmount = parseFloat(loanAmountInput.value);
+            const annualInterestRate = parseFloat(interestRateInput.value) / 100;
+            const loanTermYears = parseFloat(loanTermInput.value);
+            const startDate = new Date(startDateInput.value);
+            
+            const monthlyInterestRate = annualInterestRate / 12;
+            const totalPayments = loanTermYears * 12;
+            
+            // Calculate monthly payment
+            let monthlyPayment;
+            if (monthlyInterestRate === 0) {
+                monthlyPayment = loanAmount / totalPayments;
+            } else {
+                const numerator = monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments);
+                const denominator = Math.pow(1 + monthlyInterestRate, totalPayments) - 1;
+                monthlyPayment = loanAmount * (numerator / denominator);
+            }
+            
+            let balance = loanAmount;
+            let totalInterest = 0;
+            amortizationSchedule = [];
+            yearlySummary = [];
+            let yearlyPrincipal = 0;
+            let yearlyInterest = 0;
+            let currentDate = new Date(startDate);
+            
+            // Calculate each payment
+            for (let paymentNumber = 1; paymentNumber <= totalPayments; paymentNumber++) {
+                const interestPayment = balance * monthlyInterestRate;
+                const principalPayment = monthlyPayment - interestPayment;
+                totalInterest += interestPayment;
+                balance -= principalPayment;
+                
+                // If balance becomes negative due to rounding, set to 0
+                if (balance < 0) balance = 0;
+                
+                // Add to amortization schedule
+                amortizationSchedule.push({
+                    paymentNumber: paymentNumber,
+                    date: new Date(currentDate),
+                    payment: monthlyPayment,
+                    principal: principalPayment,
+                    interest: interestPayment,
+                    totalInterest: totalInterest,
+                    balance: balance
+                });
+                
+                // Add to yearly summary
+                yearlyPrincipal += principalPayment;
+                yearlyInterest += interestPayment;
+                
+                // Check if we've completed a year
+                if (paymentNumber % 12 === 0 || paymentNumber === totalPayments) {
+                    const year = Math.ceil(paymentNumber / 12);
+                    yearlySummary.push({
+                        year: year,
+                        principal: yearlyPrincipal,
+                        interest: yearlyInterest,
+                        total: yearlyPrincipal + yearlyInterest,
+                        balance: balance,
+                        interestPercentage: (yearlyInterest / (yearlyPrincipal + yearlyInterest)) * 100
+                    });
+                    
+                    // Reset yearly totals
+                    yearlyPrincipal = 0;
+                    yearlyInterest = 0;
+                }
+                
+                // Increment date by one month
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+            
+            // Update summary values
+            monthlyPaymentElement.textContent = formatCurrency(monthlyPayment);
+            totalInterestElement.textContent = formatCurrency(totalInterest);
+            totalPaymentElement.textContent = formatCurrency(loanAmount + totalInterest);
+            
+            // Calculate payoff date
+            const payoffDate = new Date(startDate);
+            payoffDate.setMonth(payoffDate.getMonth() + totalPayments);
+            payoffDateElement.textContent = formatDate(payoffDate);
+            
+            // Calculate interest to principal ratio
+            const interestRatio = (totalInterest / (loanAmount + totalInterest)) * 100;
+            const principalRatio = 100 - interestRatio;
+            interestRatioElement.textContent = `${interestRatio.toFixed(1)}% Interest / ${principalRatio.toFixed(1)}% Principal`;
+            
+            // Update total payments
+            totalPaymentsElement.textContent = totalPayments;
+            
+            // Generate chart
+            generateChart();
+            
+            // Show first page of amortization schedule
+            currentPage = 1;
+            renderAmortizationPage();
+            renderYearlySummary();
+            
+            // Update page navigation buttons
+            updatePageNavigation();
+        }
+        
+        // Generate amortization chart
+        function generateChart() {
+            const ctx = document.getElementById('amortizationChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (amortizationChart) {
+                amortizationChart.destroy();
+            }
+            
+            // Prepare data for first 5 years (60 payments)
+            const yearsToShow = 5;
+            const paymentsToShow = yearsToShow * 12;
+            const labels = [];
+            const principalData = [];
+            const interestData = [];
+            
+            for (let i = 0; i < Math.min(paymentsToShow, amortizationSchedule.length); i++) {
+                const payment = amortizationSchedule[i];
+                labels.push(`Year ${Math.ceil((i+1)/12)}`);
+                principalData.push(payment.principal);
+                interestData.push(payment.interest);
+            }
+            
+            // Create chart
+            amortizationChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Principal',
+                            data: principalData,
+                            backgroundColor: '#27ae60',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Interest',
+                            data: interestData,
+                            backgroundColor: '#e74c3c',
+                            stack: 'Stack 0'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += '$' + formatCurrency(context.parsed.y);
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Payment Period'
+                            },
+                            ticks: {
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount ($)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + formatNumber(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Render amortization page
+        function renderAmortizationPage() {
+            const startIndex = (currentPage - 1) * paymentsPerPage;
+            const endIndex = Math.min(startIndex + paymentsPerPage, amortizationSchedule.length);
+            
+            // Update page info
+            pageStartElement.textContent = startIndex + 1;
+            pageEndElement.textContent = endIndex;
+            
+            // Clear table body
+            amortizationBody.innerHTML = '';
+            
+            // Add rows for current page
+            for (let i = startIndex; i < endIndex; i++) {
+                const payment = amortizationSchedule[i];
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="payment-number">${payment.paymentNumber}</td>
+                    <td>${formatFullDate(payment.date)}</td>
+                    <td>$${formatCurrency(payment.payment)}</td>
+                    <td class="principal">$${formatCurrency(payment.principal)}</td>
+                    <td class="interest">$${formatCurrency(payment.interest)}</td>
+                    <td>$${formatCurrency(payment.totalInterest)}</td>
+                    <td class="balance">$${formatCurrency(payment.balance)}</td>
+                `;
+                
+                amortizationBody.appendChild(row);
+            }
+        }
+        
+        // Render yearly summary
+        function renderYearlySummary() {
+            // Clear table body
+            yearlyBody.innerHTML = '';
+            
+            // Add rows for yearly summary
+            yearlySummary.forEach(yearData => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${yearData.year}</td>
+                    <td class="principal">$${formatCurrency(yearData.principal)}</td>
+                    <td class="interest">$${formatCurrency(yearData.interest)}</td>
+                    <td>$${formatCurrency(yearData.total)}</td>
+                    <td class="balance">$${formatCurrency(yearData.balance)}</td>
+                    <td>${yearData.interestPercentage.toFixed(1)}%</td>
+                `;
+                
+                yearlyBody.appendChild(row);
+            });
+        }
+        
+        // Update page navigation buttons
+        function updatePageNavigation() {
+            const totalPages = Math.ceil(amortizationSchedule.length / paymentsPerPage);
+            
+            // Disable/enable buttons based on current page
+            firstPageBtn.disabled = currentPage === 1;
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+            lastPageBtn.disabled = currentPage === totalPages;
+        }
+        
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Loan amount sync between input and slider
+            loanAmountInput.addEventListener('input', () => {
+                loanAmountSlider.value = loanAmountInput.value;
+                updateSliderValue(loanAmountSlider, loanAmountValue, true);
+                calculateAmortizationSchedule();
+            });
+            
+            loanAmountSlider.addEventListener('input', () => {
+                loanAmountInput.value = loanAmountSlider.value;
+                updateSliderValue(loanAmountSlider, loanAmountValue, true);
+                calculateAmortizationSchedule();
+            });
+            
+            // Interest rate sync between input and slider
+            interestRateInput.addEventListener('input', () => {
+                interestRateSlider.value = interestRateInput.value;
+                updateSliderValue(interestRateSlider, interestRateValue, false);
+                calculateAmortizationSchedule();
+            });
+            
+            interestRateSlider.addEventListener('input', () => {
+                interestRateInput.value = interestRateSlider.value;
+                updateSliderValue(interestRateSlider, interestRateValue, false);
+                calculateAmortizationSchedule();
+            });
+            
+            // Loan term sync between input and slider
+            loanTermInput.addEventListener('input', () => {
+                loanTermSlider.value = loanTermInput.value;
+                updateSliderValue(loanTermSlider, loanTermValue, false);
+                calculateAmortizationSchedule();
+            });
+            
+            loanTermSlider.addEventListener('input', () => {
+                loanTermInput.value = loanTermSlider.value;
+                updateSliderValue(loanTermSlider, loanTermValue, false);
+                calculateAmortizationSchedule();
+            });
+            
+            // Start date change
+            startDateInput.addEventListener('change', calculateAmortizationSchedule);
+            
+            // Calculate button
+            calculateBtn.addEventListener('click', calculateAmortizationSchedule);
+            
+            // Reset button
+            resetBtn.addEventListener('click', () => {
+                loanAmountInput.value = 250000;
+                loanAmountSlider.value = 250000;
+                
+                interestRateInput.value = 4.5;
+                interestRateSlider.value = 4.5;
+                
+                loanTermInput.value = 30;
+                loanTermSlider.value = 30;
+                
+                // Set start date to today
+                const today = new Date();
+                startDateInput.value = today.toISOString().split('T')[0];
+                
+                updateSliderValue(loanAmountSlider, loanAmountValue, true);
+                updateSliderValue(interestRateSlider, interestRateValue, false);
+                updateSliderValue(loanTermSlider, loanTermValue, false);
+                
+                calculateAmortizationSchedule();
+            });
+            
+            // Page navigation
+            firstPageBtn.addEventListener('click', () => {
+                currentPage = 1;
+                renderAmortizationPage();
+                updatePageNavigation();
+            });
+            
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderAmortizationPage();
+                    updatePageNavigation();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(amortizationSchedule.length / paymentsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderAmortizationPage();
+                    updatePageNavigation();
+                }
+            });
+            
+            lastPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(amortizationSchedule.length / paymentsPerPage);
+                currentPage = totalPages;
+                renderAmortizationPage();
+                updatePageNavigation();
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and tab contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+        
+        // Initialize the app
+        function init() {
+            // Set start date to today
+            const today = new Date();
+            startDateInput.value = today.toISOString().split('T')[0];
+            
+            // Set initial values
+            updateSliderValue(loanAmountSlider, loanAmountValue, true);
+            updateSliderValue(interestRateSlider, interestRateValue, false);
+            updateSliderValue(loanTermSlider, loanTermValue, false);
+            
+            // Calculate initial amortization schedule
+            calculateAmortizationSchedule();
+            
+            // Initialize event listeners
+            initializeEventListeners();
+        }
+        
+        // Start the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

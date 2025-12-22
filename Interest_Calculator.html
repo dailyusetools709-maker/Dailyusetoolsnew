@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .calculator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .calculator-form {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .calculator-results {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #182848;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e8ff;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4b6cb7;
+            outline: none;
+        }
+        
+        .interest-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #e1e8ff;
+        }
+        
+        .interest-type {
+            flex: 1;
+            text-align: center;
+            padding: 15px 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .interest-type.active {
+            background: #4b6cb7;
+            color: white;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(75, 108, 183, 0.3);
+        }
+        
+        .result-box {
+            background: #f8fbff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4b6cb7;
+        }
+        
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #182848;
+            margin-bottom: 10px;
+        }
+        
+        .result-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #182848;
+        }
+        
+        .result-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .detail-item {
+            background: #f8fbff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #182848;
+        }
+        
+        .chart-container {
+            margin-top: 30px;
+            height: 200px;
+            background: #f8fbff;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 10px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #4b6cb7, #6b8ce8);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            min-height: 5px;
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .history {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+        }
+        
+        .history h2 {
+            color: #182848;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e8ff;
+        }
+        
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-type {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .simple-badge {
+            background: #e1f0ff;
+            color: #2a5ca7;
+        }
+        
+        .compound-badge {
+            background: #e1ffe7;
+            color: #2a7c3e;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ff;
+            color: #666;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+            }
+            
+            .calculator-form, .calculator-results {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Interest Calculator</h1>
+            <p class="subtitle">Calculate simple or compound interest on your savings or loans. Adjust the parameters and see how different rates and time periods affect your total.</p>
+        </header>
+        
+        <div class="calculator-container">
+            <div class="calculator-form">
+                <div class="interest-type-selector">
+                    <div class="interest-type active" id="simple-interest">Simple Interest</div>
+                    <div class="interest-type" id="compound-interest">Compound Interest</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="principal">Principal Amount ($)</label>
+                    <input type="number" id="principal" min="1" max="10000000" value="5000" step="100">
+                    <input type="range" id="principal-range" min="100" max="100000" value="5000" step="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="rate" min="0.1" max="50" value="5" step="0.1">
+                    <input type="range" id="rate-range" min="0.1" max="20" value="5" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="time">Time Period (Years)</label>
+                    <input type="number" id="time" min="1" max="50" value="10" step="1">
+                    <input type="range" id="time-range" min="1" max="30" value="10" step="1">
+                </div>
+                
+                <div class="form-group" id="compound-frequency-group">
+                    <label for="frequency">Compound Frequency</label>
+                    <select id="frequency">
+                        <option value="1">Annually</option>
+                        <option value="2">Semi-Annually</option>
+                        <option value="4">Quarterly</option>
+                        <option value="12">Monthly</option>
+                    </select>
+                </div>
+                
+                <button class="calculate-btn" id="calculate">
+                    <i class="fas fa-calculator"></i> Calculate Interest
+                </button>
+            </div>
+            
+            <div class="calculator-results">
+                <h2 style="color: #182848; margin-bottom: 20px;">Calculation Results</h2>
+                
+                <div class="result-box">
+                    <div class="result-title">Total Future Value</div>
+                    <div class="result-value" id="future-value">$8,250.00</div>
+                </div>
+                
+                <div class="result-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Principal Amount</div>
+                        <div class="detail-value" id="principal-result">$5,000.00</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total Interest</div>
+                        <div class="detail-value" id="total-interest">$3,250.00</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container" id="interest-chart">
+                    <!-- Chart bars will be generated here -->
+                    <div class="chart-bar" style="height: 60%;">
+                        <div class="chart-label">Principal</div>
+                    </div>
+                    <div class="chart-bar" style="height: 40%;">
+                        <div class="chart-label">Interest</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history">
+            <h2><i class="fas fa-history"></i> Calculation History</h2>
+            <div class="history-list" id="history-list">
+                <!-- History items will be added here -->
+                <div class="history-item">
+                    <div>Simple Interest: $5,000 @ 5% for 10 years</div>
+                    <div>$8,250.00</div>
+                    <span class="history-type simple-badge">Simple</span>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Interest Calculator Tool &copy; 2023 | This tool is for illustrative purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const simpleInterestBtn = document.getElementById('simple-interest');
+        const compoundInterestBtn = document.getElementById('compound-interest');
+        const principalInput = document.getElementById('principal');
+        const principalRange = document.getElementById('principal-range');
+        const rateInput = document.getElementById('rate');
+        const rateRange = document.getElementById('rate-range');
+        const timeInput = document.getElementById('time');
+        const timeRange = document.getElementById('time-range');
+        const frequencySelect = document.getElementById('frequency');
+        const compoundFrequencyGroup = document.getElementById('compound-frequency-group');
+        const calculateBtn = document.getElementById('calculate');
+        const futureValueEl = document.getElementById('future-value');
+        const principalResultEl = document.getElementById('principal-result');
+        const totalInterestEl = document.getElementById('total-interest');
+        const interestChart = document.getElementById('interest-chart');
+        const historyList = document.getElementById('history-list');
+        
+        // State variables
+        let isSimpleInterest = true;
+        let calculationHistory = [];
+        
+        // Initialize the calculator
+        function initCalculator() {
+            // Set initial sync between number inputs and range sliders
+            syncInputs(principalInput, principalRange);
+            syncInputs(rateInput, rateRange);
+            syncInputs(timeInput, timeRange);
+            
+            // Calculate initial result
+            calculateInterest();
+            
+            // Load any saved history from localStorage
+            loadHistory();
+        }
+        
+        // Sync number inputs with range sliders
+        function syncInputs(numberInput, rangeInput) {
+            numberInput.addEventListener('input', () => {
+                rangeInput.value = numberInput.value;
+                calculateInterest();
+            });
+            
+            rangeInput.addEventListener('input', () => {
+                numberInput.value = rangeInput.value;
+                calculateInterest();
+            });
+        }
+        
+        // Toggle between simple and compound interest
+        simpleInterestBtn.addEventListener('click', () => {
+            if (!isSimpleInterest) {
+                isSimpleInterest = true;
+                simpleInterestBtn.classList.add('active');
+                compoundInterestBtn.classList.remove('active');
+                compoundFrequencyGroup.style.opacity = '0.5';
+                compoundFrequencyGroup.style.pointerEvents = 'none';
+                calculateInterest();
+            }
+        });
+        
+        compoundInterestBtn.addEventListener('click', () => {
+            if (isSimpleInterest) {
+                isSimpleInterest = false;
+                compoundInterestBtn.classList.add('active');
+                simpleInterestBtn.classList.remove('active');
+                compoundFrequencyGroup.style.opacity = '1';
+                compoundFrequencyGroup.style.pointerEvents = 'all';
+                calculateInterest();
+            }
+        });
+        
+        // Calculate interest based on current inputs
+        function calculateInterest() {
+            // Get input values
+            const principal = parseFloat(principalInput.value);
+            const rate = parseFloat(rateInput.value) / 100; // Convert to decimal
+            const time = parseFloat(timeInput.value);
+            const frequency = parseInt(frequencySelect.value);
+            
+            let futureValue, totalInterest;
+            
+            if (isSimpleInterest) {
+                // Simple Interest Formula: A = P(1 + rt)
+                futureValue = principal * (1 + rate * time);
+                totalInterest = futureValue - principal;
+            } else {
+                // Compound Interest Formula: A = P(1 + r/n)^(nt)
+                futureValue = principal * Math.pow(1 + rate / frequency, frequency * time);
+                totalInterest = futureValue - principal;
+            }
+            
+            // Format currency
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            // Update results display
+            futureValueEl.textContent = formatter.format(futureValue);
+            principalResultEl.textContent = formatter.format(principal);
+            totalInterestEl.textContent = formatter.format(totalInterest);
+            
+            // Update the chart
+            updateChart(principal, totalInterest);
+            
+            // Add to history if values have changed significantly
+            addToHistory(principal, rate, time, frequency, futureValue);
+        }
+        
+        // Update the visualization chart
+        function updateChart(principal, interest) {
+            const total = principal + interest;
+            const principalPercent = Math.round((principal / total) * 100);
+            const interestPercent = 100 - principalPercent;
+            
+            // Clear existing chart
+            interestChart.innerHTML = '';
+            
+            // Create principal bar
+            const principalBar = document.createElement('div');
+            principalBar.className = 'chart-bar';
+            principalBar.style.height = `${principalPercent}%`;
+            principalBar.innerHTML = `<div class="chart-label">Principal (${principalPercent}%)</div>`;
+            interestChart.appendChild(principalBar);
+            
+            // Create interest bar
+            const interestBar = document.createElement('div');
+            interestBar.className = 'chart-bar';
+            interestBar.style.height = `${interestPercent}%`;
+            interestBar.innerHTML = `<div class="chart-label">Interest (${interestPercent}%)</div>`;
+            interestChart.appendChild(interestBar);
+        }
+        
+        // Add calculation to history
+        function addToHistory(principal, rate, time, frequency, futureValue) {
+            // Don't add if this is the same as the last calculation
+            if (calculationHistory.length > 0) {
+                const last = calculationHistory[calculationHistory.length - 1];
+                if (Math.abs(last.futureValue - futureValue) < 0.01) {
+                    return;
+                }
+            }
+            
+            const historyItem = {
+                type: isSimpleInterest ? 'simple' : 'compound',
+                principal,
+                rate: rate * 100, // Convert back to percentage
+                time,
+                frequency,
+                futureValue,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            
+            calculationHistory.push(historyItem);
+            
+            // Keep only last 5 calculations
+            if (calculationHistory.length > 5) {
+                calculationHistory.shift();
+            }
+            
+            // Update history display
+            updateHistoryDisplay();
+            
+            // Save to localStorage
+            saveHistory();
+        }
+        
+        // Update the history display
+        function updateHistoryDisplay() {
+            // Clear current history
+            historyList.innerHTML = '';
+            
+            // Add history items in reverse order (newest first)
+            const reversedHistory = [...calculationHistory].reverse();
+            
+            reversedHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const typeText = item.type === 'simple' ? 'Simple Interest' : 'Compound Interest';
+                const frequencyText = item.type === 'compound' ? 
+                    ` (${getFrequencyText(item.frequency)})` : '';
+                
+                historyItem.innerHTML = `
+                    <div>${typeText}: ${formatCurrency(item.principal)} @ ${item.rate.toFixed(1)}% for ${item.time} years${frequencyText}</div>
+                    <div>${formatCurrency(item.futureValue)}</div>
+                    <span class="history-type ${item.type === 'simple' ? 'simple-badge' : 'compound-badge'}">${item.type === 'simple' ? 'Simple' : 'Compound'}</span>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // Get frequency text for display
+        function getFrequencyText(frequency) {
+            switch(frequency) {
+                case 1: return 'Annually';
+                case 2: return 'Semi-Annually';
+                case 4: return 'Quarterly';
+                case 12: return 'Monthly';
+                default: return `${frequency} times per year`;
+            }
+        }
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Save history to localStorage
+        function saveHistory() {
+            localStorage.setItem('interestCalculatorHistory', JSON.stringify(calculationHistory));
+        }
+        
+        // Load history from localStorage
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('interestCalculatorHistory');
+            if (savedHistory) {
+                calculationHistory = JSON.parse(savedHistory);
+                updateHistoryDisplay();
+            }
+        }
+        
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateInterest);
+        
+        // Initialize the calculator when page loads
+        document.addEventListener('DOMContentLoaded', initCalculator);
+    </script>
+</body>
+</html>

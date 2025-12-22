@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Loan Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .calculator-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .results-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #2a5298;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: #2a5298;
+        }
+        
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e1e5ee;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .range-input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e1e5ee;
+            outline: none;
+            margin-top: 15px;
+        }
+        
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #2a5298;
+            cursor: pointer;
+        }
+        
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.2);
+        }
+        
+        .reset-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-3px);
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-left: 5px solid #2a5298;
+        }
+        
+        .result-card h3 {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .monthly-payment {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin: 10px 0;
+        }
+        
+        .payment-breakdown {
+            margin-top: 30px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 1.2rem;
+        }
+        
+        .chart-container {
+            height: 200px;
+            margin: 30px 0;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #1e3c72, #2a5298);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            min-height: 10px;
+        }
+        
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .disclaimer {
+            background-color: #fff9e6;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            border-left: 5px solid #ffcc00;
+        }
+        
+        .disclaimer h3 {
+            color: #b38f00;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .disclaimer ul {
+            padding-left: 20px;
+        }
+        
+        .disclaimer li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .monthly-payment {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-car"></i> Auto Loan Calculator</h1>
+            <p>Calculate your monthly car loan payments, total interest, and payment breakdown. Adjust the loan amount, term, and interest rate to find the right financing option for your new vehicle.</p>
+        </header>
+        
+        <div class="app-container">
+            <section class="calculator-section">
+                <h2 class="section-title"><i class="fas fa-calculator"></i> Loan Details</h2>
+                
+                <div class="input-group">
+                    <label for="loanAmount">Vehicle Price ($)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-tag"></i>
+                        <input type="number" id="loanAmount" min="1000" max="100000" step="1000" value="25000">
+                    </div>
+                    <input type="range" id="loanAmountRange" min="1000" max="100000" step="1000" value="25000" class="range-input">
+                    <div class="value-display">
+                        <span>$1,000</span>
+                        <span>$100,000</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="downPayment">Down Payment ($)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <input type="number" id="downPayment" min="0" max="50000" step="500" value="5000">
+                    </div>
+                    <input type="range" id="downPaymentRange" min="0" max="50000" step="500" value="5000" class="range-input">
+                    <div class="value-display">
+                        <span>$0</span>
+                        <span>$50,000</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loanTerm">Loan Term (months)</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-calendar-alt"></i>
+                        <input type="number" id="loanTerm" min="12" max="84" step="6" value="60">
+                    </div>
+                    <input type="range" id="loanTermRange" min="12" max="84" step="6" value="60" class="range-input">
+                    <div class="value-display">
+                        <span>12 months</span>
+                        <span>84 months</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Annual Interest Rate (%)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-percentage"></i>
+                        <input type="number" id="interestRate" min="1" max="20" step="0.1" value="5.5">
+                    </div>
+                    <input type="range" id="interestRateRange" min="1" max="20" step="0.1" value="5.5" class="range-input">
+                    <div class="value-display">
+                        <span>1%</span>
+                        <span>20%</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Calculate Payment
+                    </button>
+                    <button class="reset-btn" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </section>
+            
+            <section class="results-section">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Payment Summary</h2>
+                
+                <div class="result-card">
+                    <h3>Estimated Monthly Payment</h3>
+                    <div class="monthly-payment" id="monthlyPayment">$0.00</div>
+                    <p>For a <span id="displayLoanTerm">60</span>-month loan</p>
+                </div>
+                
+                <div class="payment-breakdown">
+                    <h3 class="section-title"><i class="fas fa-list-alt"></i> Payment Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Vehicle Price</span>
+                        <span id="breakdownPrice">$25,000.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Down Payment</span>
+                        <span id="breakdownDown">-$5,000.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Amount Financed</span>
+                        <span id="breakdownFinanced">$20,000.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Interest</span>
+                        <span id="breakdownInterest">$0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Cost of Loan</span>
+                        <span id="breakdownTotal">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container" id="chartContainer">
+                    <!-- Chart bars will be generated by JavaScript -->
+                </div>
+            </section>
+        </div>
+        
+        <div class="disclaimer">
+            <h3><i class="fas fa-exclamation-circle"></i> Important Information</h3>
+            <ul>
+                <li>This auto loan calculator provides estimates only. Your actual loan terms may vary based on your credit score, lender policies, and other factors.</li>
+                <li>The calculated monthly payment does not include taxes, fees, insurance, or other potential charges that may be required by your state or lender.</li>
+                <li>Consider making a larger down payment to reduce your monthly payments and total interest paid over the life of the loan.</li>
+                <li>Shorter loan terms typically have higher monthly payments but lower total interest costs.</li>
+                <li>Always read the fine print and understand all terms before signing any loan agreement.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loanAmountInput = document.getElementById('loanAmount');
+        const loanAmountRange = document.getElementById('loanAmountRange');
+        const downPaymentInput = document.getElementById('downPayment');
+        const downPaymentRange = document.getElementById('downPaymentRange');
+        const loanTermInput = document.getElementById('loanTerm');
+        const loanTermRange = document.getElementById('loanTermRange');
+        const interestRateInput = document.getElementById('interestRate');
+        const interestRateRange = document.getElementById('interestRateRange');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // Result Elements
+        const monthlyPaymentElement = document.getElementById('monthlyPayment');
+        const displayLoanTermElement = document.getElementById('displayLoanTerm');
+        const breakdownPriceElement = document.getElementById('breakdownPrice');
+        const breakdownDownElement = document.getElementById('breakdownDown');
+        const breakdownFinancedElement = document.getElementById('breakdownFinanced');
+        const breakdownInterestElement = document.getElementById('breakdownInterest');
+        const breakdownTotalElement = document.getElementById('breakdownTotal');
+        const chartContainer = document.getElementById('chartContainer');
+        
+        // Sync range sliders with number inputs
+        loanAmountInput.addEventListener('input', () => {
+            loanAmountRange.value = loanAmountInput.value;
+            calculateLoan();
+        });
+        
+        loanAmountRange.addEventListener('input', () => {
+            loanAmountInput.value = loanAmountRange.value;
+            calculateLoan();
+        });
+        
+        downPaymentInput.addEventListener('input', () => {
+            downPaymentRange.value = downPaymentInput.value;
+            calculateLoan();
+        });
+        
+        downPaymentRange.addEventListener('input', () => {
+            downPaymentInput.value = downPaymentRange.value;
+            calculateLoan();
+        });
+        
+        loanTermInput.addEventListener('input', () => {
+            loanTermRange.value = loanTermInput.value;
+            calculateLoan();
+        });
+        
+        loanTermRange.addEventListener('input', () => {
+            loanTermInput.value = loanTermRange.value;
+            calculateLoan();
+        });
+        
+        interestRateInput.addEventListener('input', () => {
+            interestRateRange.value = interestRateInput.value;
+            calculateLoan();
+        });
+        
+        interestRateRange.addEventListener('input', () => {
+            interestRateInput.value = interestRateRange.value;
+            calculateLoan();
+        });
+        
+        // Calculate button event
+        calculateBtn.addEventListener('click', calculateLoan);
+        
+        // Reset button event
+        resetBtn.addEventListener('click', () => {
+            loanAmountInput.value = 25000;
+            loanAmountRange.value = 25000;
+            downPaymentInput.value = 5000;
+            downPaymentRange.value = 5000;
+            loanTermInput.value = 60;
+            loanTermRange.value = 60;
+            interestRateInput.value = 5.5;
+            interestRateRange.value = 5.5;
+            
+            calculateLoan();
+        });
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Calculate loan function
+        function calculateLoan() {
+            // Get input values
+            const loanAmount = parseFloat(loanAmountInput.value);
+            const downPayment = parseFloat(downPaymentInput.value);
+            const loanTerm = parseInt(loanTermInput.value);
+            const annualInterestRate = parseFloat(interestRateInput.value);
+            
+            // Calculate amount financed
+            const amountFinanced = loanAmount - downPayment;
+            
+            // Calculate monthly interest rate
+            const monthlyInterestRate = annualInterestRate / 100 / 12;
+            
+            // Calculate monthly payment using loan formula
+            let monthlyPayment = 0;
+            let totalInterest = 0;
+            let totalCost = 0;
+            
+            if (monthlyInterestRate > 0) {
+                monthlyPayment = (amountFinanced * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTerm)) / 
+                                (Math.pow(1 + monthlyInterestRate, loanTerm) - 1);
+            } else {
+                monthlyPayment = amountFinanced / loanTerm;
+            }
+            
+            // Calculate total interest and total cost
+            totalCost = monthlyPayment * loanTerm;
+            totalInterest = totalCost - amountFinanced;
+            
+            // Update display
+            monthlyPaymentElement.textContent = formatCurrency(monthlyPayment);
+            displayLoanTermElement.textContent = loanTerm;
+            breakdownPriceElement.textContent = formatCurrency(loanAmount);
+            breakdownDownElement.textContent = formatCurrency(-downPayment);
+            breakdownFinancedElement.textContent = formatCurrency(amountFinanced);
+            breakdownInterestElement.textContent = formatCurrency(totalInterest);
+            breakdownTotalElement.textContent = formatCurrency(totalCost);
+            
+            // Update chart
+            updateChart(amountFinanced, totalInterest);
+        }
+        
+        // Update chart visualization
+        function updateChart(principal, interest) {
+            chartContainer.innerHTML = '';
+            
+            const total = principal + interest;
+            const principalPercent = (principal / total) * 100;
+            const interestPercent = (interest / total) * 100;
+            
+            // Create principal bar
+            const principalBar = document.createElement('div');
+            principalBar.className = 'chart-bar';
+            principalBar.style.height = `${principalPercent}%`;
+            principalBar.innerHTML = `<div class="chart-bar-label">Principal<br>${principalPercent.toFixed(1)}%</div>`;
+            chartContainer.appendChild(principalBar);
+            
+            // Create interest bar
+            const interestBar = document.createElement('div');
+            interestBar.className = 'chart-bar';
+            interestBar.style.height = `${interestPercent}%`;
+            interestBar.style.background = 'linear-gradient(to top, #ff6b6b, #ff8e8e)';
+            interestBar.innerHTML = `<div class="chart-bar-label">Interest<br>${interestPercent.toFixed(1)}%</div>`;
+            chartContainer.appendChild(interestBar);
+        }
+        
+        // Initialize calculator on page load
+        document.addEventListener('DOMContentLoaded', calculateLoan);
+    </script>
+</body>
+</html>
