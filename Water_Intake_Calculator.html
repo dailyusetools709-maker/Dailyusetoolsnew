@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Intake Calculator | ToolBox Ultra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --water-blue: #0077b6;
+            --water-light: #90e0ef;
+            --success: #4cc9f0;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-light: #475569;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg); 
+            color: var(--text); 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--card);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { 
+            font-size: 22px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            color: var(--water-blue);
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, var(--water-blue), var(--accent));
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .header-btns { 
+            display: flex; 
+            gap: 12px; 
+        }
+        
+        .icon-btn { 
+            background: #f1f5f9; 
+            border: none; 
+            padding: 10px 16px; 
+            border-radius: var(--radius-sm); 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 14px; 
+            color: var(--text);
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .icon-btn:hover { 
+            background: var(--water-blue); 
+            color: white; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.3);
+        }
+        
+        .icon-btn.active {
+            background: var(--water-blue);
+            color: white;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .content { 
+            max-width: 1200px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--water-blue);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+        
+        /* Calculator Layout */
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 992px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Calculator Card */
+        .calculator-card { 
+            background: var(--card); 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--water-blue);
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--water-blue);
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 22px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 15px;
+        }
+        
+        .form-label span {
+            color: var(--muted);
+            font-weight: normal;
+            font-size: 13px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            font-size: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: var(--transition);
+            background-color: #f8fafc;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--water-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+            background-color: white;
+        }
+        
+        .unit-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .unit-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .unit-btn.active {
+            background: var(--water-blue);
+            color: white;
+            border-color: var(--water-blue);
+        }
+        
+        /* Slider Styling */
+        .slider-container {
+            padding: 10px 0;
+        }
+        
+        .slider-value {
+            text-align: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--water-blue);
+            margin-bottom: 10px;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #e2e8f0;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--water-blue);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+        
+        /* Checkbox/Radio Styling */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .option-item:hover {
+            border-color: var(--water-blue);
+            background: rgba(0, 119, 182, 0.03);
+        }
+        
+        .option-item.selected {
+            border-color: var(--water-blue);
+            background: rgba(0, 119, 182, 0.08);
+        }
+        
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .option-item.selected .option-checkbox {
+            background: var(--water-blue);
+            border-color: var(--water-blue);
+        }
+        
+        /* Results Card */
+        .results-card {
+            background: linear-gradient(135deg, #0077b6, #4cc9f0);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .water-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: white;
+            opacity: 0.9;
+        }
+        
+        .result-value {
+            font-size: 56px;
+            font-weight: 800;
+            margin: 10px 0;
+            color: white;
+        }
+        
+        .result-unit {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .result-label {
+            font-size: 18px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .result-details {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Water Intake Visualization */
+        .water-visualization {
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .water-bottle {
+            width: 120px;
+            height: 220px;
+            margin: 0 auto 20px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 60px 60px 10px 10px;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .water-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, #4cc9f0, #90e0ef);
+            transition: height 1.5s ease;
+        }
+        
+        .water-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 16px 30px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .btn-primary {
+            background: var(--water-blue);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .btn-primary:hover {
+            background: #005a8c;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 119, 182, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-reset {
+            background: #f1f5f9;
+            color: var(--text);
+            margin-top: 15px;
+        }
+        
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+        
+        /* Info Sections */
+        .info-section {
+            background: var(--card);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 40px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--water-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .info-card {
+            padding: 25px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover {
+            border-color: var(--water-blue);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .info-card i {
+            font-size: 28px;
+            color: var(--water-blue);
+            margin-bottom: 15px;
+        }
+        
+        .info-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        
+        .info-card p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        /* Tips List */
+        .tips-list {
+            margin-top: 20px;
+        }
+        
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tip-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tip-number {
+            background: var(--water-blue);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        /* --- FOOTER --- */
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 40px 20px 30px;
+            margin-top: 60px;
+            border-radius: 40px 40px 0 0;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-logo span {
+            color: #4cc9f0;
+        }
+        
+        .footer-about {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            max-width: 300px;
+        }
+        
+        .footer-heading {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .calculator-container {
+                gap: 20px;
+            }
+            
+            .calculator-card, .results-card {
+                padding: 25px 20px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .page-subtitle {
+                font-size: 16px;
+            }
+            
+            .result-value {
+                font-size: 48px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-btns .icon-btn:not(.home-btn) span {
+                display: none;
+            }
+            
+            .icon-btn {
+                padding: 10px;
+            }
+            
+            .icon-btn i {
+                margin: 0;
+            }
+            
+            .result-value {
+                font-size: 42px;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-tint"></i>
+        </div>
+        Water<span>Intake</span> Calculator
+    </a>
+    <div class="header-btns">
+        <a href="index.html" class="icon-btn home-btn">
+            <i class="fas fa-home"></i> <span>Home</span>
+        </a>
+        <a href="#" class="icon-btn" onclick="window.print()">
+            <i class="fas fa-print"></i> <span>Print</span>
+        </a>
+        <a href="#" class="icon-btn" onclick="shareResults()">
+            <i class="fas fa-share-alt"></i> <span>Share</span>
+        </a>
+    </div>
+</header>
+
+<div class="content">
+    <h1 class="page-title">
+        <i class="fas fa-tint"></i> Water Intake Calculator
+    </h1>
+    <p class="page-subtitle">
+        Calculate your daily recommended water intake based on your weight, activity level, climate, and health conditions. Stay hydrated for optimal health!
+    </p>
+    
+    <div class="calculator-container">
+        <!-- Input Form -->
+        <div class="calculator-card">
+            <h2 class="card-title">
+                <i class="fas fa-user-circle"></i> Your Details
+            </h2>
+            
+            <!-- Unit Selection -->
+            <div class="form-group">
+                <div class="form-label">Select Units</div>
+                <div class="unit-selector">
+                    <div class="unit-btn active" id="metric-btn" onclick="selectUnit('metric')">
+                        Metric (kg, cm)
+                    </div>
+                    <div class="unit-btn" id="imperial-btn" onclick="selectUnit('imperial')">
+                        Imperial (lbs, ft)
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weight Input -->
+            <div class="form-group">
+                <div class="form-label">
+                    Weight <span id="weight-unit">(kg)</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-value" id="weight-value">70</div>
+                    <input type="range" min="30" max="200" value="70" class="slider" id="weight-slider" oninput="updateWeight()">
+                    <div class="slider-labels">
+                        <span id="weight-min">30</span>
+                        <span id="weight-max">200</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Age Input -->
+            <div class="form-group">
+                <div class="form-label">Age</div>
+                <div class="slider-container">
+                    <div class="slider-value" id="age-value">30</div>
+                    <input type="range" min="1" max="100" value="30" class="slider" id="age-slider" oninput="updateAge()">
+                    <div class="slider-labels">
+                        <span>1</span>
+                        <span>100</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Level -->
+            <div class="form-group">
+                <div class="form-label">Daily Activity Level</div>
+                <div class="options-grid">
+                    <div class="option-item" onclick="selectOption(this, 'activity')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Sedentary</div>
+                            <div style="font-size: 13px; color: var(--muted);">Little to no exercise</div>
+                        </div>
+                    </div>
+                    <div class="option-item selected" onclick="selectOption(this, 'activity')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Moderate</div>
+                            <div style="font-size: 13px; color: var(--muted);">Light exercise 1-3 days/week</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="selectOption(this, 'activity')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Active</div>
+                            <div style="font-size: 13px; color: var(--muted);">Exercise 3-5 days/week</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="selectOption(this, 'activity')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Very Active</div>
+                            <div style="font-size: 13px; color: var(--muted);">Intense exercise 6-7 days/week</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Climate -->
+            <div class="form-group">
+                <div class="form-label">Climate / Environment</div>
+                <div class="options-grid">
+                    <div class="option-item selected" onclick="selectOption(this, 'climate')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Temperate</div>
+                            <div style="font-size: 13px; color: var(--muted);">Moderate climate</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="selectOption(this, 'climate')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Hot/Humid</div>
+                            <div style="font-size: 13px; color: var(--muted);">High temperature or humidity</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="selectOption(this, 'climate')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Dry/Arid</div>
+                            <div style="font-size: 13px; color: var(--muted);">Low humidity, desert climate</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="selectOption(this, 'climate')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Cold</div>
+                            <div style="font-size: 13px; color: var(--muted);">Cold weather conditions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Health Conditions -->
+            <div class="form-group">
+                <div class="form-label">Health Conditions (Select all that apply)</div>
+                <div class="options-grid">
+                    <div class="option-item" onclick="toggleOption(this, 'conditions')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Pregnant</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="toggleOption(this, 'conditions')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Breastfeeding</div>
+                        </div>
+                    </div>
+                    <div class="option-item" onclick="toggleOption(this, 'conditions')">
+                        <div class="option-checkbox"><i class="fas fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">Illness/Fever</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculate Button -->
+            <button class="btn btn-primary" onclick="calculateWaterIntake()">
+                <i class="fas fa-calculator"></i> Calculate My Water Intake
+            </button>
+            
+            <!-- Reset Button -->
+            <button class="btn btn-reset" onclick="resetForm()">
+                <i class="fas fa-redo"></i> Reset Form
+            </button>
+        </div>
+        
+        <!-- Results Display -->
+        <div class="results-card" id="results-card">
+            <i class="fas fa-tint water-icon"></i>
+            <div class="result-label">Your Daily Water Intake</div>
+            <div class="result-value" id="water-result">2.5</div>
+            <div class="result-unit" id="water-unit">Liters</div>
+            
+            <!-- Water Visualization -->
+            <div class="water-visualization">
+                <div class="water-bottle">
+                    <div class="water-fill" id="water-fill" style="height: 50%;"></div>
+                </div>
+                <div class="water-markers">
+                    <span>0L</span>
+                    <span id="water-half">1.25L</span>
+                    <span id="water-max">2.5L</span>
+                </div>
+            </div>
+            
+            <!-- Detailed Results -->
+            <div class="result-details">
+                <div class="detail-item">
+                    <span>Based on your weight:</span>
+                    <span id="weight-based">1.75 L</span>
+                </div>
+                <div class="detail-item">
+                    <span>Activity adjustment:</span>
+                    <span id="activity-adj">+0.25 L</span>
+                </div>
+                <div class="detail-item">
+                    <span>Climate adjustment:</span>
+                    <span id="climate-adj">+0.25 L</span>
+                </div>
+                <div class="detail-item">
+                    <span>Health adjustments:</span>
+                    <span id="health-adj">+0.25 L</span>
+                </div>
+                <div class="detail-item" style="font-weight: 700; border-top: 2px solid rgba(255, 255, 255, 0.3); padding-top: 12px; margin-top: 8px;">
+                    <span>Total daily intake:</span>
+                    <span id="total-result">2.5 L</span>
+                </div>
+            </div>
+            
+            <!-- Equivalent Bottles -->
+            <div style="margin-top: 25px; font-size: 15px; opacity: 0.9;">
+                <i class="fas fa-wine-bottle"></i> Equivalent to approximately <span id="bottle-count">5</span> standard water bottles (500ml each)
+            </div>
+        </div>
+    </div>
+    
+    <!-- Information Section -->
+    <div class="info-section">
+        <h2 class="section-title">
+            <i class="fas fa-info-circle"></i> Importance of Proper Hydration
+        </h2>
+        <p style="color: var(--text-light); margin-bottom: 20px;">
+            Staying properly hydrated is essential for maintaining optimal body function. Water regulates body temperature, lubricates joints, protects sensitive tissues, and helps flush waste from the body.
+        </p>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <i class="fas fa-brain"></i>
+                <h4>Brain Function</h4>
+                <p>Even mild dehydration can impair concentration, memory, and mood. Proper hydration helps maintain cognitive function.</p>
+            </div>
+            
+            <div class="info-card">
+                <i class="fas fa-heartbeat"></i>
+                <h4>Physical Performance</h4>
+                <p>Dehydration reduces endurance, increases fatigue, and makes exercise feel more difficult. Hydration is key for athletes.</p>
+            </div>
+            
+            <div class="info-card">
+                <i class="fas fa-weight"></i>
+                <h4>Weight Management</h4>
+                <p>Drinking water before meals can help with appetite control and boost metabolism, aiding in weight management.</p>
+            </div>
+            
+            <div class="info-card">
+                <i class="fas fa-skull-crossbones"></i>
+                <h4>Prevent Health Issues</h4>
+                <p>Proper hydration helps prevent kidney stones, urinary tract infections, and constipation.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hydration Tips -->
+    <div class="info-section">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb"></i> Tips for Staying Hydrated
+        </h2>
+        
+        <div class="tips-list">
+            <div class="tip-item">
+                <div class="tip-number">1</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Carry a Water Bottle</div>
+                    <div style="color: var(--text-light);">Keep a reusable water bottle with you throughout the day as a visual reminder to drink more water.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-number">2</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Set Reminders</div>
+                    <div style="color: var(--text-light);">Use phone alarms or apps to remind you to drink water at regular intervals throughout the day.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-number">3</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Eat Water-Rich Foods</div>
+                    <div style="color: var(--text-light);">Include fruits and vegetables with high water content like watermelon, cucumber, oranges, and strawberries in your diet.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-number">4</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Monitor Urine Color</div>
+                    <div style="color: var(--text-light);">Light yellow or clear urine usually indicates proper hydration, while dark yellow suggests you need more water.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-number">5</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Drink Before Meals</div>
+                    <div style="color: var(--text-light);">Make it a habit to drink a glass of water 30 minutes before each meal to aid digestion and control appetite.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-col">
+            <div class="footer-logo">ToolBox<span>Ultra</span></div>
+            <p class="footer-about">Your all-in-one platform for calculations and conversions. We provide accurate, easy-to-use tools for finance, health, math, and everyday tasks.</p>
+        </div>
+        <div class="footer-col">
+            <h3 class="footer-heading">Health Tools</h3>
+            <div class="footer-links">
+                <a href="BMI_Calculator.html">BMI Calculator</a>
+                <a href="Water_Intake_Calculator.html">Water Intake Calculator</a>
+                <a href="Calorie_Burn_Calculator.html">Calorie Burn Calculator</a>
+                <a href="BMR_Tracker.html">BMR Tracker</a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h3 class="footer-heading">Quick Links</h3>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="#">All Tools</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h3 class="footer-heading">Legal</h3>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Disclaimer</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        &copy; 2023 ToolBoxUltra. All rights reserved. | This tool provides estimates only. Consult a healthcare professional for personalized advice.
+    </div>
+</footer>
+
+<script>
+    // Unit Selection
+    let currentUnit = 'metric';
+    
+    function selectUnit(unit) {
+        currentUnit = unit;
+        
+        // Update button states
+        document.getElementById('metric-btn').classList.toggle('active', unit === 'metric');
+        document.getElementById('imperial-btn').classList.toggle('active', unit === 'imperial');
+        
+        // Update weight slider
+        const weightSlider = document.getElementById('weight-slider');
+        const weightValue = document.getElementById('weight-value');
+        const weightMin = document.getElementById('weight-min');
+        const weightMax = document.getElementById('weight-max');
+        const weightUnit = document.getElementById('weight-unit');
+        
+        if (unit === 'metric') {
+            weightSlider.min = 30;
+            weightSlider.max = 200;
+            weightSlider.value = 70;
+            weightValue.textContent = '70';
+            weightMin.textContent = '30';
+            weightMax.textContent = '200';
+            weightUnit.textContent = '(kg)';
+        } else {
+            weightSlider.min = 66;
+            weightSlider.max = 440;
+            weightSlider.value = 154;
+            weightValue.textContent = '154';
+            weightMin.textContent = '66';
+            weightMax.textContent = '440';
+            weightUnit.textContent = '(lbs)';
+        }
+        
+        // Update results if already calculated
+        if (document.getElementById('water-result').textContent !== '2.5') {
+            calculateWaterIntake();
+        }
+    }
+    
+    // Update weight display
+    function updateWeight() {
+        const weightSlider = document.getElementById('weight-slider');
+        const weightValue = document.getElementById('weight-value');
+        weightValue.textContent = weightSlider.value;
+    }
+    
+    // Update age display
+    function updateAge() {
+        const ageSlider = document.getElementById('age-slider');
+        const ageValue = document.getElementById('age-value');
+        ageValue.textContent = ageSlider.value;
+    }
+    
+    // Select option (single selection)
+    function selectOption(element, group) {
+        // Remove selected class from all options in the same group
+        const parent = element.parentElement;
+        const options = parent.querySelectorAll('.option-item');
+        options.forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked option
+        element.classList.add('selected');
+    }
+    
+    // Toggle option (multiple selection)
+    function toggleOption(element, group) {
+        element.classList.toggle('selected');
+    }
+    
+    // Calculate water intake
+    function calculateWaterIntake() {
+        // Get weight
+        const weight = parseInt(document.getElementById('weight-slider').value);
+        
+        // Get activity level
+        const activityOptions = document.querySelectorAll('.option-item[onclick*="activity"]');
+        let activityLevel = 'moderate';
+        activityOptions.forEach(option => {
+            if (option.classList.contains('selected')) {
+                const text = option.querySelector('div div:first-child').textContent;
+                if (text.includes('Sedentary')) activityLevel = 'sedentary';
+                else if (text.includes('Moderate')) activityLevel = 'moderate';
+                else if (text.includes('Active')) activityLevel = 'active';
+                else if (text.includes('Very Active')) activityLevel = 'very_active';
+            }
+        });
+        
+        // Get climate
+        const climateOptions = document.querySelectorAll('.option-item[onclick*="climate"]');
+        let climate = 'temperate';
+        climateOptions.forEach(option => {
+            if (option.classList.contains('selected')) {
+                const text = option.querySelector('div div:first-child').textContent;
+                if (text.includes('Temperate')) climate = 'temperate';
+                else if (text.includes('Hot')) climate = 'hot';
+                else if (text.includes('Dry')) climate = 'dry';
+                else if (text.includes('Cold')) climate = 'cold';
+            }
+        });
+        
+        // Get health conditions
+        const conditionOptions = document.querySelectorAll('.option-item[onclick*="conditions"]');
+        let conditions = {
+            pregnant: false,
+            breastfeeding: false,
+            illness: false
+        };
+        
+        conditionOptions.forEach(option => {
+            if (option.classList.contains('selected')) {
+                const text = option.querySelector('div div:first-child').textContent;
+                if (text.includes('Pregnant')) conditions.pregnant = true;
+                else if (text.includes('Breastfeeding')) conditions.breastfeeding = true;
+                else if (text.includes('Illness')) conditions.illness = true;
+            }
+        });
+        
+        // Calculate base water requirement based on weight
+        let baseWater;
+        if (currentUnit === 'metric') {
+            // 30-35 ml per kg of body weight
+            baseWater = weight * 0.033;
+        } else {
+            // Convert lbs to kg first (1 kg = 2.20462 lbs)
+            const weightKg = weight / 2.20462;
+            baseWater = weightKg * 0.033;
+        }
+        
+        // Adjust for activity level
+        let activityAdjustment = 0;
+        switch(activityLevel) {
+            case 'sedentary':
+                activityAdjustment = -0.2;
+                break;
+            case 'moderate':
+                activityAdjustment = 0;
+                break;
+            case 'active':
+                activityAdjustment = 0.3;
+                break;
+            case 'very_active':
+                activityAdjustment = 0.5;
+                break;
+        }
+        
+        // Adjust for climate
+        let climateAdjustment = 0;
+        switch(climate) {
+            case 'temperate':
+                climateAdjustment = 0;
+                break;
+            case 'hot':
+                climateAdjustment = 0.5;
+                break;
+            case 'dry':
+                climateAdjustment = 0.3;
+                break;
+            case 'cold':
+                climateAdjustment = -0.1;
+                break;
+        }
+        
+        // Adjust for health conditions
+        let healthAdjustment = 0;
+        if (conditions.pregnant) healthAdjustment += 0.3;
+        if (conditions.breastfeeding) healthAdjustment += 0.7;
+        if (conditions.illness) healthAdjustment += 0.5;
+        
+        // Calculate total water intake
+        let totalWater = baseWater + activityAdjustment + climateAdjustment + healthAdjustment;
+        
+        // Ensure minimum of 1.5 liters
+        if (totalWater < 1.5) totalWater = 1.5;
+        
+        // Round to 2 decimal places
+        totalWater = Math.round(totalWater * 100) / 100;
+        baseWater = Math.round(baseWater * 100) / 100;
+        activityAdjustment = Math.round(activityAdjustment * 100) / 100;
+        climateAdjustment = Math.round(climateAdjustment * 100) / 100;
+        healthAdjustment = Math.round(healthAdjustment * 100) / 100;
+        
+        // Display results
+        const waterResult = document.getElementById('water-result');
+        const waterUnit = document.getElementById('water-unit');
+        const waterFill = document.getElementById('water-fill');
+        const waterHalf = document.getElementById('water-half');
+        const waterMax = document.getElementById('water-max');
+        
+        // Check if user prefers imperial units
+        let displayUnit = 'liters';
+        let displayValue = totalWater;
+        let bottleCount = Math.ceil(totalWater * 2);
+        
+        if (currentUnit === 'imperial') {
+            // Convert liters to fluid ounces (1 liter = 33.814 fl oz)
+            displayValue = Math.round(totalWater * 33.814);
+            displayUnit = 'fl oz';
+            // Standard water bottle in US is 16.9 fl oz
+            bottleCount = Math.ceil(displayValue / 16.9);
+        }
+        
+        waterResult.textContent = displayValue;
+        waterUnit.textContent = displayUnit;
+        
+        // Update water bottle visualization (max 3 liters = 100% height)
+        const fillPercentage = Math.min((totalWater / 3) * 100, 100);
+        waterFill.style.height = `${fillPercentage}%`;
+        
+        // Update water markers
+        if (currentUnit === 'metric') {
+            waterHalf.textContent = `${(totalWater / 2).toFixed(1)}L`;
+            waterMax.textContent = `${totalWater}L`;
+        } else {
+            waterHalf.textContent = `${Math.round((displayValue / 2) * 10) / 10} fl oz`;
+            waterMax.textContent = `${displayValue} fl oz`;
+        }
+        
+        // Update detailed results
+        document.getElementById('weight-based').textContent = 
+            currentUnit === 'metric' ? `${baseWater} L` : `${Math.round(baseWater * 33.814)} fl oz`;
+        
+        document.getElementById('activity-adj').textContent = 
+            activityAdjustment >= 0 ? `+${activityAdjustment} L` : `${activityAdjustment} L`;
+        
+        document.getElementById('climate-adj').textContent = 
+            climateAdjustment >= 0 ? `+${climateAdjustment} L` : `${climateAdjustment} L`;
+        
+        document.getElementById('health-adj').textContent = 
+            healthAdjustment > 0 ? `+${healthAdjustment} L` : `0 L`;
+        
+        document.getElementById('total-result').textContent = 
+            currentUnit === 'metric' ? `${totalWater} L` : `${displayValue} fl oz`;
+        
+        document.getElementById('bottle-count').textContent = bottleCount;
+        
+        // Add visual feedback
+        const resultsCard = document.getElementById('results-card');
+        resultsCard.style.animation = 'none';
+        setTimeout(() => {
+            resultsCard.style.animation = 'pulse 0.5s';
+        }, 10);
+    }
+    
+    // Reset form
+    function resetForm() {
+        // Reset unit to metric
+        selectUnit('metric');
+        
+        // Reset age slider
+        document.getElementById('age-slider').value = 30;
+        updateAge();
+        
+        // Reset activity level to moderate
+        const activityOptions = document.querySelectorAll('.option-item[onclick*="activity"]');
+        activityOptions.forEach(option => {
+            option.classList.remove('selected');
+            if (option.querySelector('div div:first-child').textContent.includes('Moderate')) {
+                option.classList.add('selected');
+            }
+        });
+        
+        // Reset climate to temperate
+        const climateOptions = document.querySelectorAll('.option-item[onclick*="climate"]');
+        climateOptions.forEach(option => {
+            option.classList.remove('selected');
+            if (option.querySelector('div div:first-child').textContent.includes('Temperate')) {
+                option.classList.add('selected');
+            }
+        });
+        
+        // Reset health conditions
+        const conditionOptions = document.querySelectorAll('.option-item[onclick*="conditions"]');
+        conditionOptions.forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Reset results to default
+        document.getElementById('water-result').textContent = '2.5';
+        document.getElementById('water-unit').textContent = 'Liters';
+        document.getElementById('water-fill').style.height = '50%';
+        document.getElementById('water-half').textContent = '1.25L';
+        document.getElementById('water-max').textContent = '2.5L';
+        document.getElementById('bottle-count').textContent = '5';
+    }
+    
+    // Share results
+    function shareResults() {
+        const waterAmount = document.getElementById('water-result').textContent;
+        const waterUnit = document.getElementById('water-unit').textContent;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'My Daily Water Intake',
+                text: `My recommended daily water intake is ${waterAmount} ${waterUnit}. Calculated using ToolBox Ultra's Water Intake Calculator.`,
+                url: window.location.href
+            });
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            const textArea = document.createElement('textarea');
+            textArea.value = `My recommended daily water intake is ${waterAmount} ${waterUnit}. Calculate yours at: ${window.location.href}`;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Results copied to clipboard!');
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add CSS animation for pulse effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Calculate initial water intake
+        calculateWaterIntake();
+    });
+</script>
+
+</body>
+</html>

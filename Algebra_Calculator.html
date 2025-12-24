@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .calculator-container {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .calculator-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .results-container {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #3498db;
+        }
+
+        .calculator-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            background: white;
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .calculator-content {
+            display: none;
+        }
+
+        .calculator-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .input-with-example {
+            position: relative;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .example {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .clear-btn {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .clear-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-box {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 400px;
+            margin-bottom: 20px;
+        }
+
+        .result-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .result-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 10px 0;
+        }
+
+        .step {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .solution {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .solution-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .history-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-item:hover {
+            background: #e9ecef;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .variable-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .variable-btn {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .variable-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .calculator-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Algebra Calculator</h1>
+            <p class="subtitle">Solve equations, simplify expressions, factor polynomials, and more with step-by-step solutions.</p>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="calculator-container">
+                <h2><i class="fas fa-edit"></i> Input</h2>
+                
+                <div class="calculator-tabs">
+                    <div class="tab active" data-tab="equation">Equation Solver</div>
+                    <div class="tab" data-tab="expression">Simplify Expression</div>
+                    <div class="tab" data-tab="factor">Factor Polynomial</div>
+                </div>
+                
+                <div class="calculator-content active" id="equation-content">
+                    <div class="input-group">
+                        <label for="equation-input">Enter Equation</label>
+                        <div class="input-with-example">
+                            <textarea id="equation-input" placeholder="e.g., 2x + 5 = 13, x^2 - 5x + 6 = 0, 3(x-2) = 2x+1">2x + 5 = 13</textarea>
+                            <div class="example">Examples: 2x + 5 = 13, x^2 - 5x + 6 = 0, 3(x-2) = 2x+1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Solve for variable:</label>
+                        <div class="variable-buttons">
+                            <button class="variable-btn" data-var="x">x</button>
+                            <button class="variable-btn" data-var="y">y</button>
+                            <button class="variable-btn" data-var="z">z</button>
+                            <button class="variable-btn" data-var="a">a</button>
+                            <button class="variable-btn" data-var="b">b</button>
+                            <button class="variable-btn" data-var="c">c</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculator-content" id="expression-content">
+                    <div class="input-group">
+                        <label for="expression-input">Enter Expression</label>
+                        <div class="input-with-example">
+                            <textarea id="expression-input" placeholder="e.g., 2x + 3x - 5, (x+2)(x-3), 3x^2 + 6x">2x + 3x - 5</textarea>
+                            <div class="example">Examples: 2x + 3x - 5, (x+2)(x-3), 3x^2 + 6x</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Simplify/Expand:</label>
+                        <div class="variable-buttons">
+                            <button class="variable-btn" data-var="x">x</button>
+                            <button class="variable-btn" data-var="y">y</button>
+                            <button class="variable-btn" data-var="z">z</button>
+                            <button class="variable-btn" data-var="a">a</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculator-content" id="factor-content">
+                    <div class="input-group">
+                        <label for="factor-input">Enter Polynomial</label>
+                        <div class="input-with-example">
+                            <textarea id="factor-input" placeholder="e.g., x^2 - 5x + 6, 2x^2 + 4x, x^2 - 9">x^2 - 5x + 6</textarea>
+                            <div class="example">Examples: x^2 - 5x + 6, 2x^2 + 4x, x^2 - 9</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Factor completely:</label>
+                        <div class="variable-buttons">
+                            <button class="variable-btn" data-var="x">x</button>
+                            <button class="variable-btn" data-var="y">y</button>
+                            <button class="variable-btn" data-var="z">z</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                    <button class="clear-btn" id="clear">
+                        <i class="fas fa-redo"></i> Clear
+                    </button>
+                </div>
+                
+                <div class="error-message" id="error-message">
+                    <i class="fas fa-exclamation-triangle"></i> <span id="error-text"></span>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="results-header">
+                    <h2><i class="fas fa-chart-line"></i> Solution</h2>
+                    <button class="clear-btn" id="clear-history" style="padding: 8px 15px; font-size: 0.9rem;">
+                        <i class="fas fa-trash"></i> Clear History
+                    </button>
+                </div>
+                
+                <div class="result-box">
+                    <h3 id="result-title">Solution</h3>
+                    <div class="result-content" id="result-content">
+                        <p>Enter an equation, expression, or polynomial and click "Calculate" to see the solution with step-by-step explanations.</p>
+                    </div>
+                </div>
+                
+                <div class="history-container">
+                    <div class="history-title">
+                        <i class="fas fa-history"></i> Calculation History
+                    </div>
+                    <div id="history-list">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Algebra Calculator &copy; 2023 | Supports linear equations, quadratic equations, expression simplification, and polynomial factoring.</p>
+            <p>Note: This calculator provides step-by-step solutions for educational purposes. For complex equations, consult additional resources.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.calculator-content');
+            const calculateBtn = document.getElementById('calculate');
+            const clearBtn = document.getElementById('clear');
+            const clearHistoryBtn = document.getElementById('clear-history');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const resultTitle = document.getElementById('result-title');
+            const resultContent = document.getElementById('result-content');
+            const historyList = document.getElementById('history-list');
+            const variableButtons = document.querySelectorAll('.variable-btn');
+            
+            // Current active tab
+            let activeTab = 'equation';
+            let calculationHistory = JSON.parse(localStorage.getItem('algebraHistory')) || [];
+            
+            // Initialize
+            renderHistory();
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    activeTab = tabId;
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                    
+                    // Clear any error messages
+                    hideError();
+                });
+            });
+            
+            // Variable buttons
+            variableButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const variable = this.getAttribute('data-var');
+                    insertVariable(variable);
+                });
+            });
+            
+            // Insert variable into active input
+            function insertVariable(variable) {
+                let inputElement;
+                
+                switch(activeTab) {
+                    case 'equation':
+                        inputElement = document.getElementById('equation-input');
+                        break;
+                    case 'expression':
+                        inputElement = document.getElementById('expression-input');
+                        break;
+                    case 'factor':
+                        inputElement = document.getElementById('factor-input');
+                        break;
+                }
+                
+                if (inputElement) {
+                    const start = inputElement.selectionStart;
+                    const end = inputElement.selectionEnd;
+                    const text = inputElement.value;
+                    const newText = text.substring(0, start) + variable + text.substring(end);
+                    
+                    inputElement.value = newText;
+                    inputElement.focus();
+                    inputElement.setSelectionRange(start + variable.length, start + variable.length);
+                }
+            }
+            
+            // Calculate button click
+            calculateBtn.addEventListener('click', function() {
+                hideError();
+                
+                let input, result;
+                
+                switch(activeTab) {
+                    case 'equation':
+                        input = document.getElementById('equation-input').value.trim();
+                        result = solveEquation(input);
+                        break;
+                    case 'expression':
+                        input = document.getElementById('expression-input').value.trim();
+                        result = simplifyExpression(input);
+                        break;
+                    case 'factor':
+                        input = document.getElementById('factor-input').value.trim();
+                        result = factorPolynomial(input);
+                        break;
+                }
+                
+                if (result.error) {
+                    showError(result.error);
+                } else {
+                    displayResult(result);
+                    addToHistory(input, result);
+                }
+            });
+            
+            // Clear button
+            clearBtn.addEventListener('click', function() {
+                switch(activeTab) {
+                    case 'equation':
+                        document.getElementById('equation-input').value = '';
+                        break;
+                    case 'expression':
+                        document.getElementById('expression-input').value = '';
+                        break;
+                    case 'factor':
+                        document.getElementById('factor-input').value = '';
+                        break;
+                }
+                
+                hideError();
+                resultTitle.textContent = 'Solution';
+                resultContent.innerHTML = '<p>Enter an equation, expression, or polynomial and click "Calculate" to see the solution with step-by-step explanations.</p>';
+            });
+            
+            // Clear history button
+            clearHistoryBtn.addEventListener('click', function() {
+                calculationHistory = [];
+                localStorage.setItem('algebraHistory', JSON.stringify(calculationHistory));
+                renderHistory();
+            });
+            
+            // Equation solver
+            function solveEquation(input) {
+                if (!input) {
+                    return { error: 'Please enter an equation.' };
+                }
+                
+                // Check if input contains '='
+                if (!input.includes('=')) {
+                    return { error: 'Equation must contain an equals sign (=).' };
+                }
+                
+                // Simple equation parser and solver
+                try {
+                    // Clean up input
+                    let equation = input.replace(/\s+/g, '');
+                    
+                    // Split into left and right sides
+                    let sides = equation.split('=');
+                    if (sides.length !== 2) {
+                        return { error: 'Equation must have exactly one equals sign.' };
+                    }
+                    
+                    let left = sides[0];
+                    let right = sides[1];
+                    
+                    // Detect equation type
+                    const isLinear = !left.includes('^') && !right.includes('^');
+                    const isQuadratic = left.includes('^2') || right.includes('^2');
+                    
+                    let steps = [];
+                    let solutions = [];
+                    
+                    if (isLinear) {
+                        // Linear equation solving
+                        steps.push(`Given equation: ${formatEquation(left, right)}`);
+                        
+                        // Move all terms to left side
+                        steps.push(`Move all terms to left side: ${formatEquation(left + '-' + '(' + right + ')', '0')}`);
+                        
+                        // Simplify
+                        let simplified = simplifyExpression(left + '-' + '(' + right + ')');
+                        
+                        if (simplified.error) {
+                            return simplified;
+                        }
+                        
+                        steps.push(`Simplify: ${simplified.steps.join(' ')}`);
+                        
+                        // Extract coefficient and constant
+                        let expr = simplified.result;
+                        let match = expr.match(/([-+]?\d*\.?\d*)x/);
+                        let coeff = match ? parseFloat(match[1] || 1) * (match[0].startsWith('-') ? -1 : 1) : 0;
+                        
+                        // Extract constant
+                        let constantMatch = expr.match(/([-+]?\d*\.?\d*)(?!.*x)/);
+                        let constant = constantMatch ? parseFloat(constantMatch[0]) : 0;
+                        
+                        // Handle case when there's no x term
+                        if (coeff === 0) {
+                            if (constant === 0) {
+                                solutions.push('Infinite solutions (identity)');
+                            } else {
+                                solutions.push('No solution (contradiction)');
+                            }
+                        } else {
+                            let solution = -constant / coeff;
+                            steps.push(`Isolate x: ${coeff}x = ${-constant}`);
+                            steps.push(`Divide by ${coeff}: x = ${solution}`);
+                            solutions.push(`x = ${solution}`);
+                        }
+                        
+                        return {
+                            title: 'Linear Equation Solution',
+                            steps: steps,
+                            solutions: solutions,
+                            result: solutions.join(', ')
+                        };
+                    } else if (isQuadratic) {
+                        // Quadratic equation solving
+                        steps.push(`Given quadratic equation: ${formatEquation(left, right)}`);
+                        
+                        // Move all terms to left side
+                        steps.push(`Move all terms to left side: ${formatEquation(left + '-' + '(' + right + ')', '0')}`);
+                        
+                        // Simplify
+                        let simplified = simplifyExpression(left + '-' + '(' + right + ')');
+                        
+                        if (simplified.error) {
+                            return simplified;
+                        }
+                        
+                        steps.push(`Simplify: ${simplified.steps.join(' ')}`);
+                        
+                        // Extract coefficients (ax^2 + bx + c = 0)
+                        let expr = simplified.result;
+                        
+                        // Extract a, b, c using regex
+                        let aMatch = expr.match(/([-+]?\d*\.?\d*)x\^2/);
+                        let a = aMatch ? parseFloat(aMatch[1] || 1) * (aMatch[0].startsWith('-') ? -1 : 1) : 0;
+                        
+                        let bMatch = expr.match(/([-+]?\d*\.?\d*)x(?!\^)/);
+                        let b = bMatch ? parseFloat(bMatch[1] || 1) * (bMatch[0].startsWith('-') ? -1 : 1) : 0;
+                        
+                        // Extract constant
+                        let cMatch = expr.match(/([-+]?\d*\.?\d*)(?!.*x)/);
+                        let c = cMatch ? parseFloat(cMatch[0]) : 0;
+                        
+                        steps.push(`Identify coefficients: a = ${a}, b = ${b}, c = ${c}`);
+                        
+                        // Calculate discriminant
+                        let discriminant = b*b - 4*a*c;
+                        steps.push(`Discriminant: D = b² - 4ac = ${b}² - 4×${a}×${c} = ${discriminant}`);
+                        
+                        if (discriminant > 0) {
+                            let sqrtD = Math.sqrt(discriminant);
+                            let x1 = (-b + sqrtD) / (2*a);
+                            let x2 = (-b - sqrtD) / (2*a);
+                            
+                            steps.push(`Two real solutions:`);
+                            steps.push(`x₁ = (-b + √D) / 2a = (${-b} + ${sqrtD.toFixed(2)}) / ${2*a} = ${x1.toFixed(2)}`);
+                            steps.push(`x₂ = (-b - √D) / 2a = (${-b} - ${sqrtD.toFixed(2)}) / ${2*a} = ${x2.toFixed(2)}`);
+                            
+                            solutions.push(`x₁ = ${x1.toFixed(2)}`);
+                            solutions.push(`x₂ = ${x2.toFixed(2)}`);
+                        } else if (discriminant === 0) {
+                            let x = -b / (2*a);
+                            steps.push(`One real solution (double root):`);
+                            steps.push(`x = -b / 2a = ${-b} / ${2*a} = ${x.toFixed(2)}`);
+                            solutions.push(`x = ${x.toFixed(2)}`);
+                        } else {
+                            let realPart = -b / (2*a);
+                            let imaginaryPart = Math.sqrt(-discriminant) / (2*a);
+                            
+                            steps.push(`Two complex solutions:`);
+                            steps.push(`x₁ = ${realPart.toFixed(2)} + ${imaginaryPart.toFixed(2)}i`);
+                            steps.push(`x₂ = ${realPart.toFixed(2)} - ${imaginaryPart.toFixed(2)}i`);
+                            
+                            solutions.push(`x₁ = ${realPart.toFixed(2)} + ${imaginaryPart.toFixed(2)}i`);
+                            solutions.push(`x₂ = ${realPart.toFixed(2)} - ${imaginaryPart.toFixed(2)}i`);
+                        }
+                        
+                        return {
+                            title: 'Quadratic Equation Solution',
+                            steps: steps,
+                            solutions: solutions,
+                            result: solutions.join(', ')
+                        };
+                    } else {
+                        return { error: 'Equation type not supported. Try linear or quadratic equations.' };
+                    }
+                } catch (error) {
+                    return { error: 'Unable to solve equation. Please check your input format.' };
+                }
+            }
+            
+            // Expression simplifier
+            function simplifyExpression(input) {
+                if (!input) {
+                    return { error: 'Please enter an expression.' };
+                }
+                
+                try {
+                    let steps = [];
+                    let expression = input.replace(/\s+/g, '');
+                    
+                    steps.push(`Original expression: ${expression}`);
+                    
+                    // Handle parentheses
+                    if (expression.includes('(') || expression.includes(')')) {
+                        steps.push(`Expand parentheses...`);
+                        
+                        // Simple expansion of (a+b)(c+d) pattern
+                        let expanded = expression;
+                        let pattern = /\(([^()]+)\)\(([^()]+)\)/;
+                        let match;
+                        
+                        while ((match = expanded.match(pattern)) !== null) {
+                            let left = match[1];
+                            let right = match[2];
+                            // Simple expansion for demonstration
+                            expanded = expanded.replace(pattern, `(${left}*${right})`);
+                        }
+                        
+                        // Remove parentheses around single terms
+                        expanded = expanded.replace(/\(([^()+*-]+)\)/g, '$1');
+                        
+                        if (expanded !== expression) {
+                            steps.push(`After expanding: ${expanded}`);
+                            expression = expanded;
+                        }
+                    }
+                    
+                    // Combine like terms
+                    let combined = expression;
+                    
+                    // Simple combining of terms like 2x + 3x
+                    let termPattern = /([+-]?\d*\.?\d*)([a-zA-Z]?)/g;
+                    let terms = [];
+                    let match;
+                    
+                    while ((match = termPattern.exec(expression)) !== null) {
+                        if (match[0]) {
+                            terms.push({
+                                coeff: parseFloat(match[1] || (match[0].startsWith('-') ? -1 : 1)),
+                                variable: match[2] || ''
+                            });
+                        }
+                    }
+                    
+                    // Group by variable
+                    let grouped = {};
+                    terms.forEach(term => {
+                        let key = term.variable;
+                        if (!grouped[key]) grouped[key] = 0;
+                        grouped[key] += term.coeff;
+                    });
+                    
+                    // Build combined expression
+                    let combinedParts = [];
+                    Object.keys(grouped).forEach(key => {
+                        let coeff = grouped[key];
+                        if (coeff !== 0) {
+                            let sign = coeff < 0 ? '-' : (combinedParts.length === 0 ? '' : '+');
+                            let absCoeff = Math.abs(coeff);
+                            let coeffStr = absCoeff === 1 && key ? '' : absCoeff;
+                            combinedParts.push(`${sign}${coeffStr}${key}`);
+                        }
+                    });
+                    
+                    let newCombined = combinedParts.join('') || '0';
+                    if (newCombined.startsWith('+')) newCombined = newCombined.substring(1);
+                    
+                    if (newCombined !== expression) {
+                        steps.push(`Combine like terms: ${newCombined}`);
+                        expression = newCombined;
+                    }
+                    
+                    // Factor common factors if possible
+                    let factored = expression;
+                    
+                    // Check for common numerical factor
+                    let numericalTerms = expression.split(/[+-]/).filter(term => term);
+                    let numericalCoeffs = numericalTerms.map(term => {
+                        let match = term.match(/\d+/);
+                        return match ? parseInt(match[0]) : 1;
+                    });
+                    
+                    // Find GCD (simplified for demonstration)
+                    let gcd = numericalCoeffs.length > 0 ? Math.min(...numericalCoeffs) : 1;
+                    
+                    if (gcd > 1) {
+                        let factoredExpression = expression.replace(/(\d+)/g, match => {
+                            let num = parseInt(match);
+                            return num / gcd;
+                        });
+                        
+                        factored = `${gcd}(${factoredExpression})`;
+                        steps.push(`Factor out ${gcd}: ${factored}`);
+                        expression = factored;
+                    }
+                    
+                    return {
+                        title: 'Expression Simplification',
+                        steps: steps,
+                        result: expression,
+                        solutions: [`Simplified: ${expression}`]
+                    };
+                } catch (error) {
+                    return { error: 'Unable to simplify expression. Please check your input format.' };
+                }
+            }
+            
+            // Polynomial factoring
+            function factorPolynomial(input) {
+                if (!input) {
+                    return { error: 'Please enter a polynomial.' };
+                }
+                
+                try {
+                    let steps = [];
+                    let polynomial = input.replace(/\s+/g, '');
+                    
+                    steps.push(`Original polynomial: ${polynomial}`);
+                    
+                    // Check if it's a quadratic
+                    if (polynomial.includes('^2')) {
+                        // Extract coefficients ax^2 + bx + c
+                        let aMatch = polynomial.match(/([-+]?\d*\.?\d*)x\^2/);
+                        let a = aMatch ? parseFloat(aMatch[1] || 1) * (aMatch[0].startsWith('-') ? -1 : 1) : 0;
+                        
+                        let bMatch = polynomial.match(/([-+]?\d*\.?\d*)x(?!\^)/);
+                        let b = bMatch ? parseFloat(bMatch[1] || 1) * (bMatch[0].startsWith('-') ? -1 : 1) : 0;
+                        
+                        let cMatch = polynomial.match(/([-+]?\d*\.?\d*)(?!.*x)/);
+                        let c = cMatch ? parseFloat(cMatch[0]) : 0;
+                        
+                        steps.push(`Identify coefficients: a = ${a}, b = ${b}, c = ${c}`);
+                        
+                        // Special cases
+                        if (b === 0 && c === 0) {
+                            // ax^2
+                            let factor = a === 1 ? 'x²' : a === -1 ? '-x²' : `${a}x²`;
+                            steps.push(`Factor: ${factor} = ${a}x · x`);
+                            return {
+                                title: 'Polynomial Factoring',
+                                steps: steps,
+                                result: `${a}x²`,
+                                solutions: [`${a}x²`]
+                            };
+                        }
+                        
+                        if (c === 0) {
+                            // ax^2 + bx = x(ax + b)
+                            steps.push(`Factor out x: x(${a}x ${b >= 0 ? '+' : ''} ${b})`);
+                            return {
+                                title: 'Polynomial Factoring',
+                                steps: steps,
+                                result: `x(${a}x ${b >= 0 ? '+' : ''} ${b})`,
+                                solutions: [`x(${a}x ${b >= 0 ? '+' : ''} ${b})`]
+                            };
+                        }
+                        
+                        // Try to factor as (px + q)(rx + s)
+                        let factors = [];
+                        
+                        // For simplicity, we'll handle some common cases
+                        if (a === 1) {
+                            // x^2 + bx + c
+                            // Look for two numbers that multiply to c and add to b
+                            for (let p = -Math.abs(c); p <= Math.abs(c); p++) {
+                                if (p !== 0 && c % p === 0) {
+                                    let q = c / p;
+                                    if (p + q === b) {
+                                        factors = [p, q];
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (factors.length === 2) {
+                                let [p, q] = factors;
+                                steps.push(`Find factors of ${c} that add to ${b}: ${p} and ${q}`);
+                                steps.push(`Factor: (x ${p >= 0 ? '+' : ''} ${p})(x ${q >= 0 ? '+' : ''} ${q})`);
+                                
+                                return {
+                                    title: 'Polynomial Factoring',
+                                    steps: steps,
+                                    result: `(x ${p >= 0 ? '+' : ''} ${p})(x ${q >= 0 ? '+' : ''} ${q})`,
+                                    solutions: [`(x ${p >= 0 ? '+' : ''} ${p})(x ${q >= 0 ? '+' : ''} ${q})`]
+                                };
+                            }
+                        }
+                        
+                        // If we can't factor easily, use quadratic formula to find roots
+                        let discriminant = b*b - 4*a*c;
+                        
+                        if (discriminant >= 0) {
+                            let sqrtD = Math.sqrt(discriminant);
+                            let x1 = (-b + sqrtD) / (2*a);
+                            let x2 = (-b - sqrtD) / (2*a);
+                            
+                            steps.push(`Find roots using quadratic formula:`);
+                            steps.push(`x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}`);
+                            
+                            let factor1 = `(x ${-x1 >= 0 ? '+' : ''} ${(-x1).toFixed(2)})`;
+                            let factor2 = `(x ${-x2 >= 0 ? '+' : ''} ${(-x2).toFixed(2)})`;
+                            
+                            if (a !== 1) {
+                                steps.push(`Factor: ${a}${factor1}${factor2}`);
+                                return {
+                                    title: 'Polynomial Factoring',
+                                    steps: steps,
+                                    result: `${a}${factor1}${factor2}`,
+                                    solutions: [`${a}${factor1}${factor2}`]
+                                };
+                            } else {
+                                steps.push(`Factor: ${factor1}${factor2}`);
+                                return {
+                                    title: 'Polynomial Factoring',
+                                    steps: steps,
+                                    result: `${factor1}${factor2}`,
+                                    solutions: [`${factor1}${factor2}`]
+                                };
+                            }
+                        } else {
+                            steps.push(`Cannot factor over real numbers (discriminant is negative).`);
+                            return {
+                                title: 'Polynomial Factoring',
+                                steps: steps,
+                                result: 'Cannot factor over real numbers',
+                                solutions: ['Cannot factor over real numbers']
+                            };
+                        }
+                    } else if (polynomial.includes('x')) {
+                        // Linear polynomial: factor out common factor
+                        let terms = polynomial.split(/[+-]/).filter(term => term);
+                        let hasCommonX = terms.every(term => term.includes('x'));
+                        
+                        if (hasCommonX) {
+                            // Find GCD of coefficients
+                            let coeffs = terms.map(term => {
+                                let match = term.match(/(\d+)/);
+                                return match ? parseInt(match[0]) : 1;
+                            });
+                            
+                            let gcd = coeffs.length > 0 ? Math.min(...coeffs) : 1;
+                            
+                            let factored = polynomial.replace(/(\d*)x/g, (match) => {
+                                let num = match.replace('x', '');
+                                let coeff = num ? parseInt(num) / gcd : 1/gcd;
+                                return coeff === 1 ? 'x' : coeff + 'x';
+                            });
+                            
+                            if (gcd !== 1) {
+                                steps.push(`Factor out ${gcd}x: ${gcd}x(${factored})`);
+                                return {
+                                    title: 'Polynomial Factoring',
+                                    steps: steps,
+                                    result: `${gcd}x(${factored})`,
+                                    solutions: [`${gcd}x(${factored})`]
+                                };
+                            }
+                        }
+                    }
+                    
+                    // Default: check for difference of squares
+                    if (polynomial.match(/[a-zA-Z]2\s*-\s*\d+/)) {
+                        steps.push(`Recognize as a difference of squares`);
+                        // Simple implementation for a^2 - b^2 pattern
+                        return {
+                            title: 'Polynomial Factoring',
+                            steps: steps,
+                            result: polynomial,
+                            solutions: [polynomial]
+                        };
+                    }
+                    
+                    return {
+                        title: 'Polynomial Factoring',
+                        steps: steps,
+                        result: polynomial,
+                        solutions: [`${polynomial} (already simplified)`]
+                    };
+                } catch (error) {
+                    return { error: 'Unable to factor polynomial. Please check your input format.' };
+                }
+            }
+            
+            // Display result
+            function displayResult(result) {
+                resultTitle.textContent = result.title;
+                
+                let html = '';
+                
+                // Add steps
+                if (result.steps && result.steps.length > 0) {
+                    html += '<div class="steps">';
+                    result.steps.forEach((step, index) => {
+                        html += `<div class="step">
+                            <div class="step-title">Step ${index + 1}</div>
+                            <div>${formatMath(step)}</div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                // Add solution
+                if (result.solutions && result.solutions.length > 0) {
+                    html += '<div class="solution">';
+                    html += '<div class="solution-title">Solution</div>';
+                    result.solutions.forEach(solution => {
+                        html += `<div>${formatMath(solution)}</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                resultContent.innerHTML = html;
+                
+                // Render any KaTeX
+                renderMath();
+            }
+            
+            // Add to history
+            function addToHistory(input, result) {
+                const historyItem = {
+                    id: Date.now(),
+                    type: activeTab,
+                    input: input,
+                    result: result.result || result.solutions?.join(', '),
+                    timestamp: new Date().toLocaleTimeString()
+                };
+                
+                calculationHistory.unshift(historyItem);
+                if (calculationHistory.length > 10) {
+                    calculationHistory.pop();
+                }
+                
+                localStorage.setItem('algebraHistory', JSON.stringify(calculationHistory));
+                renderHistory();
+            }
+            
+            // Render history
+            function renderHistory() {
+                if (calculationHistory.length === 0) {
+                    historyList.innerHTML = '<div class="history-item" style="text-align: center; color: #7f8c8d;">No calculations yet</div>';
+                    return;
+                }
+                
+                let html = '';
+                calculationHistory.forEach(item => {
+                    const typeNames = {
+                        'equation': 'Equation',
+                        'expression': 'Expression',
+                        'factor': 'Factor'
+                    };
+                    
+                    html += `<div class="history-item" data-id="${item.id}">
+                        <div><strong>${typeNames[item.type]}</strong> • ${item.timestamp}</div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">${truncateText(item.input, 30)} → ${truncateText(item.result, 20)}</div>
+                    </div>`;
+                });
+                
+                historyList.innerHTML = html;
+                
+                // Add click events to history items
+                document.querySelectorAll('.history-item[data-id]').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const historyItem = calculationHistory.find(h => h.id == id);
+                        
+                        if (historyItem) {
+                            // Switch to appropriate tab
+                            tabs.forEach(tab => {
+                                if (tab.getAttribute('data-tab') === historyItem.type) {
+                                    tab.click();
+                                }
+                            });
+                            
+                            // Set input
+                            switch(historyItem.type) {
+                                case 'equation':
+                                    document.getElementById('equation-input').value = historyItem.input;
+                                    break;
+                                case 'expression':
+                                    document.getElementById('expression-input').value = historyItem.input;
+                                    break;
+                                case 'factor':
+                                    document.getElementById('factor-input').value = historyItem.input;
+                                    break;
+                            }
+                            
+                            // Calculate again
+                            calculateBtn.click();
+                        }
+                    });
+                });
+            }
+            
+            // Helper functions
+            function formatEquation(left, right) {
+                return `${formatMath(left)} = ${formatMath(right)}`;
+            }
+            
+            function formatMath(text) {
+                // Simple formatting for display
+                return text
+                    .replace(/\^2/g, '²')
+                    .replace(/\^(\d+)/g, '<sup>$1</sup>')
+                    .replace(/\*/g, '·')
+                    .replace(/(\d)([a-zA-Z])/g, '$1$2')
+                    .replace(/sqrt\(/g, '√(');
+            }
+            
+            function truncateText(text, maxLength) {
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+            
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.classList.add('active');
+            }
+            
+            function hideError() {
+                errorMessage.classList.remove('active');
+            }
+            
+            function renderMath() {
+                // Try to render KaTeX, but fall back to plain text if it fails
+                try {
+                    renderMathInElement(resultContent, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false},
+                            {left: '\\[', right: '\\]', display: true}
+                        ],
+                        throwOnError: false
+                    });
+                } catch (e) {
+                    console.log('KaTeX rendering error:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

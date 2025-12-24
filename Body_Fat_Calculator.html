@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Fat Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .calculator-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .calculator-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #3498db;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .reset-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .result-category {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .result-description {
+            font-size: 1rem;
+            color: #555;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-section p {
+            margin-bottom: 15px;
+        }
+
+        .info-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .info-section li {
+            margin-bottom: 10px;
+        }
+
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .category-table th, .category-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .category-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .category-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .method-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-weight"></i> Body Fat Calculator</h1>
+            <p class="subtitle">Calculate your body fat percentage using multiple methods. Get detailed information about what your results mean for your health and fitness goals.</p>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="calculator-container">
+                <h2><i class="fas fa-calculator"></i> Calculator</h2>
+                
+                <div class="input-group">
+                    <label for="method">Calculation Method</label>
+                    <select id="method">
+                        <option value="navy">U.S. Navy Method (Circumference)</option>
+                        <option value="bmi">BMI Method (Simplified)</option>
+                    </select>
+                    <div class="method-info" id="method-info">
+                        The U.S. Navy method uses body circumference measurements to estimate body fat percentage. It's one of the most accessible methods.
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Gender</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="male" checked> Male
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="female"> Female
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="age">Age (years)</label>
+                    <input type="number" id="age" min="18" max="80" value="30">
+                </div>
+                
+                <div class="input-group">
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" min="100" max="250" value="170">
+                </div>
+                
+                <div class="input-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" min="30" max="200" value="70">
+                </div>
+                
+                <div id="navy-inputs">
+                    <div class="input-group">
+                        <label for="neck">Neck Circumference (cm)</label>
+                        <input type="number" id="neck" min="20" max="60" value="38">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="waist">Waist Circumference (cm)</label>
+                        <input type="number" id="waist" min="50" max="200" value="85">
+                    </div>
+                    
+                    <div class="input-group" id="hip-input">
+                        <label for="hips">Hip Circumference (cm) - Women only</label>
+                        <input type="number" id="hips" min="60" max="200" value="95">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-calculator"></i> Calculate Body Fat
+                    </button>
+                    <button class="reset-btn" id="reset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="results" id="results">
+                    <div class="result-value" id="result-value">0%</div>
+                    <div class="result-category" id="result-category">Category</div>
+                    <div class="result-description" id="result-description">Description will appear here</div>
+                </div>
+            </div>
+            
+            <div class="info-container">
+                <h2><i class="fas fa-info-circle"></i> About Body Fat Percentage</h2>
+                
+                <div class="info-section">
+                    <h3>What is Body Fat Percentage?</h3>
+                    <p>Body fat percentage is the total mass of fat divided by total body mass, multiplied by 100. It includes both essential fat (needed for normal bodily functions) and storage fat.</p>
+                    
+                    <p>Unlike BMI, body fat percentage distinguishes between fat mass and lean mass, providing a more accurate picture of health and fitness.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Body Fat Categories</h3>
+                    <table class="category-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Men</th>
+                                <th>Women</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Essential Fat</td>
+                                <td>2-5%</td>
+                                <td>10-13%</td>
+                            </tr>
+                            <tr>
+                                <td>Athletes</td>
+                                <td>6-13%</td>
+                                <td>14-20%</td>
+                            </tr>
+                            <tr>
+                                <td>Fitness</td>
+                                <td>14-17%</td>
+                                <td>21-24%</td>
+                            </tr>
+                            <tr>
+                                <td>Average</td>
+                                <td>18-24%</td>
+                                <td>25-31%</td>
+                            </tr>
+                            <tr>
+                                <td>Obese</td>
+                                <td>25%+</td>
+                                <td>32%+</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Health Implications</h3>
+                    <p>Maintaining a healthy body fat percentage is important for:</p>
+                    <ul>
+                        <li><strong>Hormone regulation:</strong> Essential fat helps regulate hormones</li>
+                        <li><strong>Organ protection:</strong> Fat cushions and protects internal organs</li>
+                        <li><strong>Temperature regulation:</strong> Fat helps maintain body temperature</li>
+                        <li><strong>Energy storage:</strong> Fat stores energy for future use</li>
+                    </ul>
+                    <p>Too little body fat can lead to hormonal imbalances, while too much increases risk for heart disease, diabetes, and other health problems.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Calculation Methods</h3>
+                    <p><strong>U.S. Navy Method:</strong> Uses body circumference measurements. While not as accurate as DEXA scans or hydrostatic weighing, it's accessible and provides a reasonable estimate.</p>
+                    <p><strong>BMI Method:</strong> Uses Body Mass Index to estimate body fat percentage. Less accurate but useful when circumference measurements aren't available.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Body Fat Calculator &copy; 2023 | This tool provides estimates only. For medical advice, consult a healthcare professional.</p>
+            <p>Results may vary based on individual factors including muscle mass, bone density, and distribution of fat.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const methodSelect = document.getElementById('method');
+            const methodInfo = document.getElementById('method-info');
+            const navyInputs = document.getElementById('navy-inputs');
+            const hipInput = document.getElementById('hip-input');
+            const calculateBtn = document.getElementById('calculate');
+            const resetBtn = document.getElementById('reset');
+            const resultsDiv = document.getElementById('results');
+            const resultValue = document.getElementById('result-value');
+            const resultCategory = document.getElementById('result-category');
+            const resultDescription = document.getElementById('result-description');
+            const genderInputs = document.querySelectorAll('input[name="gender"]');
+            
+            // Method descriptions
+            const methodDescriptions = {
+                navy: "The U.S. Navy method uses body circumference measurements to estimate body fat percentage. It's one of the most accessible methods.",
+                bmi: "The BMI method uses your Body Mass Index to estimate body fat percentage. This is less accurate but useful when circumference measurements aren't available."
+            };
+            
+            // Update method description and form when method changes
+            methodSelect.addEventListener('change', function() {
+                methodInfo.textContent = methodDescriptions[this.value];
+                
+                if (this.value === 'bmi') {
+                    navyInputs.style.display = 'none';
+                } else {
+                    navyInputs.style.display = 'block';
+                }
+                
+                updateHipInputVisibility();
+            });
+            
+            // Update hip input visibility based on gender
+            genderInputs.forEach(input => {
+                input.addEventListener('change', updateHipInputVisibility);
+            });
+            
+            function updateHipInputVisibility() {
+                const isFemale = document.querySelector('input[name="gender"]:checked').value === 'female';
+                const method = methodSelect.value;
+                
+                if (method === 'navy' && isFemale) {
+                    hipInput.style.display = 'block';
+                } else {
+                    hipInput.style.display = 'none';
+                }
+            }
+            
+            // Calculate body fat percentage
+            calculateBtn.addEventListener('click', function() {
+                const method = methodSelect.value;
+                const gender = document.querySelector('input[name="gender"]:checked').value;
+                const age = parseFloat(document.getElementById('age').value);
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('weight').value);
+                
+                let bodyFatPercentage = 0;
+                
+                if (method === 'navy') {
+                    const neck = parseFloat(document.getElementById('neck').value);
+                    const waist = parseFloat(document.getElementById('waist').value);
+                    
+                    if (gender === 'male') {
+                        // US Navy formula for men
+                        bodyFatPercentage = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
+                    } else {
+                        const hips = parseFloat(document.getElementById('hips').value);
+                        // US Navy formula for women
+                        bodyFatPercentage = 163.205 * Math.log10(waist + hips - neck) - 97.684 * Math.log10(height) - 78.387;
+                    }
+                } else if (method === 'bmi') {
+                    // BMI formula
+                    const bmi = weight / Math.pow(height / 100, 2);
+                    
+                    // BMI to body fat estimation (simplified)
+                    if (gender === 'male') {
+                        bodyFatPercentage = (1.20 * bmi) + (0.23 * age) - 16.2;
+                    } else {
+                        bodyFatPercentage = (1.20 * bmi) + (0.23 * age) - 5.4;
+                    }
+                }
+                
+                // Ensure body fat is within reasonable bounds
+                bodyFatPercentage = Math.max(2, Math.min(50, bodyFatPercentage));
+                
+                // Display results
+                displayResults(bodyFatPercentage, gender);
+            });
+            
+            // Display results with category and description
+            function displayResults(percentage, gender) {
+                const roundedPercentage = percentage.toFixed(1);
+                resultValue.textContent = `${roundedPercentage}%`;
+                
+                // Determine category based on percentage and gender
+                let category = '';
+                let categoryClass = '';
+                let description = '';
+                
+                if (gender === 'male') {
+                    if (percentage < 6) {
+                        category = 'Essential Fat';
+                        categoryClass = 'essential';
+                        description = 'This is the minimum amount of fat necessary for basic physical and physiological health.';
+                    } else if (percentage < 14) {
+                        category = 'Athletic';
+                        categoryClass = 'athletic';
+                        description = 'Typical for many male athletes. This range is often associated with good health and physical fitness.';
+                    } else if (percentage < 18) {
+                        category = 'Fitness';
+                        categoryClass = 'fitness';
+                        description = 'Ideal for most men. This range is associated with good health, fitness, and an attractive appearance.';
+                    } else if (percentage < 25) {
+                        category = 'Average';
+                        categoryClass = 'average';
+                        description = 'Typical for most men. While not necessarily unhealthy, reduction may improve health markers.';
+                    } else {
+                        category = 'Above Average';
+                        categoryClass = 'above-average';
+                        description = 'May indicate increased health risks. Consider lifestyle changes to reduce body fat.';
+                    }
+                } else {
+                    if (percentage < 14) {
+                        category = 'Essential Fat';
+                        categoryClass = 'essential';
+                        description = 'This is the minimum amount of fat necessary for basic physical and physiological health.';
+                    } else if (percentage < 21) {
+                        category = 'Athletic';
+                        categoryClass = 'athletic';
+                        description = 'Typical for many female athletes. This range is often associated with good health and physical fitness.';
+                    } else if (percentage < 25) {
+                        category = 'Fitness';
+                        categoryClass = 'fitness';
+                        description = 'Ideal for most women. This range is associated with good health, fitness, and an attractive appearance.';
+                    } else if (percentage < 32) {
+                        category = 'Average';
+                        categoryClass = 'average';
+                        description = 'Typical for most women. While not necessarily unhealthy, reduction may improve health markers.';
+                    } else {
+                        category = 'Above Average';
+                        categoryClass = 'above-average';
+                        description = 'May indicate increased health risks. Consider lifestyle changes to reduce body fat.';
+                    }
+                }
+                
+                // Set category color
+                const categoryColors = {
+                    'essential': '#3498db',
+                    'athletic': '#2ecc71',
+                    'fitness': '#27ae60',
+                    'average': '#f39c12',
+                    'above-average': '#e74c3c'
+                };
+                
+                resultCategory.textContent = category;
+                resultCategory.style.backgroundColor = categoryColors[categoryClass];
+                resultCategory.style.color = 'white';
+                
+                resultDescription.textContent = description;
+                
+                // Show results
+                resultsDiv.classList.add('active');
+                
+                // Scroll to results for mobile users
+                if (window.innerWidth < 768) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            
+            // Reset form
+            resetBtn.addEventListener('click', function() {
+                document.getElementById('age').value = '30';
+                document.getElementById('height').value = '170';
+                document.getElementById('weight').value = '70';
+                document.getElementById('neck').value = '38';
+                document.getElementById('waist').value = '85';
+                document.getElementById('hips').value = '95';
+                
+                resultsDiv.classList.remove('active');
+            });
+            
+            // Initialize form
+            updateHipInputVisibility();
+        });
+    </script>
+</body>
+</html>

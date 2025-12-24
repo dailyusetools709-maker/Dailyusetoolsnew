@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4a6bff;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border-radius: 12px;
+            --shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: var(--primary);
+            background: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: var(--shadow);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .calculator-container {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .results-container {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 18px;
+            font-weight: 600;
+            transition: var(--transition);
+            background: var(--light);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.1);
+        }
+
+        .tip-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .tip-option {
+            background: var(--light);
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tip-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .tip-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(74, 107, 255, 0.3);
+        }
+
+        .tip-custom {
+            grid-column: span 2;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .tip-custom input {
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .split-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .split-controls {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+        }
+
+        .split-btn {
+            background: none;
+            border: none;
+            width: 45px;
+            height: 45px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .split-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .split-value {
+            width: 60px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border: none;
+            background: transparent;
+        }
+
+        .split-label {
+            font-weight: 600;
+            color: var(--secondary);
+            min-width: 80px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 107, 255, 0.3);
+        }
+
+        .reset-btn {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
+        }
+
+        .reset-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .results-box {
+            flex: 1;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px dashed #dee2e6;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .result-row.total {
+            border-top: 3px solid var(--primary);
+            border-bottom: none;
+            margin-top: 10px;
+            padding-top: 25px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .result-label {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .per-person {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .history-container {
+            margin-top: auto;
+        }
+
+        .history-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .history-details {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        .history-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .history-delete:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .settings-container {
+            width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .settings-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .setting-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--border-radius);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px;
+            color: var(--secondary);
+        }
+
+        .empty-history i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--secondary);
+            font-size: 0.95rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .tip-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .tip-custom {
+                grid-column: span 3;
+            }
+            
+            .split-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .split-controls {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tip-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tip-custom {
+                grid-column: span 2;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Tip Calculator</h1>
+            <p class="subtitle">Quickly calculate tips, split bills, and save your calculations. Perfect for restaurants, cafes, and any situation where you need to calculate gratuity.</p>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="calculator-container">
+                <h2><i class="fas fa-edit"></i> Bill Details</h2>
+                
+                <div class="input-group">
+                    <label for="bill-amount">Bill Amount</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">$</span>
+                        <input type="number" id="bill-amount" min="0" step="0.01" placeholder="0.00" value="100.00">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Tip Percentage</label>
+                    <div class="tip-options">
+                        <div class="tip-option" data-tip="5">5%</div>
+                        <div class="tip-option" data-tip="10">10%</div>
+                        <div class="tip-option" data-tip="15">15%</div>
+                        <div class="tip-option" data-tip="18">18%</div>
+                        <div class="tip-option selected" data-tip="20">20%</div>
+                        <div class="tip-option" data-tip="25">25%</div>
+                        <div class="tip-option tip-custom">
+                            <input type="number" id="custom-tip" min="0" max="100" placeholder="Custom %">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Number of People</label>
+                    <div class="split-options">
+                        <div class="split-label">Split between:</div>
+                        <div class="split-controls">
+                            <button class="split-btn" id="split-decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="split-count" class="split-value" min="1" max="50" value="1">
+                            <button class="split-btn" id="split-increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="split-label" id="split-text">person</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="round-up">
+                        <i class="fas fa-exchange-alt"></i> Round Up to Nearest Dollar
+                    </label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="round-up">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-calculator"></i> Calculate Tip
+                    </button>
+                    <button class="reset-btn" id="reset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <h2><i class="fas fa-receipt"></i> Bill Summary</h2>
+                
+                <div class="results-box">
+                    <div class="result-row">
+                        <div class="result-label">
+                            <i class="fas fa-money-bill"></i> Bill Amount
+                        </div>
+                        <div class="result-value" id="result-bill">$0.00</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <i class="fas fa-percentage"></i> Tip Percentage
+                        </div>
+                        <div class="result-value" id="result-tip-percent">0%</div>
+                    </div>
+                    
+                    <div class="result-row">
+                        <div class="result-label">
+                            <i class="fas fa-gift"></i> Tip Amount
+                        </div>
+                        <div class="result-value" id="result-tip">$0.00</div>
+                    </div>
+                    
+                    <div class="result-row total">
+                        <div class="result-label">
+                            <i class="fas fa-file-invoice-dollar"></i> Total Amount
+                        </div>
+                        <div class="result-value" id="result-total">$0.00</div>
+                    </div>
+                    
+                    <div class="result-row" id="split-results">
+                        <div class="result-label">
+                            <i class="fas fa-users"></i> Per Person
+                        </div>
+                        <div>
+                            <div class="result-value" id="result-per-person">$0.00</div>
+                            <div class="per-person" id="split-details">For 1 person</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="history-container">
+                    <div class="history-title">
+                        <h3><i class="fas fa-history"></i> Calculation History</h3>
+                        <button class="reset-btn" id="clear-history" style="padding: 8px 15px; font-size: 0.9rem;">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                    
+                    <div class="history-list" id="history-list">
+                        <!-- History items will be inserted here -->
+                        <div class="empty-history" id="empty-history">
+                            <i class="fas fa-receipt"></i>
+                            <p>Your calculation history will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-container">
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <div class="settings-group">
+                <div class="setting-option">
+                    <span>Dark Mode</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="dark-mode">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                
+                <div class="setting-option">
+                    <span>Round Tip Amount</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="round-tip" checked>
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                
+                <div class="setting-option">
+                    <span>Save History</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="save-history" checked>
+                        <span class="slider"></span>
+                    </div>
+                </div>
+                
+                <div class="setting-option">
+                    <span>Default Tip %</span>
+                    <select id="default-tip" style="padding: 5px 10px; border-radius: 6px; border: 1px solid #ddd;">
+                        <option value="15">15%</option>
+                        <option value="18" selected>18%</option>
+                        <option value="20">20%</option>
+                        <option value="22">22%</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>Tip Calculator</strong> &copy; 2023 | Calculate tips quickly and easily for any service.</p>
+            <p>Common tipping guidelines: 15% (average), 18% (good), 20% (excellent), 25% (outstanding)</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const billAmountInput = document.getElementById('bill-amount');
+            const tipOptions = document.querySelectorAll('.tip-option');
+            const customTipInput = document.getElementById('custom-tip');
+            const splitCountInput = document.getElementById('split-count');
+            const splitDecreaseBtn = document.getElementById('split-decrease');
+            const splitIncreaseBtn = document.getElementById('split-increase');
+            const splitText = document.getElementById('split-text');
+            const calculateBtn = document.getElementById('calculate');
+            const resetBtn = document.getElementById('reset');
+            const clearHistoryBtn = document.getElementById('clear-history');
+            const roundUpToggle = document.getElementById('round-up');
+            const darkModeToggle = document.getElementById('dark-mode');
+            const roundTipToggle = document.getElementById('round-tip');
+            const saveHistoryToggle = document.getElementById('save-history');
+            const defaultTipSelect = document.getElementById('default-tip');
+            
+            // Result Elements
+            const resultBill = document.getElementById('result-bill');
+            const resultTipPercent = document.getElementById('result-tip-percent');
+            const resultTip = document.getElementById('result-tip');
+            const resultTotal = document.getElementById('result-total');
+            const resultPerPerson = document.getElementById('result-per-person');
+            const splitDetails = document.getElementById('split-details');
+            const splitResults = document.getElementById('split-results');
+            
+            // History Elements
+            const historyList = document.getElementById('history-list');
+            const emptyHistory = document.getElementById('empty-history');
+            
+            // State Variables
+            let currentTipPercent = 20;
+            let calculationHistory = JSON.parse(localStorage.getItem('tipHistory')) || [];
+            let settings = JSON.parse(localStorage.getItem('tipSettings')) || {
+                roundTip: true,
+                saveHistory: true,
+                defaultTip: 18,
+                darkMode: false
+            };
+            
+            // Initialize
+            loadSettings();
+            updateSplitText();
+            renderHistory();
+            calculateTip(); // Initial calculation
+            
+            // Event Listeners
+            billAmountInput.addEventListener('input', calculateTip);
+            customTipInput.addEventListener('input', handleCustomTip);
+            splitCountInput.addEventListener('input', updateSplitText);
+            splitDecreaseBtn.addEventListener('click', decreaseSplit);
+            splitIncreaseBtn.addEventListener('click', increaseSplit);
+            calculateBtn.addEventListener('click', calculateTip);
+            resetBtn.addEventListener('click', resetCalculator);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            
+            // Tip option selection
+            tipOptions.forEach(option => {
+                if (option.classList.contains('tip-option') && !option.classList.contains('tip-custom')) {
+                    option.addEventListener('click', function() {
+                        // Remove selected class from all options
+                        tipOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Update current tip percentage
+                        currentTipPercent = parseInt(this.getAttribute('data-tip'));
+                        
+                        // Clear custom tip input
+                        customTipInput.value = '';
+                        
+                        // Calculate
+                        calculateTip();
+                    });
+                }
+            });
+            
+            // Settings changes
+            roundUpToggle.addEventListener('change', calculateTip);
+            roundTipToggle.addEventListener('change', function() {
+                settings.roundTip = this.checked;
+                saveSettings();
+                calculateTip();
+            });
+            
+            saveHistoryToggle.addEventListener('change', function() {
+                settings.saveHistory = this.checked;
+                saveSettings();
+            });
+            
+            defaultTipSelect.addEventListener('change', function() {
+                settings.defaultTip = parseInt(this.value);
+                saveSettings();
+                
+                // Update selected tip option
+                tipOptions.forEach(option => {
+                    if (option.classList.contains('tip-option') && !option.classList.contains('tip-custom')) {
+                        if (parseInt(option.getAttribute('data-tip')) === settings.defaultTip) {
+                            option.classList.add('selected');
+                            currentTipPercent = settings.defaultTip;
+                        } else {
+                            option.classList.remove('selected');
+                        }
+                    }
+                });
+                
+                customTipInput.value = '';
+                calculateTip();
+            });
+            
+            darkModeToggle.addEventListener('change', function() {
+                settings.darkMode = this.checked;
+                saveSettings();
+                applyDarkMode();
+            });
+            
+            // Functions
+            function calculateTip() {
+                // Get bill amount
+                let billAmount = parseFloat(billAmountInput.value) || 0;
+                
+                // Get tip percentage
+                let tipPercent = currentTipPercent;
+                
+                // Check if custom tip is being used
+                if (customTipInput.value.trim() !== '') {
+                    tipPercent = parseFloat(customTipInput.value) || 0;
+                }
+                
+                // Calculate tip amount
+                let tipAmount = billAmount * (tipPercent / 100);
+                
+                // Round tip if setting is enabled
+                if (settings.roundTip) {
+                    tipAmount = Math.round(tipAmount * 100) / 100;
+                }
+                
+                // Calculate total
+                let totalAmount = billAmount + tipAmount;
+                
+                // Round up if setting is enabled
+                if (roundUpToggle.checked) {
+                    totalAmount = Math.ceil(totalAmount);
+                    // Recalculate tip to match rounded total
+                    tipAmount = totalAmount - billAmount;
+                }
+                
+                // Get split count
+                let splitCount = parseInt(splitCountInput.value) || 1;
+                let perPersonAmount = totalAmount / splitCount;
+                
+                // Format currency
+                const formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2
+                });
+                
+                // Update results
+                resultBill.textContent = formatter.format(billAmount);
+                resultTipPercent.textContent = `${tipPercent}%`;
+                resultTip.textContent = formatter.format(tipAmount);
+                resultTotal.textContent = formatter.format(totalAmount);
+                resultPerPerson.textContent = formatter.format(perPersonAmount);
+                
+                // Update split details
+                splitDetails.textContent = `For ${splitCount} ${splitCount === 1 ? 'person' : 'people'}`;
+                
+                // Show/hide split results based on split count
+                if (splitCount > 1) {
+                    splitResults.style.display = 'flex';
+                } else {
+                    splitResults.style.display = 'none';
+                }
+                
+                // Add to history if enabled
+                if (settings.saveHistory && billAmount > 0) {
+                    addToHistory(billAmount, tipPercent, tipAmount, totalAmount, splitCount);
+                }
+            }
+            
+            function handleCustomTip() {
+                // Remove selected class from all tip options
+                tipOptions.forEach(option => option.classList.remove('selected'));
+                
+                // Get custom tip value
+                let customTip = parseFloat(customTipInput.value) || 0;
+                
+                if (customTip > 0 && customTip <= 100) {
+                    currentTipPercent = customTip;
+                    calculateTip();
+                }
+            }
+            
+            function updateSplitText() {
+                let splitCount = parseInt(splitCountInput.value) || 1;
+                splitText.textContent = splitCount === 1 ? 'person' : 'people';
+                calculateTip();
+            }
+            
+            function decreaseSplit() {
+                let currentValue = parseInt(splitCountInput.value) || 1;
+                if (currentValue > 1) {
+                    splitCountInput.value = currentValue - 1;
+                    updateSplitText();
+                }
+            }
+            
+            function increaseSplit() {
+                let currentValue = parseInt(splitCountInput.value) || 1;
+                if (currentValue < 50) {
+                    splitCountInput.value = currentValue + 1;
+                    updateSplitText();
+                }
+            }
+            
+            function resetCalculator() {
+                billAmountInput.value = '100.00';
+                
+                // Reset tip selection to default
+                tipOptions.forEach(option => {
+                    if (option.classList.contains('tip-option') && !option.classList.contains('tip-custom')) {
+                        if (parseInt(option.getAttribute('data-tip')) === settings.defaultTip) {
+                            option.classList.add('selected');
+                            currentTipPercent = settings.defaultTip;
+                        } else {
+                            option.classList.remove('selected');
+                        }
+                    }
+                });
+                
+                customTipInput.value = '';
+                splitCountInput.value = '1';
+                roundUpToggle.checked = false;
+                
+                updateSplitText();
+                calculateTip();
+            }
+            
+            function addToHistory(billAmount, tipPercent, tipAmount, totalAmount, splitCount) {
+                // Create history item
+                const historyItem = {
+                    id: Date.now(),
+                    billAmount: billAmount,
+                    tipPercent: tipPercent,
+                    tipAmount: tipAmount,
+                    totalAmount: totalAmount,
+                    splitCount: splitCount,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    date: new Date().toLocaleDateString()
+                };
+                
+                // Add to beginning of history array
+                calculationHistory.unshift(historyItem);
+                
+                // Keep only last 10 items
+                if (calculationHistory.length > 10) {
+                    calculationHistory.pop();
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('tipHistory', JSON.stringify(calculationHistory));
+                
+                // Update UI
+                renderHistory();
+            }
+            
+            function renderHistory() {
+                // Clear current history list
+                historyList.innerHTML = '';
+                
+                if (calculationHistory.length === 0) {
+                    historyList.appendChild(emptyHistory.cloneNode(true));
+                    return;
+                }
+                
+                // Hide empty history message
+                emptyHistory.style.display = 'none';
+                
+                // Add each history item
+                calculationHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const formatter = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    });
+                    
+                    historyItem.innerHTML = `
+                        <div class="history-info">
+                            <div class="history-amount">${formatter.format(item.totalAmount)}</div>
+                            <div class="history-details">
+                                ${item.tipPercent}% tip • ${item.splitCount} ${item.splitCount === 1 ? 'person' : 'people'} • ${item.timestamp}
+                            </div>
+                        </div>
+                        <button class="history-delete" data-id="${item.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    historyList.appendChild(historyItem);
+                });
+                
+                // Add delete event listeners
+                document.querySelectorAll('.history-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        deleteHistoryItem(id);
+                    });
+                });
+            }
+            
+            function deleteHistoryItem(id) {
+                calculationHistory = calculationHistory.filter(item => item.id !== id);
+                localStorage.setItem('tipHistory', JSON.stringify(calculationHistory));
+                renderHistory();
+            }
+            
+            function clearHistory() {
+                if (confirm('Are you sure you want to clear all history?')) {
+                    calculationHistory = [];
+                    localStorage.removeItem('tipHistory');
+                    renderHistory();
+                }
+            }
+            
+            function loadSettings() {
+                // Apply settings
+                roundTipToggle.checked = settings.roundTip;
+                saveHistoryToggle.checked = settings.saveHistory;
+                darkModeToggle.checked = settings.darkMode;
+                defaultTipSelect.value = settings.defaultTip;
+                
+                // Apply dark mode if enabled
+                applyDarkMode();
+                
+                // Set default tip selection
+                tipOptions.forEach(option => {
+                    if (option.classList.contains('tip-option') && !option.classList.contains('tip-custom')) {
+                        if (parseInt(option.getAttribute('data-tip')) === settings.defaultTip) {
+                            option.classList.add('selected');
+                            currentTipPercent = settings.defaultTip;
+                        }
+                    }
+                });
+            }
+            
+            function saveSettings() {
+                localStorage.setItem('tipSettings', JSON.stringify(settings));
+            }
+            
+            function applyDarkMode() {
+                if (settings.darkMode) {
+                    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                    document.body.style.color = '#f8f9fa';
+                    
+                    // Update containers
+                    document.querySelectorAll('.calculator-container, .results-container, .settings-container').forEach(container => {
+                        container.style.background = '#2d3748';
+                        container.style.color = '#f8f9fa';
+                    });
+                    
+                    // Update input backgrounds
+                    document.querySelectorAll('input').forEach(input => {
+                        input.style.background = '#4a5568';
+                        input.style.color = '#f8f9fa';
+                        input.style.borderColor = '#4a5568';
+                    });
+                    
+                    // Update result box
+                    document.querySelector('.results-box').style.background = '#4a5568';
+                    
+                    // Update history items
+                    document.querySelectorAll('.history-item').forEach(item => {
+                        item.style.background = '#4a5568';
+                    });
+                    
+                    // Update tip options
+                    document.querySelectorAll('.tip-option').forEach(option => {
+                        if (!option.classList.contains('selected')) {
+                            option.style.background = '#4a5568';
+                            option.style.color = '#f8f9fa';
+                            option.style.borderColor = '#4a5568';
+                        }
+                    });
+                    
+                    // Update toggle switches
+                    document.querySelectorAll('.slider').forEach(slider => {
+                        if (!slider.previousElementSibling.checked) {
+                            slider.style.backgroundColor = '#4a5568';
+                        }
+                    });
+                } else {
+                    // Reset to light mode
+                    document.body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)';
+                    document.body.style.color = '#343a40';
+                    
+                    document.querySelectorAll('.calculator-container, .results-container, .settings-container').forEach(container => {
+                        container.style.background = 'white';
+                        container.style.color = '#343a40';
+                    });
+                    
+                    document.querySelectorAll('input').forEach(input => {
+                        input.style.background = '#f8f9fa';
+                        input.style.color = '#343a40';
+                        input.style.borderColor = '#e0e0e0';
+                    });
+                    
+                    document.querySelector('.results-box').style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+                    
+                    document.querySelectorAll('.history-item').forEach(item => {
+                        item.style.background = '#f8f9fa';
+                    });
+                    
+                    document.querySelectorAll('.tip-option').forEach(option => {
+                        if (!option.classList.contains('selected')) {
+                            option.style.background = '#f8f9fa';
+                            option.style.color = '#343a40';
+                            option.style.borderColor = '#e0e0e0';
+                        }
+                    });
+                    
+                    document.querySelectorAll('.slider').forEach(slider => {
+                        if (!slider.previousElementSibling.checked) {
+                            slider.style.backgroundColor = '#ccc';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

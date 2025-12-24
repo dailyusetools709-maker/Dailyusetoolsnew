@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #db5461;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .calculator-section, .results-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            transition: var(--transition);
+        }
+        
+        .section-title {
+            color: var(--secondary);
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--accent);
+        }
+        
+        .data-input {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+        
+        .input-hint {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: var(--dark);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-card h4 {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        .description {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .description h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .concept {
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .concept h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .concept p {
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .calculator-section, .results-section {
+                padding: 20px;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-calculator"></i> Statistics Calculator</h1>
+            <p class="subtitle">A comprehensive tool for calculating descriptive statistics. Works on both Windows and Android devices. Enter your data and get instant statistical analysis with detailed explanations.</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <section class="calculator-section">
+                <h2 class="section-title"><i class="fas fa-edit"></i> Data Input</h2>
+                
+                <div class="error" id="error-message">
+                    <i class="fas fa-exclamation-triangle"></i> <span id="error-text"></span>
+                </div>
+                
+                <div class="data-input">
+                    <label for="data-input"><i class="fas fa-list-ol"></i> Enter your data set:</label>
+                    <textarea id="data-input" placeholder="Enter numbers separated by commas, spaces, or new lines. Example: 12, 15, 18, 22, 24, 27, 30">12, 15, 18, 22, 24, 27, 30</textarea>
+                    <div class="input-hint">
+                        <i class="fas fa-info-circle"></i> You can also paste data from Excel or other sources
+                    </div>
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-primary" id="calculate-btn">
+                        <i class="fas fa-calculator"></i> Calculate Statistics
+                    </button>
+                    <button class="btn btn-secondary" id="clear-btn">
+                        <i class="fas fa-broom"></i> Clear Data
+                    </button>
+                    <button class="btn btn-secondary" id="example-btn">
+                        <i class="fas fa-lightbulb"></i> Load Example
+                    </button>
+                </div>
+                
+                <div class="description">
+                    <h3><i class="fas fa-info-circle"></i> How to Use</h3>
+                    <div class="concept">
+                        <h4><i class="fas fa-mouse-pointer"></i> Data Entry</h4>
+                        <p>Enter your numerical data in the text area. You can separate values with commas, spaces, tabs, or new lines. The calculator will automatically parse and clean your data.</p>
+                    </div>
+                    <div class="concept">
+                        <h4><i class="fas fa-mobile-alt"></i> Mobile Friendly</h4>
+                        <p>This calculator is fully responsive and works perfectly on Android devices. The interface adapts to different screen sizes for optimal usability.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="results-section">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Statistical Results</h2>
+                
+                <div class="results-container" id="results-container">
+                    <!-- Results will be populated here by JavaScript -->
+                    <div class="stat-card">
+                        <h4>Sample Size (n)</h4>
+                        <div class="stat-value" id="sample-size">7</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Mean (Average)</h4>
+                        <div class="stat-value" id="mean">21.14</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Median</h4>
+                        <div class="stat-value" id="median">22.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Mode</h4>
+                        <div class="stat-value" id="mode">None</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Standard Deviation</h4>
+                        <div class="stat-value" id="std-dev">6.12</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Variance</h4>
+                        <div class="stat-value" id="variance">37.48</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Minimum</h4>
+                        <div class="stat-value" id="min">12.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Maximum</h4>
+                        <div class="stat-value" id="max">30.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Range</h4>
+                        <div class="stat-value" id="range">18.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Sum</h4>
+                        <div class="stat-value" id="sum">148.00</div>
+                    </div>
+                </div>
+                
+                <div class="description">
+                    <h3><i class="fas fa-book"></i> Statistical Concepts</h3>
+                    <div class="concept">
+                        <h4><i class="fas fa-calculator"></i> Mean (Average)</h4>
+                        <p>The mean is the sum of all values divided by the number of values. It's the most common measure of central tendency.</p>
+                    </div>
+                    <div class="concept">
+                        <h4><i class="fas fa-sort-numeric-up"></i> Median</h4>
+                        <p>The median is the middle value when data is sorted. If there's an even number of values, it's the average of the two middle values.</p>
+                    </div>
+                    <div class="concept">
+                        <h4><i class="fas fa-chart-line"></i> Standard Deviation</h4>
+                        <p>Standard deviation measures how spread out the data is from the mean. A higher value indicates greater variability.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="footer">
+            <p>Statistics Calculator &copy; 2023 | Designed for Windows and Android devices</p>
+            <p>All calculations are performed in your browser. No data is sent to any server.</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const dataInput = document.getElementById('data-input');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const exampleBtn = document.getElementById('example-btn');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        // Result elements
+        const sampleSizeEl = document.getElementById('sample-size');
+        const meanEl = document.getElementById('mean');
+        const medianEl = document.getElementById('median');
+        const modeEl = document.getElementById('mode');
+        const stdDevEl = document.getElementById('std-dev');
+        const varianceEl = document.getElementById('variance');
+        const minEl = document.getElementById('min');
+        const maxEl = document.getElementById('max');
+        const rangeEl = document.getElementById('range');
+        const sumEl = document.getElementById('sum');
+        
+        // Example datasets
+        const exampleDatasets = [
+            "12, 15, 18, 22, 24, 27, 30",
+            "5.6, 7.2, 8.1, 6.5, 7.8, 9.2, 8.7, 6.9",
+            "42, 56, 23, 78, 45, 67, 89, 34, 56, 72",
+            "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+        ];
+        
+        // Parse input data
+        function parseData(input) {
+            // Replace various separators with commas
+            const cleaned = input
+                .replace(/[,\s\n]+/g, ',') // Replace commas, spaces, newlines with commas
+                .replace(/^,|,$/g, '') // Remove leading/trailing commas
+                .split(',') // Split by commas
+                .map(item => parseFloat(item.trim())) // Convert to numbers
+                .filter(item => !isNaN(item)); // Remove non-numeric values
+            
+            return cleaned;
+        }
+        
+        // Calculate statistics
+        function calculateStatistics(data) {
+            if (data.length === 0) {
+                throw new Error("Please enter at least one valid number.");
+            }
+            
+            // Sort data for median calculation
+            const sortedData = [...data].sort((a, b) => a - b);
+            
+            // Basic calculations
+            const n = data.length;
+            const sum = data.reduce((acc, val) => acc + val, 0);
+            const mean = sum / n;
+            
+            // Median
+            let median;
+            const mid = Math.floor(n / 2);
+            if (n % 2 === 0) {
+                median = (sortedData[mid - 1] + sortedData[mid]) / 2;
+            } else {
+                median = sortedData[mid];
+            }
+            
+            // Mode
+            const frequency = {};
+            let maxFreq = 0;
+            let modes = [];
+            
+            data.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+                if (frequency[num] > maxFreq) {
+                    maxFreq = frequency[num];
+                    modes = [num];
+                } else if (frequency[num] === maxFreq) {
+                    if (!modes.includes(num)) {
+                        modes.push(num);
+                    }
+                }
+            });
+            
+            const mode = maxFreq > 1 ? (modes.length > 3 ? "Multiple" : modes.join(", ")) : "None";
+            
+            // Variance and standard deviation
+            const squaredDiffs = data.map(num => Math.pow(num - mean, 2));
+            const variance = squaredDiffs.reduce((acc, val) => acc + val, 0) / (n - 1); // Sample variance
+            const stdDev = Math.sqrt(variance);
+            
+            // Min, max, range
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min;
+            
+            return {
+                n,
+                mean,
+                median,
+                mode,
+                variance,
+                stdDev,
+                min,
+                max,
+                range,
+                sum
+            };
+        }
+        
+        // Format numbers for display
+        function formatNumber(num, decimals = 2) {
+            return num.toFixed(decimals);
+        }
+        
+        // Update UI with results
+        function updateUI(results) {
+            sampleSizeEl.textContent = results.n;
+            meanEl.textContent = formatNumber(results.mean);
+            medianEl.textContent = formatNumber(results.median);
+            modeEl.textContent = results.mode;
+            stdDevEl.textContent = formatNumber(results.stdDev);
+            varianceEl.textContent = formatNumber(results.variance);
+            minEl.textContent = formatNumber(results.min);
+            maxEl.textContent = formatNumber(results.max);
+            rangeEl.textContent = formatNumber(results.range);
+            sumEl.textContent = formatNumber(results.sum);
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = "block";
+        }
+        
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = "none";
+        }
+        
+        // Handle calculate button click
+        calculateBtn.addEventListener('click', () => {
+            try {
+                hideError();
+                const data = parseData(dataInput.value);
+                const results = calculateStatistics(data);
+                updateUI(results);
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+        
+        // Handle clear button click
+        clearBtn.addEventListener('click', () => {
+            dataInput.value = "";
+            hideError();
+        });
+        
+        // Handle example button click
+        exampleBtn.addEventListener('click', () => {
+            const randomExample = exampleDatasets[Math.floor(Math.random() * exampleDatasets.length)];
+            dataInput.value = randomExample;
+            hideError();
+            
+            // Auto-calculate for the example
+            setTimeout(() => {
+                calculateBtn.click();
+            }, 100);
+        });
+        
+        // Initialize with example data calculation
+        window.addEventListener('DOMContentLoaded', () => {
+            calculateBtn.click();
+        });
+        
+        // Add keyboard shortcut (Ctrl+Enter to calculate)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                calculateBtn.click();
+            }
+        });
+        
+        // Add touch-friendly improvements for mobile
+        document.addEventListener('touchstart', function() {}, {passive: true});
+        
+        // Handle paste event for better data parsing
+        dataInput.addEventListener('paste', (e) => {
+            // Allow the paste to happen
+            setTimeout(() => {
+                // Clean up the pasted content
+                const cleaned = parseData(dataInput.value).join(', ');
+                dataInput.value = cleaned;
+            }, 10);
+        });
+    </script>
+</body>
+</html>
