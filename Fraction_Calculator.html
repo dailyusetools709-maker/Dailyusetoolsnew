@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #4a6fa5;
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            font-size: 2.2rem;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .calculator-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .instructions {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #4a6fa5;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.3rem;
+        }
+
+        .fraction-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .fraction-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .fraction-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .fraction-input {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .fraction-input:focus-within {
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        .fraction-input input {
+            width: 50%;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .fraction-input .separator {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #777;
+            padding: 0 5px;
+        }
+
+        .operations {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .operation-btn {
+            padding: 15px 5px;
+            font-size: 1.3rem;
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .operation-btn:hover {
+            background-color: #3a5a8a;
+            transform: translateY(-2px);
+        }
+
+        .operation-btn.active {
+            background-color: #2a4a7a;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .calculate-btn:hover {
+            background-color: #4cae4c;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(92, 184, 92, 0.3);
+        }
+
+        .result-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px dashed #ccc;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            font-size: 2rem;
+            color: #4a6fa5;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-numerator, .result-denominator {
+            padding: 5px 15px;
+        }
+
+        .result-numerator {
+            border-bottom: 2px solid #4a6fa5;
+        }
+
+        .result-decimal {
+            font-size: 1.2rem;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        .instructions-list {
+            list-style-type: none;
+        }
+
+        .instructions-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .instructions-list li:last-child {
+            border-bottom: none;
+        }
+
+        .instructions-list i {
+            color: #4a6fa5;
+            margin-top: 3px;
+        }
+
+        .info-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #4a6fa5;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .operations {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calculator-container, .instructions {
+                padding: 15px;
+            }
+            
+            .fraction-inputs {
+                flex-direction: column;
+            }
+            
+            .operation-btn {
+                padding: 12px 5px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Fraction Calculator</h1>
+            <p class="tagline">A responsive calculator for fraction operations that works seamlessly on Windows and Android devices. Perform addition, subtraction, multiplication, and division with fractions.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="calculator-container">
+                <h2 class="section-title"><i class="fas fa-calculator"></i> Calculator</h2>
+                
+                <div class="fraction-inputs">
+                    <div class="fraction-group">
+                        <label>First Fraction</label>
+                        <div class="fraction-input">
+                            <input type="number" id="num1" placeholder="Numerator" value="3">
+                            <div class="separator">/</div>
+                            <input type="number" id="den1" placeholder="Denominator" value="4">
+                        </div>
+                    </div>
+                    
+                    <div class="fraction-group">
+                        <label>Second Fraction</label>
+                        <div class="fraction-input">
+                            <input type="number" id="num2" placeholder="Numerator" value="1">
+                            <div class="separator">/</div>
+                            <input type="number" id="den2" placeholder="Denominator" value="2">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operations">
+                    <button class="operation-btn active" data-operation="add">+</button>
+                    <button class="operation-btn" data-operation="subtract">−</button>
+                    <button class="operation-btn" data-operation="multiply">×</button>
+                    <button class="operation-btn" data-operation="divide">÷</button>
+                </div>
+                
+                <button id="calculate" class="calculate-btn">
+                    <i class="fas fa-equals"></i> Calculate
+                </button>
+                
+                <div class="result-container">
+                    <div class="result-title">Result</div>
+                    <div class="result" id="result">Enter values and click calculate</div>
+                    <div class="result-decimal" id="decimal-result"></div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> How to Use</h2>
+                <ul class="instructions-list">
+                    <li>
+                        <i class="fas fa-chevron-right"></i>
+                        <span><strong>Enter Fractions:</strong> Input the numerator and denominator for both fractions in the provided fields.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right"></i>
+                        <span><strong>Select Operation:</strong> Choose the mathematical operation (+, −, ×, ÷) you want to perform.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right"></i>
+                        <span><strong>Calculate:</strong> Click the "Calculate" button to see the result in both fractional and decimal form.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right"></i>
+                        <span><strong>Responsive Design:</strong> This calculator works perfectly on both desktop (Windows) and mobile (Android) devices.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-chevron-right"></i>
+                        <span><strong>Fraction Rules:</strong> The calculator automatically simplifies results to their lowest terms.</span>
+                    </li>
+                </ul>
+                
+                <div class="info-box">
+                    <p><strong>Note:</strong> The calculator will display an error if you try to divide by zero or use invalid inputs. All calculations are performed in real-time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Fraction Calculator &copy; 2023 | Designed to work on Windows and Android devices</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const num1Input = document.getElementById('num1');
+        const den1Input = document.getElementById('den1');
+        const num2Input = document.getElementById('num2');
+        const den2Input = document.getElementById('den2');
+        const operationButtons = document.querySelectorAll('.operation-btn');
+        const calculateButton = document.getElementById('calculate');
+        const resultElement = document.getElementById('result');
+        const decimalResultElement = document.getElementById('decimal-result');
+        
+        let currentOperation = 'add';
+        
+        // Function to find the greatest common divisor (GCD)
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b) {
+                const temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+        
+        // Function to simplify a fraction
+        function simplifyFraction(numerator, denominator) {
+            if (denominator === 0) {
+                return { numerator: 0, denominator: 0, error: "Division by zero" };
+            }
+            
+            // Handle negative signs
+            let sign = 1;
+            if (numerator < 0 && denominator < 0) {
+                numerator = Math.abs(numerator);
+                denominator = Math.abs(denominator);
+            } else if (numerator < 0 || denominator < 0) {
+                sign = -1;
+                numerator = Math.abs(numerator);
+                denominator = Math.abs(denominator);
+            }
+            
+            const divisor = gcd(numerator, denominator);
+            const simplifiedNum = sign * (numerator / divisor);
+            const simplifiedDen = denominator / divisor;
+            
+            return { numerator: simplifiedNum, denominator: simplifiedDen };
+        }
+        
+        // Function to perform fraction calculations
+        function calculateFraction(num1, den1, num2, den2, operation) {
+            // Validate inputs
+            if (den1 === 0 || den2 === 0) {
+                return { numerator: 0, denominator: 0, error: "Denominator cannot be zero" };
+            }
+            
+            let resultNum, resultDen;
+            
+            switch(operation) {
+                case 'add':
+                    resultNum = (num1 * den2) + (num2 * den1);
+                    resultDen = den1 * den2;
+                    break;
+                case 'subtract':
+                    resultNum = (num1 * den2) - (num2 * den1);
+                    resultDen = den1 * den2;
+                    break;
+                case 'multiply':
+                    resultNum = num1 * num2;
+                    resultDen = den1 * den2;
+                    break;
+                case 'divide':
+                    if (num2 === 0) {
+                        return { numerator: 0, denominator: 0, error: "Cannot divide by zero" };
+                    }
+                    resultNum = num1 * den2;
+                    resultDen = den1 * num2;
+                    break;
+                default:
+                    return { numerator: 0, denominator: 0, error: "Invalid operation" };
+            }
+            
+            return simplifyFraction(resultNum, resultDen);
+        }
+        
+        // Function to format the result as a fraction
+        function formatFraction(result) {
+            if (result.error) {
+                return `<span style="color: #e74c3c;">${result.error}</span>`;
+            }
+            
+            const { numerator, denominator } = result;
+            
+            // If denominator is 1, display as whole number
+            if (denominator === 1) {
+                return `<span>${numerator}</span>`;
+            }
+            
+            // If numerator is 0, display 0
+            if (numerator === 0) {
+                return `<span>0</span>`;
+            }
+            
+            // Display as fraction
+            return `
+                <div class="result-fraction">
+                    <div class="result-numerator">${numerator}</div>
+                    <div class="result-denominator">${denominator}</div>
+                </div>
+            `;
+        }
+        
+        // Function to calculate and display the result
+        function calculateAndDisplay() {
+            const num1 = parseInt(num1Input.value) || 0;
+            const den1 = parseInt(den1Input.value) || 1;
+            const num2 = parseInt(num2Input.value) || 0;
+            const den2 = parseInt(den2Input.value) || 1;
+            
+            const result = calculateFraction(num1, den1, num2, den2, currentOperation);
+            
+            // Display fraction result
+            resultElement.innerHTML = formatFraction(result);
+            
+            // Display decimal result if no error
+            if (!result.error) {
+                const decimalValue = result.numerator / result.denominator;
+                decimalResultElement.textContent = `Decimal: ${decimalValue.toFixed(5)}`;
+            } else {
+                decimalResultElement.textContent = "";
+            }
+        }
+        
+        // Event listeners for operation buttons
+        operationButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                operationButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                // Set current operation
+                currentOperation = button.getAttribute('data-operation');
+            });
+        });
+        
+        // Event listener for calculate button
+        calculateButton.addEventListener('click', calculateAndDisplay);
+        
+        // Event listeners for input changes
+        [num1Input, den1Input, num2Input, den2Input].forEach(input => {
+            input.addEventListener('input', calculateAndDisplay);
+        });
+        
+        // Initialize with a sample calculation
+        calculateAndDisplay();
+        
+        // Touch event support for mobile devices
+        document.addEventListener('touchstart', function() {}, {passive: true});
+    </script>
+</body>
+</html>

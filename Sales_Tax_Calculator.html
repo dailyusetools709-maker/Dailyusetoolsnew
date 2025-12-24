@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Tax Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f9f9ff 0%, #e6f0ff 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .tagline {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .calculator-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            font-size: 1.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        
+        .range-container {
+            margin-top: 10px;
+        }
+        
+        .range-value {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #3498db, #2c80b9);
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #2c80b9, #216794);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .reset-btn {
+            background: #f8f9fa;
+            color: #555;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .reset-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .tax-amount {
+            color: #e74c3c;
+        }
+        
+        .total-amount {
+            color: #27ae60;
+            font-size: 1.4rem;
+        }
+        
+        .price-per-item {
+            color: #3498db;
+        }
+        
+        .tax-breakdown {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tax-breakdown h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .tax-rate-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .tax-rate-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tax-rate-name {
+            font-weight: 500;
+        }
+        
+        .tax-rate-value {
+            font-weight: 600;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .info-section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .formula {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            border-left: 4px solid #9b59b6;
+            font-size: 1.1rem;
+        }
+        
+        .state-taxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .state-tax {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .state-tax:hover {
+            border-color: #3498db;
+            transform: translateY(-3px);
+        }
+        
+        .state-tax.selected {
+            border-color: #2ecc71;
+            background: #eafaf1;
+        }
+        
+        .state-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .state-rate {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .state-taxes {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calculator-card, .info-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .state-taxes {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .price-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .price-bar {
+            height: 20px;
+            border-radius: 10px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .price-bar-fill {
+            height: 100%;
+            background: #e74c3c;
+            transition: width 0.5s ease;
+        }
+        
+        .price-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cash-register"></i> Sales Tax Calculator</h1>
+            <p class="tagline">Calculate sales tax for any purchase. Works perfectly on both Windows and Android devices with real-time calculations.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="calculator-card">
+                <h2><i class="fas fa-calculator"></i> Calculate Sales Tax</h2>
+                
+                <div class="input-group">
+                    <label for="price">Item Price ($)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-dollar-sign input-icon"></i>
+                        <input type="number" id="price" min="0.01" max="100000" value="100.00" step="0.01">
+                    </div>
+                    <div class="range-container">
+                        <input type="range" id="price-range" min="1" max="1000" value="100" step="1">
+                        <span class="range-value" id="price-value">$100.00</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="quantity">Quantity</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-boxes input-icon"></i>
+                        <input type="number" id="quantity" min="1" max="1000" value="1" step="1">
+                    </div>
+                    <div class="range-container">
+                        <input type="range" id="quantity-range" min="1" max="50" value="1" step="1">
+                        <span class="range-value" id="quantity-value">1 item</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="tax-rate">Sales Tax Rate (%)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-percent input-icon"></i>
+                        <input type="number" id="tax-rate" min="0" max="50" value="8.25" step="0.01">
+                    </div>
+                    <div class="range-container">
+                        <input type="range" id="tax-rate-range" min="0" max="20" value="8.25" step="0.1">
+                        <span class="range-value" id="tax-rate-value">8.25%</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="location">Select State (for reference)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <select id="location">
+                            <option value="custom">Custom Rate</option>
+                            <option value="CA">California - 7.25%</option>
+                            <option value="NY">New York - 8.875%</option>
+                            <option value="TX">Texas - 6.25%</option>
+                            <option value="FL">Florida - 6%</option>
+                            <option value="IL">Illinois - 6.25%</option>
+                            <option value="PA">Pennsylvania - 6%</option>
+                            <option value="OH">Ohio - 5.75%</option>
+                            <option value="GA">Georgia - 4%</option>
+                            <option value="NC">North Carolina - 4.75%</option>
+                            <option value="MI">Michigan - 6%</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="state-taxes" id="state-taxes">
+                    <!-- State tax buttons will be generated here -->
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-calculator"></i> Calculate Tax
+                    </button>
+                    <button class="reset-btn" id="reset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="results" id="results">
+                    <h3>Tax Calculation Results</h3>
+                    <div class="result-item">
+                        <span class="result-label">Original Price:</span>
+                        <span class="result-value price-per-item" id="original-price">$100.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sales Tax ({taxRate}%):</span>
+                        <span class="result-value tax-amount" id="tax-amount">$8.25</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Price:</span>
+                        <span class="result-value total-amount" id="total-price">$108.25</span>
+                    </div>
+                    
+                    <div class="price-breakdown">
+                        <div class="price-bar">
+                            <div class="price-bar-fill" id="tax-bar" style="width: 7.6%"></div>
+                        </div>
+                        <div class="price-labels">
+                            <span>Price: $100.00</span>
+                            <span>Tax: $8.25</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tax-breakdown" id="multi-tax" style="display: none;">
+                        <h3><i class="fas fa-layer-group"></i> Tax Breakdown</h3>
+                        <div class="tax-rate-item">
+                            <span class="tax-rate-name">State Tax (6%):</span>
+                            <span class="tax-rate-value" id="state-tax-amount">$6.00</span>
+                        </div>
+                        <div class="tax-rate-item">
+                            <span class="tax-rate-name">County Tax (1%):</span>
+                            <span class="tax-rate-value" id="county-tax-amount">$1.00</span>
+                        </div>
+                        <div class="tax-rate-item">
+                            <span class="tax-rate-name">City Tax (1.25%):</span>
+                            <span class="tax-rate-value" id="city-tax-amount">$1.25</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <h2><i class="fas fa-info-circle"></i> About Sales Tax</h2>
+                
+                <div class="info-section">
+                    <h3>What is Sales Tax?</h3>
+                    <p>Sales tax is a consumption tax imposed by the government on the sale of goods and services. It's usually calculated as a percentage of the purchase price and collected by the seller at the point of sale.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>How to Calculate Sales Tax</h3>
+                    <p>The formula for calculating sales tax is simple:</p>
+                    <div class="formula">Sales Tax = Price × (Tax Rate / 100)</div>
+                    <div class="formula">Total Price = Price + Sales Tax</div>
+                    <p>For multiple items: <br>Total Tax = (Price × Quantity) × (Tax Rate / 100)</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Combined Tax Rates</h3>
+                    <p>In many locations, the total sales tax rate is a combination of:</p>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li>State sales tax</li>
+                        <li>County sales tax</li>
+                        <li>City or municipal sales tax</li>
+                        <li>Special district taxes</li>
+                    </ul>
+                    <p>For example, in some California cities, the total tax rate might be: State (7.25%) + County (1%) + City (1.5%) = 9.75% total.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>Tax-Exempt Items</h3>
+                    <p>Some items are often exempt from sales tax, including:</p>
+                    <ul style="padding-left: 20px;">
+                        <li>Groceries (in most states)</li>
+                        <li>Prescription drugs</li>
+                        <li>Clothing (in some states)</li>
+                        <li>Educational materials</li>
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3>How to Use This Calculator</h3>
+                    <p>1. Enter the price of the item or service.</p>
+                    <p>2. Set the quantity if purchasing multiple items.</p>
+                    <p>3. Enter the sales tax rate or select a state for reference rates.</p>
+                    <p>4. Click "Calculate Tax" to see the detailed breakdown.</p>
+                    <p>5. Use the reset button to clear all inputs.</p>
+                </div>
+                
+                <div class="disclaimer">
+                    <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer:</strong> This calculator provides estimates only. Actual tax rates may vary by location and specific items. Always consult with a tax professional for official calculations.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Sales Tax Calculator &copy; 2023 | Works on Windows, Android, and all modern browsers</p>
+            <p>This tool is for estimation purposes. Tax rates are subject to change.</p>
+        </footer>
+    </div>
+
+    <script>
+        // State tax data (for reference)
+        const stateTaxRates = {
+            'CA': { base: 7.25, county: 1.0, city: 0.5, name: 'California' },
+            'NY': { base: 8.875, county: 0, city: 0, name: 'New York' },
+            'TX': { base: 6.25, county: 1.0, city: 1.0, name: 'Texas' },
+            'FL': { base: 6.0, county: 1.0, city: 0, name: 'Florida' },
+            'IL': { base: 6.25, county: 1.0, city: 1.0, name: 'Illinois' },
+            'PA': { base: 6.0, county: 1.0, city: 0, name: 'Pennsylvania' },
+            'OH': { base: 5.75, county: 1.25, city: 0, name: 'Ohio' },
+            'GA': { base: 4.0, county: 3.0, city: 0, name: 'Georgia' },
+            'NC': { base: 4.75, county: 2.25, city: 0, name: 'North Carolina' },
+            'MI': { base: 6.0, county: 0, city: 0, name: 'Michigan' }
+        };
+
+        // DOM Elements
+        const priceInput = document.getElementById('price');
+        const priceRange = document.getElementById('price-range');
+        const priceValue = document.getElementById('price-value');
+        
+        const quantityInput = document.getElementById('quantity');
+        const quantityRange = document.getElementById('quantity-range');
+        const quantityValue = document.getElementById('quantity-value');
+        
+        const taxRateInput = document.getElementById('tax-rate');
+        const taxRateRange = document.getElementById('tax-rate-range');
+        const taxRateValue = document.getElementById('tax-rate-value');
+        
+        const locationSelect = document.getElementById('location');
+        const stateTaxesDiv = document.getElementById('state-taxes');
+        
+        const calculateBtn = document.getElementById('calculate');
+        const resetBtn = document.getElementById('reset');
+        
+        // Result elements
+        const originalPriceEl = document.getElementById('original-price');
+        const taxAmountEl = document.getElementById('tax-amount');
+        const totalPriceEl = document.getElementById('total-price');
+        const taxBar = document.getElementById('tax-bar');
+        
+        // Multi-tax breakdown elements
+        const multiTaxDiv = document.getElementById('multi-tax');
+        const stateTaxAmount = document.getElementById('state-tax-amount');
+        const countyTaxAmount = document.getElementById('county-tax-amount');
+        const cityTaxAmount = document.getElementById('city-tax-amount');
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Format percentage
+        function formatPercent(rate) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'percent',
+                minimumFractionDigits: 2
+            }).format(rate / 100);
+        }
+        
+        // Update slider value displays
+        priceRange.addEventListener('input', function() {
+            priceInput.value = this.value;
+            updatePriceDisplay();
+            calculateTax();
+        });
+        
+        priceInput.addEventListener('input', function() {
+            priceRange.value = this.value;
+            updatePriceDisplay();
+            calculateTax();
+        });
+        
+        quantityRange.addEventListener('input', function() {
+            quantityInput.value = this.value;
+            updateQuantityDisplay();
+            calculateTax();
+        });
+        
+        quantityInput.addEventListener('input', function() {
+            quantityRange.value = this.value;
+            updateQuantityDisplay();
+            calculateTax();
+        });
+        
+        taxRateRange.addEventListener('input', function() {
+            taxRateInput.value = this.value;
+            updateTaxRateDisplay();
+            calculateTax();
+        });
+        
+        taxRateInput.addEventListener('input', function() {
+            taxRateRange.value = this.value;
+            updateTaxRateDisplay();
+            calculateTax();
+        });
+        
+        function updatePriceDisplay() {
+            const value = parseFloat(priceInput.value);
+            priceValue.textContent = formatCurrency(value);
+        }
+        
+        function updateQuantityDisplay() {
+            const value = parseInt(quantityInput.value);
+            quantityValue.textContent = `${value} item${value !== 1 ? 's' : ''}`;
+        }
+        
+        function updateTaxRateDisplay() {
+            const value = parseFloat(taxRateInput.value);
+            taxRateValue.textContent = `${value}%`;
+        }
+        
+        // Initialize displays
+        updatePriceDisplay();
+        updateQuantityDisplay();
+        updateTaxRateDisplay();
+        
+        // Generate state tax buttons
+        function generateStateTaxButtons() {
+            stateTaxesDiv.innerHTML = '';
+            
+            // Add custom option
+            const customButton = document.createElement('div');
+            customButton.className = 'state-tax selected';
+            customButton.id = 'custom-tax';
+            customButton.innerHTML = `
+                <div class="state-name">Custom</div>
+                <div class="state-rate">${parseFloat(taxRateInput.value)}%</div>
+            `;
+            customButton.addEventListener('click', function() {
+                selectStateTax('custom', parseFloat(taxRateInput.value));
+            });
+            stateTaxesDiv.appendChild(customButton);
+            
+            // Add state buttons
+            for (const [stateCode, data] of Object.entries(stateTaxRates)) {
+                const button = document.createElement('div');
+                button.className = 'state-tax';
+                button.id = `state-${stateCode}`;
+                button.innerHTML = `
+                    <div class="state-name">${stateCode}</div>
+                    <div class="state-rate">${data.base}%</div>
+                `;
+                button.addEventListener('click', function() {
+                    selectStateTax(stateCode, data.base);
+                });
+                stateTaxesDiv.appendChild(button);
+            }
+        }
+        
+        // Select a state tax rate
+        function selectStateTax(stateCode, rate) {
+            // Update all buttons
+            document.querySelectorAll('.state-tax').forEach(button => {
+                button.classList.remove('selected');
+            });
+            
+            // Select the clicked button
+            const selectedButton = document.getElementById(stateCode === 'custom' ? 'custom-tax' : `state-${stateCode}`);
+            selectedButton.classList.add('selected');
+            
+            // Update tax rate if not custom
+            if (stateCode !== 'custom') {
+                taxRateInput.value = rate;
+                taxRateRange.value = rate;
+                updateTaxRateDisplay();
+                locationSelect.value = stateCode;
+                
+                // Show multi-tax breakdown if applicable
+                const stateData = stateTaxRates[stateCode];
+                if (stateData.county > 0 || stateData.city > 0) {
+                    showMultiTaxBreakdown(stateData);
+                } else {
+                    multiTaxDiv.style.display = 'none';
+                }
+            } else {
+                locationSelect.value = 'custom';
+                multiTaxDiv.style.display = 'none';
+            }
+            
+            calculateTax();
+        }
+        
+        // Show multi-tax breakdown
+        function showMultiTaxBreakdown(stateData) {
+            multiTaxDiv.style.display = 'block';
+            
+            // Calculate tax amounts
+            const price = parseFloat(priceInput.value);
+            const quantity = parseInt(quantityInput.value);
+            const subtotal = price * quantity;
+            
+            const stateTax = subtotal * (stateData.base / 100);
+            const countyTax = stateData.county > 0 ? subtotal * (stateData.county / 100) : 0;
+            const cityTax = stateData.city > 0 ? subtotal * (stateData.city / 100) : 0;
+            
+            // Update display
+            stateTaxAmount.textContent = formatCurrency(stateTax);
+            countyTaxAmount.textContent = stateData.county > 0 ? formatCurrency(countyTax) : '$0.00';
+            cityTaxAmount.textContent = stateData.city > 0 ? formatCurrency(cityTax) : '$0.00';
+            
+            // Update the tax rate display to show total
+            const totalRate = stateData.base + stateData.county + stateData.city;
+            taxRateInput.value = totalRate.toFixed(2);
+            taxRateRange.value = totalRate;
+            updateTaxRateDisplay();
+        }
+        
+        // Calculate sales tax
+        function calculateTax() {
+            // Get input values
+            const price = parseFloat(priceInput.value);
+            const quantity = parseInt(quantityInput.value);
+            const taxRate = parseFloat(taxRateInput.value);
+            
+            // Calculate
+            const subtotal = price * quantity;
+            const taxAmount = subtotal * (taxRate / 100);
+            const total = subtotal + taxAmount;
+            
+            // Update result displays
+            originalPriceEl.textContent = formatCurrency(subtotal);
+            taxAmountEl.textContent = formatCurrency(taxAmount);
+            totalPriceEl.textContent = formatCurrency(total);
+            
+            // Update tax bar visualization
+            const taxPercentage = (taxAmount / total) * 100;
+            taxBar.style.width = `${taxPercentage}%`;
+            
+            // Update price labels
+            document.querySelector('.price-labels').innerHTML = `
+                <span>Price: ${formatCurrency(subtotal)}</span>
+                <span>Tax: ${formatCurrency(taxAmount)}</span>
+            `;
+            
+            // Update tax rate in result label
+            document.querySelector('.result-item:nth-child(2) .result-label').textContent = `Sales Tax (${taxRate}%):`;
+        }
+        
+        // Reset the calculator
+        function resetCalculator() {
+            priceInput.value = 100;
+            priceRange.value = 100;
+            quantityInput.value = 1;
+            quantityRange.value = 1;
+            taxRateInput.value = 8.25;
+            taxRateRange.value = 8.25;
+            locationSelect.value = 'custom';
+            
+            updatePriceDisplay();
+            updateQuantityDisplay();
+            updateTaxRateDisplay();
+            
+            // Reset state selection
+            selectStateTax('custom', 8.25);
+            
+            calculateTax();
+        }
+        
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateTax);
+        resetBtn.addEventListener('click', resetCalculator);
+        
+        // Update calculation when location changes
+        locationSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                selectStateTax('custom', parseFloat(taxRateInput.value));
+            } else {
+                const stateData = stateTaxRates[this.value];
+                selectStateTax(this.value, stateData.base);
+            }
+        });
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            generateStateTaxButtons();
+            calculateTax();
+        });
+        
+        // Touch-friendly adjustments for mobile
+        document.querySelectorAll('input, select, button, .state-tax').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

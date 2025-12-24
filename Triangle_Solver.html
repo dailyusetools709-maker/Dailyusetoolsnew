@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Solver - Complete Triangle Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #764ba2;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+        }
+        
+        .triangle-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .type-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .type-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .type-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .input-methods {
+            margin-top: 20px;
+        }
+        
+        .method-tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 25px;
+        }
+        
+        .method-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .method-tab.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+        }
+        
+        input, select {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .unit {
+            margin-left: 10px;
+            font-weight: 600;
+            color: #667eea;
+            min-width: 50px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calculate-btn i {
+            margin-right: 10px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .triangle-visualization {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .triangle-canvas {
+            width: 300px;
+            height: 250px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border-left: 5px solid #667eea;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #764ba2;
+        }
+        
+        .result-unit {
+            font-size: 1rem;
+            color: #999;
+            margin-left: 5px;
+        }
+        
+        .triangle-properties {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .property-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .property-name {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .property-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .info-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .info-card ul {
+            padding-left: 20px;
+            color: #666;
+        }
+        
+        .info-card li {
+            margin-bottom: 8px;
+        }
+        
+        .formula-box {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+            margin-top: 15px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .warning-box {
+            background: #ffe6e6;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #dc3545;
+            margin-top: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .main-content {
+                gap: 20px;
+            }
+            
+            .input-section, .results-section, .info-section {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .triangle-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .results-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            .method-tabs {
+                flex-direction: column;
+            }
+            
+            .method-tab {
+                padding: 12px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .triangle-canvas {
+                width: 250px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shapes"></i> Triangle Solver</h1>
+            <p class="subtitle">Calculate all sides, angles, area, perimeter, and properties of any triangle. Supports SSS, SAS, ASA, AAS, and SSA cases.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-edit"></i> Input Parameters</h2>
+                
+                <div class="triangle-types">
+                    <div class="type-btn active" data-type="any">Any Triangle</div>
+                    <div class="type-btn" data-type="right">Right Triangle</div>
+                    <div class="type-btn" data-type="equilateral">Equilateral</div>
+                    <div class="type-btn" data-type="isosceles">Isosceles</div>
+                    <div class="type-btn" data-type="scalene">Scalene</div>
+                    <div class="type-btn" data-type="acute">Acute</div>
+                    <div class="type-btn" data-type="obtuse">Obtuse</div>
+                </div>
+                
+                <div class="input-methods">
+                    <div class="method-tabs">
+                        <div class="method-tab active" data-method="side-angle-side">Side-Angle-Side (SAS)</div>
+                        <div class="method-tab" data-method="side-side-side">Side-Side-Side (SSS)</div>
+                        <div class="method-tab" data-method="angle-side-angle">Angle-Side-Angle (ASA)</div>
+                    </div>
+                    
+                    <!-- SAS Input -->
+                    <div class="method-content active" id="side-angle-side">
+                        <div class="input-group">
+                            <label>Side a (between angles B and C)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sas-side-a" placeholder="Enter length" min="0" step="any" value="5">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Angle B (opposite side b)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sas-angle-b" placeholder="Enter angle" min="0" max="180" step="any" value="60">
+                                <div class="unit">°</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Side c (between angles A and B)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sas-side-c" placeholder="Enter length" min="0" step="any" value="7">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SSS Input -->
+                    <div class="method-content" id="side-side-side">
+                        <div class="input-group">
+                            <label>Side a</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sss-side-a" placeholder="Enter length" min="0" step="any" value="5">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Side b</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sss-side-b" placeholder="Enter length" min="0" step="any" value="6">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Side c</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="sss-side-c" placeholder="Enter length" min="0" step="any" value="7">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ASA Input -->
+                    <div class="method-content" id="angle-side-angle">
+                        <div class="input-group">
+                            <label>Angle A (opposite side a)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="asa-angle-a" placeholder="Enter angle" min="0" max="180" step="any" value="40">
+                                <div class="unit">°</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Side b (between angles A and C)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="asa-side-b" placeholder="Enter length" min="0" step="any" value="8">
+                                <div class="unit">units</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Angle C (opposite side c)</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="asa-angle-c" placeholder="Enter angle" min="0" max="180" step="any" value="60">
+                                <div class="unit">°</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="calculate-btn" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Solve Triangle
+                    </button>
+                </div>
+                
+                <div class="triangle-visualization">
+                    <h3><i class="fas fa-eye"></i> Triangle Visualization</h3>
+                    <canvas id="triangleCanvas" class="triangle-canvas" width="300" height="250">
+                        Your browser does not support the canvas element.
+                    </canvas>
+                    <div id="triangleTypeDisplay" style="margin-top: 15px; font-weight: 600; color: #764ba2;">Type: Unknown</div>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Results</h2>
+                
+                <div class="results-container">
+                    <div class="result-card">
+                        <div class="result-label">Side a</div>
+                        <div class="result-value"><span id="result-side-a">0</span><span class="result-unit">units</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Side b</div>
+                        <div class="result-value"><span id="result-side-b">0</span><span class="result-unit">units</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Side c</div>
+                        <div class="result-value"><span id="result-side-c">0</span><span class="result-unit">units</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Angle A</div>
+                        <div class="result-value"><span id="result-angle-a">0</span><span class="result-unit">°</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Angle B</div>
+                        <div class="result-value"><span id="result-angle-b">0</span><span class="result-unit">°</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Angle C</div>
+                        <div class="result-value"><span id="result-angle-c">0</span><span class="result-unit">°</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Perimeter</div>
+                        <div class="result-value"><span id="result-perimeter">0</span><span class="result-unit">units</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">Area</div>
+                        <div class="result-value"><span id="result-area">0</span><span class="result-unit">units²</span></div>
+                    </div>
+                </div>
+                
+                <div class="triangle-properties">
+                    <h3 class="section-title"><i class="fas fa-cogs"></i> Triangle Properties</h3>
+                    
+                    <div class="properties-grid">
+                        <div class="property-item">
+                            <span class="property-name">Type:</span>
+                            <span class="property-value" id="prop-type">Unknown</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Circumradius:</span>
+                            <span class="property-value" id="prop-circumradius">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Inradius:</span>
+                            <span class="property-value" id="prop-inradius">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Height (from A):</span>
+                            <span class="property-value" id="prop-height-a">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Height (from B):</span>
+                            <span class="property-value" id="prop-height-b">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Height (from C):</span>
+                            <span class="property-value" id="prop-height-c">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Semiperimeter:</span>
+                            <span class="property-value" id="prop-semiperimeter">0</span>
+                        </div>
+                        <div class="property-item">
+                            <span class="property-name">Sum of Angles:</span>
+                            <span class="property-value" id="prop-angle-sum">0°</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> Triangle Solving Methods</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3><i class="fas fa-ruler-combined"></i> Side-Angle-Side (SAS)</h3>
+                    <p>Given two sides and the included angle, you can solve the triangle using:</p>
+                    <ul>
+                        <li>Law of Cosines to find the third side</li>
+                        <li>Law of Sines to find the other angles</li>
+                        <li>Triangle Sum Theorem (A+B+C = 180°)</li>
+                    </ul>
+                    <div class="formula-box">
+                        <div class="formula">a² = b² + c² - 2bc·cos(A)</div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-ruler"></i> Side-Side-Side (SSS)</h3>
+                    <p>Given all three sides, you can solve the triangle using:</p>
+                    <ul>
+                        <li>Law of Cosines to find each angle</li>
+                        <li>Heron's formula for area</li>
+                        <li>Check triangle inequality: a + b > c</li>
+                    </ul>
+                    <div class="formula-box">
+                        <div class="formula">cos(A) = (b² + c² - a²) / (2bc)</div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-angle-double-right"></i> Angle-Side-Angle (ASA)</h3>
+                    <p>Given two angles and the included side, you can solve the triangle using:</p>
+                    <ul>
+                        <li>Triangle Sum Theorem to find third angle</li>
+                        <li>Law of Sines to find remaining sides</li>
+                        <li>Area = (a·b·sin(C))/2</li>
+                    </ul>
+                    <div class="formula-box">
+                        <div class="formula">a/sin(A) = b/sin(B) = c/sin(C)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h3><i class="fas fa-exclamation-triangle"></i> Important Notes</h3>
+                <p>1. Triangle Inequality Theorem: The sum of any two sides must be greater than the third side.</p>
+                <p>2. Angle Sum Theorem: The sum of all angles in a triangle must equal 180°.</p>
+                <p>3. For SSA (Side-Side-Angle) cases, there may be 0, 1, or 2 possible triangles (ambiguous case).</p>
+                <p>4. All calculations use degrees for angles. Results are rounded to 4 decimal places.</p>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>Triangle Solver v2.0 &copy; 2023 | Complete triangle calculation tool for students, engineers, and designers</p>
+            <p style="margin-top: 5px;">Supports all triangle types: Right, Equilateral, Isosceles, Scalene, Acute, Obtuse</p>
+        </footer>
+    </div>
+
+    <script>
+        class TriangleSolver {
+            constructor() {
+                this.currentMethod = 'side-angle-side';
+                this.currentType = 'any';
+                this.results = {
+                    sides: {a: 0, b: 0, c: 0},
+                    angles: {A: 0, B: 0, C: 0},
+                    perimeter: 0,
+                    area: 0,
+                    type: 'Unknown',
+                    circumradius: 0,
+                    inradius: 0,
+                    heights: {a: 0, b: 0, c: 0},
+                    semiperimeter: 0
+                };
+                
+                this.initializeEventListeners();
+                this.solveTriangle(); // Solve with default values
+            }
+            
+            initializeEventListeners() {
+                // Method tabs
+                document.querySelectorAll('.method-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.method-content').forEach(c => c.classList.remove('active'));
+                        
+                        tab.classList.add('active');
+                        this.currentMethod = tab.getAttribute('data-method');
+                        document.getElementById(this.currentMethod).classList.add('active');
+                    });
+                });
+                
+                // Triangle type buttons
+                document.querySelectorAll('.type-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentType = btn.getAttribute('data-type');
+                        this.solveTriangle();
+                    });
+                });
+                
+                // Calculate button
+                document.getElementById('calculateBtn').addEventListener('click', () => this.solveTriangle());
+                
+                // Input change listeners
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => this.solveTriangle());
+                });
+            }
+            
+            solveTriangle() {
+                try {
+                    switch(this.currentMethod) {
+                        case 'side-angle-side':
+                            this.solveSAS();
+                            break;
+                        case 'side-side-side':
+                            this.solveSSS();
+                            break;
+                        case 'angle-side-angle':
+                            this.solveASA();
+                            break;
+                    }
+                    
+                    this.calculateAdditionalProperties();
+                    this.determineTriangleType();
+                    this.updateDisplay();
+                    this.drawTriangle();
+                } catch (error) {
+                    console.error('Error solving triangle:', error);
+                    this.displayError();
+                }
+            }
+            
+            solveSAS() {
+                // Get inputs
+                const a = parseFloat(document.getElementById('sas-side-a').value) || 0;
+                const B = this.degToRad(parseFloat(document.getElementById('sas-angle-b').value) || 0);
+                const c = parseFloat(document.getElementById('sas-side-c').value) || 0;
+                
+                // Validate inputs
+                if (a <= 0 || c <= 0 || B <= 0 || B >= Math.PI) {
+                    throw new Error('Invalid input values for SAS');
+                }
+                
+                // Calculate side b using Law of Cosines: b² = a² + c² - 2ac·cos(B)
+                const b = Math.sqrt(a*a + c*c - 2*a*c*Math.cos(B));
+                
+                // Calculate angle A using Law of Cosines
+                const cosA = (b*b + c*c - a*a) / (2*b*c);
+                const A = Math.acos(cosA);
+                
+                // Calculate angle C using Triangle Sum Theorem
+                const C = Math.PI - A - B;
+                
+                // Store results
+                this.results.sides = {a, b, c};
+                this.results.angles = {A, B, C};
+            }
+            
+            solveSSS() {
+                // Get inputs
+                const a = parseFloat(document.getElementById('sss-side-a').value) || 0;
+                const b = parseFloat(document.getElementById('sss-side-b').value) || 0;
+                const c = parseFloat(document.getElementById('sss-side-c').value) || 0;
+                
+                // Validate triangle inequality
+                if (a + b <= c || a + c <= b || b + c <= a) {
+                    throw new Error('Triangle inequality violated: sum of any two sides must be greater than the third');
+                }
+                
+                // Calculate angles using Law of Cosines
+                const cosA = (b*b + c*c - a*a) / (2*b*c);
+                const cosB = (a*a + c*c - b*b) / (2*a*c);
+                const cosC = (a*a + b*b - c*c) / (2*a*b);
+                
+                const A = Math.acos(cosA);
+                const B = Math.acos(cosB);
+                const C = Math.acos(cosC);
+                
+                // Store results
+                this.results.sides = {a, b, c};
+                this.results.angles = {A, B, C};
+            }
+            
+            solveASA() {
+                // Get inputs
+                const A = this.degToRad(parseFloat(document.getElementById('asa-angle-a').value) || 0);
+                const b = parseFloat(document.getElementById('asa-side-b').value) || 0;
+                const C = this.degToRad(parseFloat(document.getElementById('asa-angle-c').value) || 0);
+                
+                // Validate angles
+                if (A <= 0 || C <= 0 || A + C >= Math.PI) {
+                    throw new Error('Invalid angles for ASA');
+                }
+                
+                // Calculate angle B using Triangle Sum Theorem
+                const B = Math.PI - A - C;
+                
+                // Calculate sides using Law of Sines: a/sin(A) = b/sin(B) = c/sin(C)
+                const a = b * Math.sin(A) / Math.sin(B);
+                const c = b * Math.sin(C) / Math.sin(B);
+                
+                // Store results
+                this.results.sides = {a, b, c};
+                this.results.angles = {A, B, C};
+            }
+            
+            calculateAdditionalProperties() {
+                const {a, b, c} = this.results.sides;
+                const {A, B, C} = this.results.angles;
+                
+                // Perimeter and semiperimeter
+                this.results.perimeter = a + b + c;
+                this.results.semiperimeter = this.results.perimeter / 2;
+                const s = this.results.semiperimeter;
+                
+                // Area using Heron's formula
+                this.results.area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+                
+                // Heights
+                this.results.heights.a = 2 * this.results.area / a;
+                this.results.heights.b = 2 * this.results.area / b;
+                this.results.heights.c = 2 * this.results.area / c;
+                
+                // Circumradius (R = abc / 4Δ)
+                this.results.circumradius = (a * b * c) / (4 * this.results.area);
+                
+                // Inradius (r = Δ / s)
+                this.results.inradius = this.results.area / s;
+            }
+            
+            determineTriangleType() {
+                const {a, b, c} = this.results.sides;
+                const {A, B, C} = this.results.angles;
+                
+                const angles = [A, B, C];
+                const sides = [a, b, c];
+                
+                let type = '';
+                
+                // Check for right triangle
+                const rightAngle = angles.find(angle => Math.abs(angle - Math.PI/2) < 0.001);
+                if (rightAngle) {
+                    type = 'Right';
+                }
+                // Check for equilateral
+                else if (Math.abs(a - b) < 0.001 && Math.abs(b - c) < 0.001) {
+                    type = 'Equilateral';
+                }
+                // Check for isosceles
+                else if (Math.abs(a - b) < 0.001 || Math.abs(b - c) < 0.001 || Math.abs(a - c) < 0.001) {
+                    type = 'Isosceles';
+                }
+                else {
+                    type = 'Scalene';
+                }
+                
+                // Check for acute/obtuse
+                const obtuseAngle = angles.find(angle => angle > Math.PI/2);
+                if (obtuseAngle) {
+                    type += ' Obtuse';
+                } else if (!rightAngle) {
+                    type += ' Acute';
+                }
+                
+                // Apply selected type filter
+                if (this.currentType !== 'any') {
+                    const selectedType = this.currentType.charAt(0).toUpperCase() + this.currentType.slice(1);
+                    if (!type.includes(selectedType)) {
+                        // If current triangle doesn't match selected type, show warning but keep calculation
+                        type += ' (does not match selected type)';
+                    }
+                }
+                
+                this.results.type = type;
+            }
+            
+            updateDisplay() {
+                // Update sides
+                document.getElementById('result-side-a').textContent = this.round(this.results.sides.a);
+                document.getElementById('result-side-b').textContent = this.round(this.results.sides.b);
+                document.getElementById('result-side-c').textContent = this.round(this.results.sides.c);
+                
+                // Update angles (convert from radians to degrees)
+                document.getElementById('result-angle-a').textContent = this.round(this.radToDeg(this.results.angles.A));
+                document.getElementById('result-angle-b').textContent = this.round(this.radToDeg(this.results.angles.B));
+                document.getElementById('result-angle-c').textContent = this.round(this.radToDeg(this.results.angles.C));
+                
+                // Update perimeter and area
+                document.getElementById('result-perimeter').textContent = this.round(this.results.perimeter);
+                document.getElementById('result-area').textContent = this.round(this.results.area);
+                
+                // Update properties
+                document.getElementById('prop-type').textContent = this.results.type;
+                document.getElementById('prop-circumradius').textContent = this.round(this.results.circumradius);
+                document.getElementById('prop-inradius').textContent = this.round(this.results.inradius);
+                document.getElementById('prop-height-a').textContent = this.round(this.results.heights.a);
+                document.getElementById('prop-height-b').textContent = this.round(this.results.heights.b);
+                document.getElementById('prop-height-c').textContent = this.round(this.results.heights.c);
+                document.getElementById('prop-semiperimeter').textContent = this.round(this.results.semiperimeter);
+                
+                // Calculate and display angle sum
+                const angleSum = this.radToDeg(this.results.angles.A + this.results.angles.B + this.results.angles.C);
+                document.getElementById('prop-angle-sum').textContent = this.round(angleSum) + '°';
+                
+                // Update triangle type display
+                document.getElementById('triangleTypeDisplay').textContent = `Type: ${this.results.type}`;
+            }
+            
+            drawTriangle() {
+                const canvas = document.getElementById('triangleCanvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                const {a, b, c} = this.results.sides;
+                const {A, B, C} = this.results.angles;
+                
+                // Scale the triangle to fit canvas
+                const maxSide = Math.max(a, b, c);
+                const scale = Math.min(width, height) * 0.8 / maxSide;
+                
+                // Convert sides to scaled values
+                const scaledA = a * scale;
+                const scaledB = b * scale;
+                const scaledC = c * scale;
+                
+                // Draw triangle using Law of Cosines to find coordinates
+                // Place side a horizontally at the bottom
+                const x1 = (width - scaledA) / 2;
+                const y1 = height - 50;
+                const x2 = x1 + scaledA;
+                const y2 = y1;
+                
+                // Calculate third vertex using Law of Cosines
+                const cosC = (scaledA*scaledA + scaledB*scaledB - scaledC*scaledC) / (2*scaledA*scaledB);
+                const sinC = Math.sqrt(1 - cosC*cosC);
+                
+                const x3 = x1 + scaledB * cosC;
+                const y3 = y1 - scaledB * sinC;
+                
+                // Draw triangle
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineTo(x3, y3);
+                ctx.closePath();
+                
+                // Fill triangle
+                ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
+                ctx.fill();
+                
+                // Stroke triangle
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#667eea';
+                ctx.stroke();
+                
+                // Draw vertices
+                this.drawVertex(ctx, x1, y1, 'A');
+                this.drawVertex(ctx, x2, y2, 'B');
+                this.drawVertex(ctx, x3, y3, 'C');
+                
+                // Draw side labels
+                this.drawSideLabel(ctx, (x1+x2)/2, (y1+y2)/2 + 15, 'a', scaledA/scale);
+                this.drawSideLabel(ctx, (x2+x3)/2 - 10, (y2+y3)/2 + 10, 'b', scaledB/scale);
+                this.drawSideLabel(ctx, (x1+x3)/2 + 10, (y1+y3)/2, 'c', scaledC/scale);
+                
+                // Draw angle labels
+                this.drawAngleLabel(ctx, x1, y1, x2, y2, x3, y3, 'A');
+                this.drawAngleLabel(ctx, x2, y2, x3, y3, x1, y1, 'B');
+                this.drawAngleLabel(ctx, x3, y3, x1, y1, x2, y2, 'C');
+            }
+            
+            drawVertex(ctx, x, y, label) {
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#764ba2';
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = '#764ba2';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, x, y - 20);
+            }
+            
+            drawSideLabel(ctx, x, y, label, value) {
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#495057';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${label} = ${this.round(value)}`, x, y);
+            }
+            
+            drawAngleLabel(ctx, x1, y1, x2, y2, x3, y3, label) {
+                // Calculate angle at vertex (x1, y1)
+                const angle = Math.atan2(y3 - y1, x3 - x1) - Math.atan2(y2 - y1, x2 - x1);
+                const midAngle = Math.atan2(y2 - y1 + y3 - y1, x2 - x1 + x3 - x1);
+                
+                // Position label along angle bisector
+                const radius = 25;
+                const labelX = x1 + radius * Math.cos(midAngle);
+                const labelY = y1 + radius * Math.sin(midAngle);
+                
+                // Draw small arc for angle
+                ctx.beginPath();
+                ctx.arc(x1, y1, 15, Math.atan2(y2 - y1, x2 - x1), Math.atan2(y3 - y1, x3 - x1));
+                ctx.strokeStyle = '#764ba2';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw angle label
+                ctx.font = 'bold 14px Arial';
+                ctx.fillStyle = '#764ba2';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, labelX, labelY);
+            }
+            
+            displayError() {
+                // Set all results to error indicators
+                const resultElements = document.querySelectorAll('.result-value');
+                resultElements.forEach(el => {
+                    el.textContent = 'Error';
+                });
+                
+                const propertyElements = document.querySelectorAll('.property-value');
+                propertyElements.forEach(el => {
+                    el.textContent = 'Error';
+                });
+                
+                document.getElementById('triangleTypeDisplay').textContent = 'Type: Invalid Input';
+                document.getElementById('prop-type').textContent = 'Invalid';
+            }
+            
+            degToRad(degrees) {
+                return degrees * Math.PI / 180;
+            }
+            
+            radToDeg(radians) {
+                return radians * 180 / Math.PI;
+            }
+            
+            round(value) {
+                return Math.round(value * 10000) / 10000;
+            }
+        }
+        
+        // Initialize triangle solver when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.triangleSolver = new TriangleSolver();
+        });
+    </script>
+</body>
+</html>

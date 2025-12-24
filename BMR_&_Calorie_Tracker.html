@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMR & Calorie Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c7873;
+            --secondary: #6fb98f;
+            --accent: #ff9a3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --info: #3498db;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #004445);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 15px;
+        }
+        
+        .app-description {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .calculator-card, .results-card, .info-card, .history-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .calculator-card:hover, .results-card:hover, .info-card:hover, .history-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--accent);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .radio-option input {
+            display: none;
+        }
+        
+        .radio-option label {
+            display: block;
+            padding: 12px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .radio-option input:checked + label {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .units-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .unit-btn {
+            flex: 1;
+            padding: 12px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .unit-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #ff8c2a;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .result-unit {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-left: 3px;
+        }
+        
+        .activity-levels {
+            margin-top: 25px;
+        }
+        
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .activity-table th, .activity-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .activity-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .calorie-goal {
+            background-color: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .calorie-goal h4 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+        
+        .goal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .goal-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .goal-btn.active {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .history-list {
+            list-style-type: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-info h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .history-info p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .history-bmr {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            color: #c0392b;
+        }
+        
+        .clear-history {
+            width: 100%;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .clear-history:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-section h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            border-left: 4px solid var(--info);
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+        }
+        
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            border-top: 1px solid #dee2e6;
+            color: var(--gray);
+            font-size: 0.9rem;
+            background-color: white;
+            border-radius: 15px 15px 0 0;
+            margin-top: 40px;
+        }
+        
+        .compatibility {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .compatibility-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .calculator-card, .results-card, .info-card, .history-card {
+                padding: 20px;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .compatibility {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .activity-table {
+                font-size: 0.9rem;
+            }
+            
+            .activity-table th, .activity-table td {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .units-toggle {
+                flex-direction: column;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .goal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-fire"></i> BMR & Calorie Tracker</h1>
+            <p class="tagline">Calculate your Basal Metabolic Rate and daily calorie needs for weight management</p>
+            <div class="app-description">
+                BMR (Basal Metabolic Rate) is the number of calories your body needs to perform basic life-sustaining functions. Use this calculator to determine your daily calorie needs based on your activity level and weight goals.
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <!-- Calculator Section -->
+            <section class="calculator-card">
+                <h2 class="card-title"><i class="fas fa-calculator"></i> Calculate Your BMR</h2>
+                
+                <div class="units-toggle">
+                    <button class="unit-btn active" id="metric-btn">Metric (cm, kg)</button>
+                    <button class="unit-btn" id="imperial-btn">Imperial (ft/in, lbs)</button>
+                </div>
+                
+                <form id="bmr-form">
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="male" name="gender" value="male" checked>
+                                <label for="male">Male</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="female" name="gender" value="female">
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="age-label" for="age">Age (years)</label>
+                        <input type="number" id="age" min="15" max="100" value="30" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="height-label" for="height">Height (cm)</label>
+                        <input type="number" id="height" min="100" max="250" value="170" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="weight-label" for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" min="30" max="300" value="70" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="formula">BMR Formula</label>
+                        <select id="formula">
+                            <option value="mifflin">Mifflin-St Jeor (Recommended)</option>
+                            <option value="harris">Harris-Benedict (Original)</option>
+                            <option value="revised">Harris-Benedict (Revised)</option>
+                            <option value="katch">Katch-McArdle (Body Fat %)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group" id="bodyfat-container" style="display: none;">
+                        <label for="bodyfat">Body Fat Percentage (%)</label>
+                        <input type="number" id="bodyfat" min="5" max="60" value="20" step="0.1">
+                    </div>
+                    
+                    <button type="submit" class="calculate-btn">
+                        <i class="fas fa-calculator"></i> Calculate BMR & Calories
+                    </button>
+                </form>
+            </section>
+            
+            <!-- Results Section -->
+            <section class="results-card">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Your Results</h2>
+                
+                <div class="results-grid">
+                    <div class="result-box">
+                        <div class="result-label">Your BMR</div>
+                        <div class="result-value" id="bmr-result">--</div>
+                        <span class="result-unit">calories/day</span>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Maintenance</div>
+                        <div class="result-value" id="maintenance-result">--</div>
+                        <span class="result-unit">calories/day</span>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Weight Loss</div>
+                        <div class="result-value" id="loss-result">--</div>
+                        <span class="result-unit">calories/day</span>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="result-label">Weight Gain</div>
+                        <div class="result-value" id="gain-result">--</div>
+                        <span class="result-unit">calories/day</span>
+                    </div>
+                </div>
+                
+                <div class="activity-levels">
+                    <h3>Activity Level Multipliers</h3>
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Activity Level</th>
+                                <th>Description</th>
+                                <th>Multiplier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sedentary</td>
+                                <td>Little or no exercise</td>
+                                <td>1.2</td>
+                            </tr>
+                            <tr>
+                                <td>Lightly Active</td>
+                                <td>Light exercise 1-3 days/week</td>
+                                <td>1.375</td>
+                            </tr>
+                            <tr>
+                                <td>Moderately Active</td>
+                                <td>Moderate exercise 3-5 days/week</td>
+                                <td>1.55</td>
+                            </tr>
+                            <tr>
+                                <td>Very Active</td>
+                                <td>Hard exercise 6-7 days/week</td>
+                                <td>1.725</td>
+                            </tr>
+                            <tr>
+                                <td>Extra Active</td>
+                                <td>Very hard exercise & physical job</td>
+                                <td>1.9</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="calorie-goal">
+                    <h4>Set Your Calorie Goal</h4>
+                    <p>Select your activity level to see your daily calorie needs for different goals.</p>
+                    
+                    <div class="goal-buttons">
+                        <button class="goal-btn" data-multiplier="1.2">Sedentary</button>
+                        <button class="goal-btn" data-multiplier="1.375">Lightly Active</button>
+                        <button class="goal-btn active" data-multiplier="1.55">Moderately Active</button>
+                        <button class="goal-btn" data-multiplier="1.725">Very Active</button>
+                        <button class="goal-btn" data-multiplier="1.9">Extra Active</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- History Section -->
+            <section class="history-card">
+                <h2 class="card-title"><i class="fas fa-history"></i> Calculation History</h2>
+                <p>Your previous calculations will appear here</p>
+                
+                <ul class="history-list" id="history-list">
+                    <!-- History items will be added here dynamically -->
+                </ul>
+                
+                <button class="clear-history" id="clear-history">
+                    <i class="fas fa-trash"></i> Clear All History
+                </button>
+            </section>
+            
+            <!-- Information Section -->
+            <section class="info-card">
+                <h2 class="card-title"><i class="fas fa-info-circle"></i> About BMR</h2>
+                
+                <div class="info-section">
+                    <h3>What is BMR?</h3>
+                    <p>Basal Metabolic Rate (BMR) is the number of calories your body needs to accomplish its most basic (basal) life-sustaining functions, including:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Breathing</li>
+                        <li>Circulation</li>
+                        <li>Cell production</li>
+                        <li>Nutrient processing</li>
+                        <li>Protein synthesis</li>
+                    </ul>
+                    <p>This accounts for about 60-70% of the calories you burn each day.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>BMR Formulas</h3>
+                    
+                    <div class="formula-box">
+                        <strong>Mifflin-St Jeor Equation (Most Accurate):</strong><br>
+                        Men: (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) + 5<br>
+                        Women: (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) - 161
+                    </div>
+                    
+                    <div class="formula-box">
+                        <strong>Harris-Benedict Equation (Original):</strong><br>
+                        Men: 66.5 + (13.75 × weight in kg) + (5.003 × height in cm) - (6.755 × age in years)<br>
+                        Women: 655.1 + (9.563 × weight in kg) + (1.850 × height in cm) - (4.676 × age in years)
+                    </div>
+                    
+                    <div class="formula-box">
+                        <strong>Katch-McArdle Equation (Requires body fat %):</strong><br>
+                        370 + (21.6 × lean body mass in kg)<br>
+                        Lean body mass = weight × (100 - body fat %) / 100
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>How to Use Your Results</h3>
+                    <p><strong>Weight Maintenance:</strong> Consume the maintenance calories to keep your current weight.</p>
+                    <p><strong>Weight Loss:</strong> Consume 500 calories less than maintenance per day to lose about 0.5 kg (1 lb) per week.</p>
+                    <p><strong>Weight Gain:</strong> Consume 500 calories more than maintenance per day to gain about 0.5 kg (1 lb) per week.</p>
+                </div>
+                
+                <div class="warning-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important Note</h4>
+                    <p>These calculations are estimates. Individual variations in metabolism, genetics, and health conditions can affect your actual calorie needs. Consult with a healthcare professional before making significant dietary changes.</p>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>BMR & Calorie Tracker &copy; 2023 | Compatible with Windows, Android, and all modern devices</p>
+            <div class="compatibility">
+                <div class="compatibility-item">
+                    <i class="fab fa-windows"></i>
+                    <span>Windows</span>
+                </div>
+                <div class="compatibility-item">
+                    <i class="fab fa-android"></i>
+                    <span>Android</span>
+                </div>
+                <div class="compatibility-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Mobile Friendly</span>
+                </div>
+                <div class="compatibility-item">
+                    <i class="fas fa-cloud"></i>
+                    <span>No Data Sent Online</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const metricBtn = document.getElementById('metric-btn');
+        const imperialBtn = document.getElementById('imperial-btn');
+        const ageLabel = document.getElementById('age-label');
+        const heightLabel = document.getElementById('height-label');
+        const weightLabel = document.getElementById('weight-label');
+        const bmrForm = document.getElementById('bmr-form');
+        const formulaSelect = document.getElementById('formula');
+        const bodyfatContainer = document.getElementById('bodyfat-container');
+        const bodyfatInput = document.getElementById('bodyfat');
+        
+        // Results elements
+        const bmrResult = document.getElementById('bmr-result');
+        const maintenanceResult = document.getElementById('maintenance-result');
+        const lossResult = document.getElementById('loss-result');
+        const gainResult = document.getElementById('gain-result');
+        
+        // Activity level buttons
+        const goalButtons = document.querySelectorAll('.goal-btn');
+        
+        // History elements
+        const historyList = document.getElementById('history-list');
+        const clearHistoryBtn = document.getElementById('clear-history');
+        
+        // App state
+        let isMetric = true;
+        let currentBMR = 0;
+        let currentMultiplier = 1.55; // Default: Moderately Active
+        let calculationHistory = [];
+        
+        // Initialize from localStorage
+        function initFromStorage() {
+            const savedHistory = localStorage.getItem('bmrHistory');
+            if (savedHistory) {
+                calculationHistory = JSON.parse(savedHistory);
+                renderHistory();
+            }
+        }
+        
+        // Save to localStorage
+        function saveToStorage() {
+            localStorage.setItem('bmrHistory', JSON.stringify(calculationHistory));
+        }
+        
+        // Event listeners for unit toggles
+        metricBtn.addEventListener('click', function() {
+            if (!isMetric) {
+                isMetric = true;
+                metricBtn.classList.add('active');
+                imperialBtn.classList.remove('active');
+                heightLabel.textContent = 'Height (cm)';
+                weightLabel.textContent = 'Weight (kg)';
+                document.getElementById('height').min = 100;
+                document.getElementById('height').max = 250;
+                document.getElementById('height').value = 170;
+                document.getElementById('weight').min = 30;
+                document.getElementById('weight').max = 300;
+                document.getElementById('weight').value = 70;
+                calculateBMR(); // Recalculate if we have existing results
+            }
+        });
+        
+        imperialBtn.addEventListener('click', function() {
+            if (isMetric) {
+                isMetric = false;
+                imperialBtn.classList.add('active');
+                metricBtn.classList.remove('active');
+                heightLabel.textContent = 'Height (inches)';
+                weightLabel.textContent = 'Weight (lbs)';
+                document.getElementById('height').min = 48;
+                document.getElementById('height').max = 96;
+                document.getElementById('height').value = 67; // 5'7"
+                document.getElementById('weight').min = 66;
+                document.getElementById('weight').max = 660;
+                document.getElementById('weight').value = 154; // 70 kg in lbs
+                calculateBMR(); // Recalculate if we have existing results
+            }
+        });
+        
+        // Show/hide body fat input based on formula selection
+        formulaSelect.addEventListener('change', function() {
+            if (this.value === 'katch') {
+                bodyfatContainer.style.display = 'block';
+            } else {
+                bodyfatContainer.style.display = 'none';
+            }
+        });
+        
+        // Form submission handler
+        bmrForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateBMR();
+        });
+        
+        // Activity level button handlers
+        goalButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                goalButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Update multiplier
+                currentMultiplier = parseFloat(this.dataset.multiplier);
+                // Update results with new multiplier
+                updateResults();
+            });
+        });
+        
+        // Clear history button
+        clearHistoryBtn.addEventListener('click', function() {
+            if (calculationHistory.length > 0 && confirm("Are you sure you want to clear all history?")) {
+                calculationHistory = [];
+                saveToStorage();
+                renderHistory();
+            }
+        });
+        
+        // Calculate BMR based on inputs
+        function calculateBMR() {
+            // Get form values
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = parseInt(document.getElementById('age').value);
+            let height = parseFloat(document.getElementById('height').value);
+            let weight = parseFloat(document.getElementById('weight').value);
+            const formula = document.getElementById('formula').value;
+            
+            // Convert to metric if imperial
+            if (!isMetric) {
+                // Convert inches to cm
+                height = height * 2.54;
+                // Convert lbs to kg
+                weight = weight * 0.453592;
+            }
+            
+            let bmr = 0;
+            
+            // Calculate BMR based on selected formula
+            switch(formula) {
+                case 'mifflin':
+                    bmr = calculateMifflin(gender, weight, height, age);
+                    break;
+                case 'harris':
+                    bmr = calculateHarrisOriginal(gender, weight, height, age);
+                    break;
+                case 'revised':
+                    bmr = calculateHarrisRevised(gender, weight, height, age);
+                    break;
+                case 'katch':
+                    const bodyfat = parseFloat(document.getElementById('bodyfat').value) || 20;
+                    bmr = calculateKatch(weight, bodyfat);
+                    break;
+            }
+            
+            // Round to nearest whole number
+            currentBMR = Math.round(bmr);
+            
+            // Update results display
+            updateResults();
+            
+            // Add to history
+            addToHistory(gender, age, height, weight, formula);
+        }
+        
+        // Update results with current BMR and multiplier
+        function updateResults() {
+            if (currentBMR === 0) return;
+            
+            const maintenance = Math.round(currentBMR * currentMultiplier);
+            const weightLoss = Math.round(maintenance - 500);
+            const weightGain = Math.round(maintenance + 500);
+            
+            bmrResult.textContent = currentBMR.toLocaleString();
+            maintenanceResult.textContent = maintenance.toLocaleString();
+            lossResult.textContent = weightLoss.toLocaleString();
+            gainResult.textContent = weightGain.toLocaleString();
+        }
+        
+        // BMR Formulas (all in metric units)
+        function calculateMifflin(gender, weight, height, age) {
+            if (gender === 'male') {
+                return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+        }
+        
+        function calculateHarrisOriginal(gender, weight, height, age) {
+            if (gender === 'male') {
+                return 66.5 + (13.75 * weight) + (5.003 * height) - (6.755 * age);
+            } else {
+                return 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age);
+            }
+        }
+        
+        function calculateHarrisRevised(gender, weight, height, age) {
+            if (gender === 'male') {
+                return 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else {
+                return 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            }
+        }
+        
+        function calculateKatch(weight, bodyfat) {
+            const leanBodyMass = weight * ((100 - bodyfat) / 100);
+            return 370 + (21.6 * leanBodyMass);
+        }
+        
+        // Add calculation to history
+        function addToHistory(gender, age, height, weight, formula) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const historyItem = {
+                id: Date.now(),
+                date: dateStr,
+                gender: gender,
+                age: age,
+                height: height,
+                weight: weight,
+                formula: formula,
+                bmr: currentBMR,
+                unit: isMetric ? 'metric' : 'imperial'
+            };
+            
+            // Add to beginning of array (newest first)
+            calculationHistory.unshift(historyItem);
+            
+            // Keep only last 10 items
+            if (calculationHistory.length > 10) {
+                calculationHistory = calculationHistory.slice(0, 10);
+            }
+            
+            // Save to localStorage and update UI
+            saveToStorage();
+            renderHistory();
+        }
+        
+        // Render history list
+        function renderHistory() {
+            if (calculationHistory.length === 0) {
+                historyList.innerHTML = '<li class="history-item" style="justify-content: center; color: var(--gray);">No calculations yet</li>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            
+            calculationHistory.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.dataset.id = item.id;
+                
+                // Format display values
+                const heightDisplay = isMetric ? 
+                    `${item.height.toFixed(1)} cm` : 
+                    `${(item.height / 2.54).toFixed(1)} in`;
+                
+                const weightDisplay = isMetric ? 
+                    `${item.weight.toFixed(1)} kg` : 
+                    `${(item.weight * 2.20462).toFixed(1)} lbs`;
+                
+                // Formula name mapping
+                const formulaNames = {
+                    'mifflin': 'Mifflin-St Jeor',
+                    'harris': 'Harris-Benedict',
+                    'revised': 'Harris-Benedict (Revised)',
+                    'katch': 'Katch-McArdle'
+                };
+                
+                li.innerHTML = `
+                    <div class="history-info">
+                        <h4>${item.date}</h4>
+                        <p>${item.gender === 'male' ? 'Male' : 'Female'}, ${item.age}y • ${heightDisplay} • ${weightDisplay}</p>
+                        <p style="font-size: 0.8rem; color: var(--info);">${formulaNames[item.formula]}</p>
+                    </div>
+                    <div class="history-bmr">${item.bmr.toLocaleString()}</div>
+                    <button class="delete-btn" data-id="${item.id}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                historyList.appendChild(li);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    calculationHistory = calculationHistory.filter(item => item.id !== id);
+                    saveToStorage();
+                    renderHistory();
+                });
+            });
+        }
+        
+        // Calculate on page load with default values
+        window.addEventListener('DOMContentLoaded', function() {
+            initFromStorage();
+            calculateBMR();
+            
+            // Set up event listeners for real-time updates when inputs change
+            document.getElementById('age').addEventListener('input', calculateBMR);
+            document.getElementById('height').addEventListener('input', calculateBMR);
+            document.getElementById('weight').addEventListener('input', calculateBMR);
+            document.getElementById('bodyfat').addEventListener('input', calculateBMR);
+            document.querySelectorAll('input[name="gender"]').forEach(radio => {
+                radio.addEventListener('change', calculateBMR);
+            });
+            formulaSelect.addEventListener('change', calculateBMR);
+        });
+    </script>
+</body>
+</html>

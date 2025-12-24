@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        header {
+            background: linear-gradient(to right, #1e40af, #3b82f6);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #60a5fa, #93c5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .platform-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            font-size: 2rem;
+        }
+        
+        .windows-icon {
+            color: #0078d7;
+        }
+        
+        .android-icon {
+            color: #3ddc84;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+            gap: 30px;
+        }
+        
+        .calculator-section {
+            flex: 2;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gpa-scale-selector {
+            margin-bottom: 25px;
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .scale-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .scale-btn {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .scale-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .scale-btn.active {
+            background-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .course-input-section {
+            margin-top: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h2 {
+            color: #60a5fa;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .add-course-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .add-course-btn:hover {
+            background-color: #0da271;
+            transform: translateY(-2px);
+        }
+        
+        .courses-container {
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .course-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .course-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+        
+        .course-row input, .course-row select {
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .course-row input:focus, .course-row select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+        }
+        
+        .course-row input {
+            width: 100%;
+        }
+        
+        .delete-btn {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: scale(1.1);
+        }
+        
+        .gpa-results {
+            background: linear-gradient(to right, rgba(30, 64, 175, 0.2), rgba(59, 130, 246, 0.2));
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            text-align: center;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+        
+        .gpa-display {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .gpa-value {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .gpa-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #60a5fa, #93c5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+        }
+        
+        .gpa-label {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+        
+        .gpa-letter {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #10b981;
+            margin: 10px 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .calculate-btn, .reset-btn, .save-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #1d4ed8, #1e40af);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .reset-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .reset-btn:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .save-btn {
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: linear-gradient(to right, #059669, #047857);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .info-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        h3 {
+            color: #60a5fa;
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .gpa-explanation {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+        
+        .gpa-scale-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .gpa-scale-table th, .gpa-scale-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .gpa-scale-table th {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .gpa-scale-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .gpa-scale-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .grade-A { color: #10b981; }
+        .grade-B { color: #3b82f6; }
+        .grade-C { color: #f59e0b; }
+        .grade-D { color: #f97316; }
+        .grade-F { color: #ef4444; }
+        
+        .saved-gpas {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .saved-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .saved-item {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #10b981;
+        }
+        
+        .saved-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .load-btn, .delete-saved-btn {
+            background: none;
+            border: none;
+            color: #60a5fa;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .load-btn:hover {
+            color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .delete-saved-btn {
+            color: #f87171;
+        }
+        
+        .delete-saved-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3b82f6;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: translateX(100px);
+            opacity: 0;
+            transition: transform 0.5s, opacity 0.5s;
+            z-index: 1000;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background-color: #10b981;
+        }
+        
+        .notification.warning {
+            background-color: #f59e0b;
+        }
+        
+        .notification.error {
+            background-color: #ef4444;
+        }
+        
+        @media (max-width: 992px) {
+            .course-row {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .delete-btn {
+                grid-column: 2;
+                grid-row: 2;
+                justify-self: end;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .gpa-display {
+                flex-direction: column;
+            }
+            
+            .gpa-value {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .calculate-btn, .reset-btn, .save-btn {
+                min-width: 100%;
+            }
+            
+            .scale-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .calculator-section, .info-section {
+                padding: 20px;
+            }
+            
+            .course-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .delete-btn {
+                justify-self: start;
+            }
+            
+            .platform-icons {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GPA Calculator</h1>
+            <p class="subtitle">Calculate your Grade Point Average for any grading system</p>
+            <div class="platform-icons">
+                <i class="fab fa-windows windows-icon" title="Windows Compatible"></i>
+                <i class="fab fa-android android-icon" title="Android Compatible"></i>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <section class="calculator-section">
+                <div class="gpa-scale-selector">
+                    <h2><i class="fas fa-sliders-h"></i> GPA Scale</h2>
+                    <div class="scale-buttons">
+                        <button class="scale-btn active" data-scale="4.0">
+                            <i class="fas fa-university"></i> 4.0 Scale (US)
+                        </button>
+                        <button class="scale-btn" data-scale="5.0">
+                            <i class="fas fa-chart-line"></i> 5.0 Scale
+                        </button>
+                        <button class="scale-btn" data-scale="10.0">
+                            <i class="fas fa-globe-americas"></i> 10.0 Scale
+                        </button>
+                        <button class="scale-btn" data-scale="custom">
+                            <i class="fas fa-cog"></i> Custom Scale
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="course-input-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-book"></i> Courses</h2>
+                        <button class="add-course-btn" id="addCourseBtn">
+                            <i class="fas fa-plus"></i> Add Course
+                        </button>
+                    </div>
+                    
+                    <div class="courses-container" id="coursesContainer">
+                        <!-- Course rows will be added here dynamically -->
+                        <div class="course-row">
+                            <input type="text" class="course-name" placeholder="Course Name" value="Mathematics">
+                            <input type="number" class="course-credits" placeholder="Credits" min="0.5" max="10" step="0.5" value="3">
+                            <select class="course-grade">
+                                <option value="4.0">A (4.0)</option>
+                                <option value="3.7">A- (3.7)</option>
+                                <option value="3.3" selected>B+ (3.3)</option>
+                                <option value="3.0">B (3.0)</option>
+                                <option value="2.7">B- (2.7)</option>
+                                <option value="2.3">C+ (2.3)</option>
+                                <option value="2.0">C (2.0)</option>
+                                <option value="1.7">C- (1.7)</option>
+                                <option value="1.3">D+ (1.3)</option>
+                                <option value="1.0">D (1.0)</option>
+                                <option value="0.0">F (0.0)</option>
+                            </select>
+                            <button class="delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="course-row">
+                            <input type="text" class="course-name" placeholder="Course Name" value="English Literature">
+                            <input type="number" class="course-credits" placeholder="Credits" min="0.5" max="10" step="0.5" value="3">
+                            <select class="course-grade">
+                                <option value="4.0" selected>A (4.0)</option>
+                                <option value="3.7">A- (3.7)</option>
+                                <option value="3.3">B+ (3.3)</option>
+                                <option value="3.0">B (3.0)</option>
+                                <option value="2.7">B- (2.7)</option>
+                                <option value="2.3">C+ (2.3)</option>
+                                <option value="2.0">C (2.0)</option>
+                                <option value="1.7">C- (1.7)</option>
+                                <option value="1.3">D+ (1.3)</option>
+                                <option value="1.0">D (1.0)</option>
+                                <option value="0.0">F (0.0)</option>
+                            </select>
+                            <button class="delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="course-row">
+                            <input type="text" class="course-name" placeholder="Course Name" value="Computer Science">
+                            <input type="number" class="course-credits" placeholder="Credits" min="0.5" max="10" step="0.5" value="4">
+                            <select class="course-grade">
+                                <option value="4.0">A (4.0)</option>
+                                <option value="3.7" selected>A- (3.7)</option>
+                                <option value="3.3">B+ (3.3)</option>
+                                <option value="3.0">B (3.0)</option>
+                                <option value="2.7">B- (2.7)</option>
+                                <option value="2.3">C+ (2.3)</option>
+                                <option value="2.0">C (2.0)</option>
+                                <option value="1.7">C- (1.7)</option>
+                                <option value="1.3">D+ (1.3)</option>
+                                <option value="1.0">D (1.0)</option>
+                                <option value="0.0">F (0.0)</option>
+                            </select>
+                            <button class="delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gpa-results">
+                    <h2><i class="fas fa-calculator"></i> GPA Results</h2>
+                    <div class="gpa-display">
+                        <div class="gpa-value">
+                            <div class="gpa-label">Cumulative GPA</div>
+                            <div class="gpa-number" id="gpaNumber">0.00</div>
+                            <div class="gpa-label" id="gpaScale">On 4.0 Scale</div>
+                        </div>
+                        <div class="gpa-value">
+                            <div class="gpa-label">Letter Grade</div>
+                            <div class="gpa-letter" id="gpaLetter">-</div>
+                            <div class="gpa-label">Equivalent</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="calculate-btn" id="calculateBtn">
+                            <i class="fas fa-calculator"></i> Calculate GPA
+                        </button>
+                        <button class="reset-btn" id="resetBtn">
+                            <i class="fas fa-redo"></i> Reset All
+                        </button>
+                        <button class="save-btn" id="saveBtn">
+                            <i class="fas fa-save"></i> Save GPA
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="info-section">
+                <h2><i class="fas fa-info-circle"></i> GPA Information</h2>
+                
+                <div class="gpa-explanation">
+                    <p><strong>Grade Point Average (GPA)</strong> is a standardized way of measuring academic achievement in the U.S. and other countries. It's calculated by taking the average of grade points earned in all courses.</p>
+                </div>
+                
+                <h3><i class="fas fa-table"></i> 4.0 GPA Scale</h3>
+                <table class="gpa-scale-table">
+                    <thead>
+                        <tr>
+                            <th>Letter Grade</th>
+                            <th>Grade Points</th>
+                            <th>Percentage Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="grade-A">A</td>
+                            <td>4.0</td>
+                            <td>93-100%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-A">A-</td>
+                            <td>3.7</td>
+                            <td>90-92%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-B">B+</td>
+                            <td>3.3</td>
+                            <td>87-89%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-B">B</td>
+                            <td>3.0</td>
+                            <td>83-86%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-B">B-</td>
+                            <td>2.7</td>
+                            <td>80-82%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-C">C+</td>
+                            <td>2.3</td>
+                            <td>77-79%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-C">C</td>
+                            <td>2.0</td>
+                            <td>73-76%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-C">C-</td>
+                            <td>1.7</td>
+                            <td>70-72%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-D">D+</td>
+                            <td>1.3</td>
+                            <td>67-69%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-D">D</td>
+                            <td>1.0</td>
+                            <td>65-66%</td>
+                        </tr>
+                        <tr>
+                            <td class="grade-F">F</td>
+                            <td>0.0</td>
+                            <td>Below 65%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3><i class="fas fa-graduation-cap"></i> How to Calculate GPA</h3>
+                <ul>
+                    <li>For each course, multiply the grade points by the credit hours</li>
+                    <li>Sum all the grade points × credit hours results</li>
+                    <li>Divide by the total number of credit hours</li>
+                    <li>The result is your GPA on the selected scale</li>
+                    <li>Example: (3 credits × 4.0) + (3 credits × 3.7) = 23.1 ÷ 6 credits = 3.85 GPA</li>
+                </ul>
+                
+                <div class="saved-gpas">
+                    <h3><i class="fas fa-history"></i> Saved GPAs</h3>
+                    <div class="saved-list" id="savedList">
+                        <!-- Saved GPAs will appear here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>GPA calculated successfully!</span>
+    </div>
+    
+    <script>
+        // GPA scale configurations
+        const gpaScales = {
+            "4.0": {
+                name: "4.0 Scale (US)",
+                max: 4.0,
+                grades: [
+                    { letter: "A", points: 4.0, percent: "93-100%" },
+                    { letter: "A-", points: 3.7, percent: "90-92%" },
+                    { letter: "B+", points: 3.3, percent: "87-89%" },
+                    { letter: "B", points: 3.0, percent: "83-86%" },
+                    { letter: "B-", points: 2.7, percent: "80-82%" },
+                    { letter: "C+", points: 2.3, percent: "77-79%" },
+                    { letter: "C", points: 2.0, percent: "73-76%" },
+                    { letter: "C-", points: 1.7, percent: "70-72%" },
+                    { letter: "D+", points: 1.3, percent: "67-69%" },
+                    { letter: "D", points: 1.0, percent: "65-66%" },
+                    { letter: "F", points: 0.0, percent: "Below 65%" }
+                ]
+            },
+            "5.0": {
+                name: "5.0 Scale",
+                max: 5.0,
+                grades: [
+                    { letter: "A", points: 5.0, percent: "90-100%" },
+                    { letter: "B", points: 4.0, percent: "80-89%" },
+                    { letter: "C", points: 3.0, percent: "70-79%" },
+                    { letter: "D", points: 2.0, percent: "60-69%" },
+                    { letter: "F", points: 0.0, percent: "Below 60%" }
+                ]
+            },
+            "10.0": {
+                name: "10.0 Scale",
+                max: 10.0,
+                grades: [
+                    { letter: "A+", points: 10.0, percent: "95-100%" },
+                    { letter: "A", points: 9.0, percent: "85-94%" },
+                    { letter: "B+", points: 8.0, percent: "75-84%" },
+                    { letter: "B", points: 7.0, percent: "65-74%" },
+                    { letter: "C", points: 6.0, percent: "55-64%" },
+                    { letter: "D", points: 5.0, percent: "45-54%" },
+                    { letter: "F", points: 0.0, percent: "Below 45%" }
+                ]
+            }
+        };
+
+        // DOM Elements
+        const scaleButtons = document.querySelectorAll('.scale-btn');
+        const coursesContainer = document.getElementById('coursesContainer');
+        const addCourseBtn = document.getElementById('addCourseBtn');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const gpaNumber = document.getElementById('gpaNumber');
+        const gpaScale = document.getElementById('gpaScale');
+        const gpaLetter = document.getElementById('gpaLetter');
+        const savedList = document.getElementById('savedList');
+        const notification = document.getElementById('notification');
+
+        // State variables
+        let currentScale = "4.0";
+        let savedGPAs = [];
+
+        // Initialize the app
+        function init() {
+            // Set up event listeners
+            scaleButtons.forEach(btn => {
+                btn.addEventListener('click', () => switchScale(btn.dataset.scale));
+            });
+            
+            addCourseBtn.addEventListener('click', addCourseRow);
+            calculateBtn.addEventListener('click', calculateGPA);
+            resetBtn.addEventListener('click', resetAll);
+            saveBtn.addEventListener('click', saveGPA);
+            
+            // Initialize courses container with event delegation
+            coursesContainer.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-btn')) {
+                    deleteCourseRow(e.target.closest('.delete-btn'));
+                }
+            });
+            
+            // Load saved GPAs from localStorage
+            loadSavedGPAs();
+            
+            // Calculate initial GPA with sample data
+            calculateGPA();
+        }
+
+        // Switch between GPA scales
+        function switchScale(scale) {
+            // Update active button
+            scaleButtons.forEach(btn => {
+                if (btn.dataset.scale === scale) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Update current scale
+            currentScale = scale;
+            
+            // Update the scale display
+            if (scale === "custom") {
+                gpaScale.textContent = "Custom Scale";
+                showNotification("Custom scale selected. You can manually enter grade points.", "warning");
+            } else {
+                const scaleData = gpaScales[scale];
+                gpaScale.textContent = `On ${scaleData.name}`;
+                
+                // Update grade options in all course rows
+                updateGradeOptions(scaleData);
+                
+                // Recalculate GPA
+                calculateGPA();
+            }
+        }
+
+        // Update grade options based on selected scale
+        function updateGradeOptions(scaleData) {
+            const courseRows = coursesContainer.querySelectorAll('.course-row');
+            
+            courseRows.forEach(row => {
+                const gradeSelect = row.querySelector('.course-grade');
+                const currentValue = gradeSelect.value;
+                
+                // Clear existing options
+                gradeSelect.innerHTML = '';
+                
+                // Add new options based on the scale
+                scaleData.grades.forEach(grade => {
+                    const option = document.createElement('option');
+                    option.value = grade.points;
+                    option.textContent = `${grade.letter} (${grade.points})`;
+                    gradeSelect.appendChild(option);
+                });
+                
+                // Try to preserve the previous value if possible
+                const optionExists = Array.from(gradeSelect.options).some(opt => parseFloat(opt.value) === parseFloat(currentValue));
+                if (optionExists) {
+                    gradeSelect.value = currentValue;
+                }
+            });
+        }
+
+        // Add a new course row
+        function addCourseRow() {
+            const scaleData = gpaScales[currentScale];
+            const defaultGrade = scaleData ? scaleData.grades[0].points : 4.0;
+            
+            const courseRow = document.createElement('div');
+            courseRow.className = 'course-row';
+            courseRow.innerHTML = `
+                <input type="text" class="course-name" placeholder="Course Name" value="New Course">
+                <input type="number" class="course-credits" placeholder="Credits" min="0.5" max="10" step="0.5" value="3">
+                <select class="course-grade">
+                    ${scaleData ? scaleData.grades.map(grade => 
+                        `<option value="${grade.points}">${grade.letter} (${grade.points})</option>`
+                    ).join('') : `<option value="4.0">A (4.0)</option>`}
+                </select>
+                <button class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            
+            coursesContainer.appendChild(courseRow);
+            
+            // Scroll to the new row
+            courseRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            showNotification("New course added", "success");
+        }
+
+        // Delete a course row
+        function deleteCourseRow(deleteBtn) {
+            const courseRow = deleteBtn.closest('.course-row');
+            
+            // Don't delete if it's the only course row
+            if (coursesContainer.querySelectorAll('.course-row').length <= 1) {
+                showNotification("You need at least one course", "error");
+                return;
+            }
+            
+            courseRow.style.opacity = '0';
+            courseRow.style.transform = 'translateX(50px)';
+            
+            setTimeout(() => {
+                courseRow.remove();
+                calculateGPA();
+                showNotification("Course deleted", "success");
+            }, 300);
+        }
+
+        // Calculate GPA
+        function calculateGPA() {
+            const courseRows = coursesContainer.querySelectorAll('.course-row');
+            
+            if (courseRows.length === 0) {
+                gpaNumber.textContent = "0.00";
+                gpaLetter.textContent = "-";
+                return;
+            }
+            
+            let totalGradePoints = 0;
+            let totalCredits = 0;
+            
+            courseRows.forEach(row => {
+                const creditsInput = row.querySelector('.course-credits');
+                const gradeSelect = row.querySelector('.course-grade');
+                
+                const credits = parseFloat(creditsInput.value) || 0;
+                const gradePoints = parseFloat(gradeSelect.value) || 0;
+                
+                // Validate inputs
+                if (credits < 0.5 || credits > 10) {
+                    creditsInput.style.borderColor = "#ef4444";
+                    showNotification("Credits must be between 0.5 and 10", "error");
+                    return;
+                } else {
+                    creditsInput.style.borderColor = "";
+                }
+                
+                totalGradePoints += gradePoints * credits;
+                totalCredits += credits;
+            });
+            
+            if (totalCredits === 0) {
+                gpaNumber.textContent = "0.00";
+                gpaLetter.textContent = "-";
+                return;
+            }
+            
+            const gpa = totalGradePoints / totalCredits;
+            const roundedGPA = Math.round(gpa * 100) / 100;
+            
+            // Update GPA display
+            gpaNumber.textContent = roundedGPA.toFixed(2);
+            
+            // Determine letter grade based on current scale
+            const letterGrade = getLetterGrade(roundedGPA);
+            gpaLetter.textContent = letterGrade;
+            
+            // Update letter grade color
+            updateLetterGradeColor(letterGrade);
+            
+            // Show notification
+            showNotification(`GPA calculated: ${roundedGPA.toFixed(2)} (${letterGrade})`, "success");
+        }
+
+        // Get letter grade based on GPA and current scale
+        function getLetterGrade(gpa) {
+            const scaleData = gpaScales[currentScale];
+            
+            if (!scaleData) return "Custom";
+            
+            // Find the appropriate letter grade
+            for (let i = 0; i < scaleData.grades.length; i++) {
+                if (gpa >= scaleData.grades[i].points) {
+                    return scaleData.grades[i].letter;
+                }
+            }
+            
+            return "F";
+        }
+
+        // Update letter grade color
+        function updateLetterGradeColor(letterGrade) {
+            // Remove all color classes
+            gpaLetter.classList.remove("grade-A", "grade-B", "grade-C", "grade-D", "grade-F");
+            
+            // Add appropriate color class
+            if (letterGrade.startsWith("A")) {
+                gpaLetter.classList.add("grade-A");
+            } else if (letterGrade.startsWith("B")) {
+                gpaLetter.classList.add("grade-B");
+            } else if (letterGrade.startsWith("C")) {
+                gpaLetter.classList.add("grade-C");
+            } else if (letterGrade.startsWith("D")) {
+                gpaLetter.classList.add("grade-D");
+            } else if (letterGrade === "F") {
+                gpaLetter.classList.add("grade-F");
+            }
+        }
+
+        // Save current GPA
+        function saveGPA() {
+            const gpaValue = parseFloat(gpaNumber.textContent);
+            
+            if (gpaValue === 0 || isNaN(gpaValue)) {
+                showNotification("Calculate a GPA first before saving", "warning");
+                return;
+            }
+            
+            const courseRows = coursesContainer.querySelectorAll('.course-row');
+            const courses = [];
+            
+            // Collect course information
+            courseRows.forEach((row, index) => {
+                const name = row.querySelector('.course-name').value || `Course ${index + 1}`;
+                const credits = parseFloat(row.querySelector('.course-credits').value) || 0;
+                const grade = parseFloat(row.querySelector('.course-grade').value) || 0;
+                
+                courses.push({ name, credits, grade });
+            });
+            
+            const savedGPA = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString(),
+                gpa: gpaValue,
+                letterGrade: gpaLetter.textContent,
+                scale: currentScale,
+                courses: courses,
+                totalCredits: courses.reduce((sum, course) => sum + course.credits, 0)
+            };
+            
+            // Add to saved GPAs
+            savedGPAs.unshift(savedGPA);
+            
+            // Keep only the last 10 saved GPAs
+            if (savedGPAs.length > 10) {
+                savedGPAs = savedGPAs.slice(0, 10);
+            }
+            
+            // Update display
+            updateSavedGPAs();
+            
+            // Save to localStorage
+            saveToLocalStorage();
+            
+            showNotification("GPA saved successfully", "success");
+        }
+
+        // Update saved GPAs display
+        function updateSavedGPAs() {
+            savedList.innerHTML = '';
+            
+            if (savedGPAs.length === 0) {
+                savedList.innerHTML = '<div class="saved-item">No saved GPAs yet</div>';
+                return;
+            }
+            
+            savedGPAs.forEach(gpa => {
+                const item = document.createElement('div');
+                item.className = 'saved-item';
+                
+                item.innerHTML = `
+                    <div>
+                        <div><strong>${gpa.gpa.toFixed(2)} GPA</strong> (${gpa.letterGrade})</div>
+                        <div style="font-size: 0.8rem; color: #cbd5e1;">${gpa.scale} scale • ${gpa.totalCredits} credits • ${gpa.timestamp}</div>
+                    </div>
+                    <div class="saved-item-actions">
+                        <button class="load-btn" data-id="${gpa.id}" title="Load this GPA">
+                            <i class="fas fa-upload"></i>
+                        </button>
+                        <button class="delete-saved-btn" data-id="${gpa.id}" title="Delete this GPA">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                savedList.appendChild(item);
+            });
+            
+            // Add event listeners to the new buttons
+            savedList.querySelectorAll('.load-btn').forEach(btn => {
+                btn.addEventListener('click', () => loadGPA(parseInt(btn.dataset.id)));
+            });
+            
+            savedList.querySelectorAll('.delete-saved-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteSavedGPA(parseInt(btn.dataset.id)));
+            });
+        }
+
+        // Load a saved GPA
+        function loadGPA(id) {
+            const gpa = savedGPAs.find(g => g.id === id);
+            
+            if (!gpa) {
+                showNotification("GPA not found", "error");
+                return;
+            }
+            
+            // Switch to the correct scale
+            switchScale(gpa.scale);
+            
+            // Clear existing courses
+            coursesContainer.innerHTML = '';
+            
+            // Add courses from saved GPA
+            gpa.courses.forEach(course => {
+                const courseRow = document.createElement('div');
+                courseRow.className = 'course-row';
+                
+                const scaleData = gpaScales[gpa.scale];
+                const gradeOptions = scaleData ? scaleData.grades.map(grade => 
+                    `<option value="${grade.points}" ${grade.points === course.grade ? 'selected' : ''}>${grade.letter} (${grade.points})</option>`
+                ).join('') : `<option value="${course.grade}" selected>${course.grade}</option>`;
+                
+                courseRow.innerHTML = `
+                    <input type="text" class="course-name" placeholder="Course Name" value="${course.name}">
+                    <input type="number" class="course-credits" placeholder="Credits" min="0.5" max="10" step="0.5" value="${course.credits}">
+                    <select class="course-grade">
+                        ${gradeOptions}
+                    </select>
+                    <button class="delete-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                
+                coursesContainer.appendChild(courseRow);
+            });
+            
+            // Recalculate GPA
+            calculateGPA();
+            
+            showNotification("GPA loaded successfully", "success");
+        }
+
+        // Delete a saved GPA
+        function deleteSavedGPA(id) {
+            savedGPAs = savedGPAs.filter(g => g.id !== id);
+            updateSavedGPAs();
+            saveToLocalStorage();
+            showNotification("Saved GPA deleted", "success");
+        }
+
+        // Save to localStorage
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('gpaCalculatorSaved', JSON.stringify(savedGPAs));
+            } catch (e) {
+                console.error("Failed to save GPAs:", e);
+            }
+        }
+
+        // Load from localStorage
+        function loadSavedGPAs() {
+            const saved = localStorage.getItem('gpaCalculatorSaved');
+            if (saved) {
+                try {
+                    savedGPAs = JSON.parse(saved);
+                    updateSavedGPAs();
+                } catch (e) {
+                    console.error("Failed to load saved GPAs:", e);
+                }
+            }
+        }
+
+        // Reset all inputs
+        function resetAll() {
+            // Clear all courses
+            coursesContainer.innerHTML = '';
+            
+            // Add one default course
+            addCourseRow();
+            
+            // Reset to 4.0 scale
+            switchScale("4.0");
+            
+            // Reset GPA display
+            gpaNumber.textContent = "0.00";
+            gpaLetter.textContent = "-";
+            
+            showNotification("All inputs reset", "success");
+        }
+
+        // Show notification
+        function showNotification(message, type = "success") {
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Set notification type
+            notification.className = "notification";
+            notification.classList.add(type);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the app when the page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Burn Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fff9f0 0%, #ffe8d6 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        h1 {
+            color: #e76f51;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .tagline {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .calculator-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .activities-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #e76f51;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            font-size: 1.5rem;
+        }
+        
+        .measurement-system {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .measurement-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .measurement-tab.active {
+            background: #e76f51;
+            color: white;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #e76f51;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        
+        .range-container {
+            margin-top: 10px;
+        }
+        
+        .range-value {
+            display: inline-block;
+            background: #e76f51;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .duration-inputs {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .duration-inputs > div {
+            flex: 1;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #e76f51, #e85d3f);
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #e85d3f, #d94c2e);
+            box-shadow: 0 5px 15px rgba(231, 111, 81, 0.4);
+        }
+        
+        .reset-btn {
+            background: #f8f9fa;
+            color: #555;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .reset-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .calories-burned {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 20px 0;
+            color: #e76f51;
+        }
+        
+        .calories-unit {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-left: 5px;
+        }
+        
+        .activity-summary {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .summary-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .summary-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .calorie-equivalents {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .calorie-equivalents h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .food-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .food-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .food-item:hover {
+            border-color: #e76f51;
+            transform: translateY(-3px);
+        }
+        
+        .food-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #e76f51;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .food-calories {
+            color: #7f8c8d;
+            font-size: 0.8rem;
+        }
+        
+        .activity-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .activity-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .activity-card:hover {
+            border-color: #e76f51;
+            transform: translateY(-3px);
+        }
+        
+        .activity-card.selected {
+            border-color: #e76f51;
+            background: #ffe8d6;
+        }
+        
+        .activity-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #e76f51;
+        }
+        
+        .activity-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .activity-mets {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .intensity-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .intensity-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .intensity-btn.active {
+            border-color: #e76f51;
+            background: #ffe8d6;
+            color: #e76f51;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .formula {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            border-left: 4px solid #9b59b6;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .mets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .mets-table th {
+            background: #e76f51;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .mets-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mets-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .mets-table tr:hover {
+            background: #ffe8d6;
+        }
+        
+        .tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .tip {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #e76f51;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+            color: #856404;
+        }
+        
+        .activity-search {
+            margin-bottom: 20px;
+        }
+        
+        .activity-search input {
+            padding-left: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .duration-inputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .activity-summary {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .activity-cards {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .calories-burned {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calculator-card, .activities-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .calories-burned {
+                font-size: 2.2rem;
+            }
+            
+            .activity-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .food-items {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #e76f51, #f4a261);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-fire"></i> Calorie Burn Calculator</h1>
+            <p class="tagline">Estimate calories burned during physical activities based on your weight, duration, and intensity. Works perfectly on both Windows and Android devices.</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="calculator-card">
+                <h2><i class="fas fa-calculator"></i> Calculate Calories Burned</h2>
+                
+                <div class="measurement-system">
+                    <div class="measurement-tab active" id="metric-tab">Metric (kg)</div>
+                    <div class="measurement-tab" id="imperial-tab">Imperial (lbs)</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="weight">Your Weight</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-weight-hanging input-icon"></i>
+                        <input type="number" id="weight" min="30" max="300" value="70" step="0.1">
+                    </div>
+                    <div class="range-container">
+                        <input type="range" id="weight-range" min="30" max="300" value="70" step="1">
+                        <span class="range-value" id="weight-value">70 kg</span>
+                    </div>
+                </div>
+                
+                <div class="duration-inputs">
+                    <div class="input-group">
+                        <label for="hours">Hours</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-clock input-icon"></i>
+                            <input type="number" id="hours" min="0" max="24" value="1" step="0.25">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="minutes">Minutes</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-clock input-icon"></i>
+                            <input type="number" id="minutes" min="0" max="59" value="0" step="1">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Activity Intensity</label>
+                    <div class="intensity-buttons">
+                        <div class="intensity-btn active" data-intensity="light">Light</div>
+                        <div class="intensity-btn" data-intensity="moderate">Moderate</div>
+                        <div class="intensity-btn" data-intensity="vigorous">Vigorous</div>
+                        <div class="intensity-btn" data-intensity="very-vigorous">Very Vigorous</div>
+                    </div>
+                </div>
+                
+                <div class="activity-search">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input type="text" id="activity-search" placeholder="Search for an activity...">
+                    </div>
+                </div>
+                
+                <div class="activity-cards" id="activity-cards">
+                    <!-- Activity cards will be generated here -->
+                </div>
+                
+                <div class="button-group">
+                    <button class="calculate-btn" id="calculate">
+                        <i class="fas fa-fire"></i> Calculate Calories Burned
+                    </button>
+                    <button class="reset-btn" id="reset">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="results" id="results">
+                    <h3>Calorie Burn Results</h3>
+                    <div class="calories-burned">
+                        <span id="calories-burned">0</span>
+                        <span class="calories-unit">calories</span>
+                    </div>
+                    
+                    <div class="activity-summary">
+                        <div class="summary-item">
+                            <div class="summary-value" id="summary-activity">Walking</div>
+                            <div class="summary-label">Activity</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="summary-duration">1h 0m</div>
+                            <div class="summary-label">Duration</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="summary-weight">70 kg</div>
+                            <div class="summary-label">Weight</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="calorie-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>0 cal</span>
+                            <span id="progress-goal">500 cal</span>
+                        </div>
+                    </div>
+                    
+                    <div class="calorie-equivalents">
+                        <h3>Equivalent to:</h3>
+                        <div class="food-items" id="food-items">
+                            <!-- Food items will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activities-card">
+                <h2><i class="fas fa-running"></i> Activity Guide</h2>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-fire-alt"></i> What are METs?</h3>
+                    <p>MET (Metabolic Equivalent of Task) is a unit that estimates the amount of energy used by the body during physical activity, compared to resting metabolism. 1 MET is the energy you spend while at rest.</p>
+                    <div class="formula">Calories Burned = MET × Weight (kg) × Time (hours)</div>
+                    <p>For example: A 70 kg person walking (MET 3.5) for 1 hour burns:<br>3.5 × 70 × 1 = 245 calories</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-chart-bar"></i> MET Values by Activity</h3>
+                    <table class="mets-table">
+                        <thead>
+                            <tr>
+                                <th>Activity</th>
+                                <th>MET Value</th>
+                                <th>Intensity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mets-table-body">
+                            <!-- Table rows will be generated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-heartbeat"></i> Health Benefits</h3>
+                    <div class="tips">
+                        <div class="tip">
+                            <i class="fas fa-heart"></i>
+                            <h4>Heart Health</h4>
+                            <p>Regular exercise strengthens your heart and improves circulation</p>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-weight"></i>
+                            <h4>Weight Management</h4>
+                            <p>Burning calories helps maintain a healthy weight</p>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-brain"></i>
+                            <h4>Mental Health</h4>
+                            <p>Physical activity reduces stress and improves mood</p>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-battery-full"></i>
+                            <h4>Energy Boost</h4>
+                            <p>Exercise increases energy levels and reduces fatigue</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-bullseye"></i> Daily Calorie Burn Goals</h3>
+                    <p>For weight maintenance, aim to burn 200-400 calories through exercise daily. For weight loss, aim for 400-600+ calories daily, combined with a healthy diet.</p>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>Sedentary (0 cal)</span>
+                            <span>Active (500+ cal)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3><i class="fas fa-lightbulb"></i> Maximize Calorie Burn</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 15px;">
+                        <li>Increase intensity gradually</li>
+                        <li>Incorporate interval training</li>
+                        <li>Try compound movements (squats, push-ups)</li>
+                        <li>Stay consistent with your routine</li>
+                        <li>Combine cardio and strength training</li>
+                    </ul>
+                </div>
+                
+                <div class="disclaimer">
+                    <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer:</strong> This calculator provides estimates based on MET values. Actual calorie burn may vary based on individual factors like metabolism, fitness level, and exercise efficiency.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Calorie Burn Calculator &copy; 2023 | Works on Windows, Android, and all modern browsers</p>
+            <p>This tool is for informational purposes only. Consult a healthcare provider before starting any new exercise program.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Activity data with MET values
+        const activities = [
+            { name: "Walking (slow)", mets: 2.5, icon: "fas fa-walking", category: "light" },
+            { name: "Walking (moderate)", mets: 3.5, icon: "fas fa-walking", category: "moderate" },
+            { name: "Walking (brisk)", mets: 4.5, icon: "fas fa-walking", category: "vigorous" },
+            { name: "Running (jogging)", mets: 7.0, icon: "fas fa-running", category: "vigorous" },
+            { name: "Running (fast)", mets: 10.0, icon: "fas fa-running", category: "very-vigorous" },
+            { name: "Cycling (leisure)", mets: 4.0, icon: "fas fa-bicycle", category: "moderate" },
+            { name: "Cycling (moderate)", mets: 8.0, icon: "fas fa-bicycle", category: "vigorous" },
+            { name: "Swimming (leisure)", mets: 6.0, icon: "fas fa-swimmer", category: "moderate" },
+            { name: "Swimming (vigorous)", mets: 10.0, icon: "fas fa-swimmer", category: "very-vigorous" },
+            { name: "Weight Training", mets: 6.0, icon: "fas fa-dumbbell", category: "moderate" },
+            { name: "Yoga", mets: 3.0, icon: "fas fa-spa", category: "light" },
+            { name: "Pilates", mets: 4.0, icon: "fas fa-user", category: "moderate" },
+            { name: "Dancing", mets: 5.0, icon: "fas fa-music", category: "moderate" },
+            { name: "Hiking", mets: 6.0, icon: "fas fa-mountain", category: "moderate" },
+            { name: "Basketball", mets: 8.0, icon: "fas fa-basketball-ball", category: "vigorous" },
+            { name: "Tennis", mets: 7.0, icon: "fas fa-baseball-ball", category: "vigorous" },
+            { name: "Soccer", mets: 9.0, icon: "fas fa-futbol", category: "vigorous" },
+            { name: "Jumping Rope", mets: 10.0, icon: "fas fa-child", category: "very-vigorous" },
+            { name: "Stair Climbing", mets: 8.0, icon: "fas fa-stairs", category: "vigorous" },
+            { name: "Gardening", mets: 4.0, icon: "fas fa-leaf", category: "light" },
+            { name: "House Cleaning", mets: 3.5, icon: "fas fa-broom", category: "light" },
+            { name: "Golf (walking)", mets: 5.0, icon: "fas fa-golf-ball", category: "moderate" },
+            { name: "Skiing (downhill)", mets: 7.0, icon: "fas fa-skiing", category: "vigorous" },
+            { name: "Rowing", mets: 8.0, icon: "fas fa-water", category: "vigorous" },
+            { name: "Elliptical Trainer", mets: 6.0, icon: "fas fa-heartbeat", category: "moderate" }
+        ];
+
+        // Food equivalents data
+        const foodItems = [
+            { name: "Apple", calories: 95, icon: "fas fa-apple-alt" },
+            { name: "Banana", calories: 105, icon: "fas fa-lemon" },
+            { name: "Slice of Pizza", calories: 285, icon: "fas fa-pizza-slice" },
+            { name: "Chocolate Bar", calories: 230, icon: "fas fa-candy-cane" },
+            { name: "Soda Can", calories: 150, icon: "fas fa-wine-bottle" },
+            { name: "Hamburger", calories: 354, icon: "fas fa-hamburger" }
+        ];
+
+        // DOM Elements
+        const metricTab = document.getElementById('metric-tab');
+        const imperialTab = document.getElementById('imperial-tab');
+        const weightInput = document.getElementById('weight');
+        const weightRange = document.getElementById('weight-range');
+        const weightValue = document.getElementById('weight-value');
+        const hoursInput = document.getElementById('hours');
+        const minutesInput = document.getElementById('minutes');
+        const activitySearch = document.getElementById('activity-search');
+        const activityCardsContainer = document.getElementById('activity-cards');
+        const intensityButtons = document.querySelectorAll('.intensity-btn');
+        const calculateBtn = document.getElementById('calculate');
+        const resetBtn = document.getElementById('reset');
+        
+        // Results elements
+        const caloriesBurnedEl = document.getElementById('calories-burned');
+        const summaryActivityEl = document.getElementById('summary-activity');
+        const summaryDurationEl = document.getElementById('summary-duration');
+        const summaryWeightEl = document.getElementById('summary-weight');
+        const calorieProgressEl = document.getElementById('calorie-progress');
+        const progressGoalEl = document.getElementById('progress-goal');
+        const foodItemsContainer = document.getElementById('food-items');
+        const metsTableBody = document.getElementById('mets-table-body');
+        
+        // Current state
+        let isMetric = true;
+        let selectedActivity = activities[1]; // Default to moderate walking
+        let selectedIntensity = 'moderate';
+        
+        // Format weight display
+        function updateWeightDisplay() {
+            const value = parseFloat(weightInput.value);
+            if (isMetric) {
+                weightValue.textContent = `${value} kg`;
+            } else {
+                weightValue.textContent = `${value} lbs`;
+            }
+        }
+        
+        // Switch between metric and imperial
+        metricTab.addEventListener('click', function() {
+            if (!isMetric) {
+                isMetric = true;
+                metricTab.classList.add('active');
+                imperialTab.classList.remove('active');
+                
+                // Convert weight from lbs to kg (1 kg = 2.20462 lbs)
+                const currentWeight = parseFloat(weightInput.value);
+                const weightInKg = currentWeight / 2.20462;
+                weightInput.value = Math.round(weightInKg);
+                weightRange.value = Math.round(weightInKg);
+                
+                updateWeightDisplay();
+                calculateCalories();
+            }
+        });
+        
+        imperialTab.addEventListener('click', function() {
+            if (isMetric) {
+                isMetric = false;
+                imperialTab.classList.add('active');
+                metricTab.classList.remove('active');
+                
+                // Convert weight from kg to lbs (1 kg = 2.20462 lbs)
+                const currentWeight = parseFloat(weightInput.value);
+                const weightInLbs = currentWeight * 2.20462;
+                weightInput.value = Math.round(weightInLbs);
+                weightRange.value = Math.round(weightInLbs);
+                
+                updateWeightDisplay();
+                calculateCalories();
+            }
+        });
+        
+        // Weight input event listeners
+        weightRange.addEventListener('input', function() {
+            weightInput.value = this.value;
+            updateWeightDisplay();
+            calculateCalories();
+        });
+        
+        weightInput.addEventListener('input', function() {
+            weightRange.value = this.value;
+            updateWeightDisplay();
+            calculateCalories();
+        });
+        
+        // Duration input event listeners
+        hoursInput.addEventListener('input', calculateCalories);
+        minutesInput.addEventListener('input', calculateCalories);
+        
+        // Intensity buttons
+        intensityButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                intensityButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                selectedIntensity = this.dataset.intensity;
+                filterActivitiesByIntensity();
+            });
+        });
+        
+        // Activity search
+        activitySearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filterActivitiesByIntensity(searchTerm);
+        });
+        
+        // Generate activity cards
+        function generateActivityCards() {
+            activityCardsContainer.innerHTML = '';
+            
+            // Filter activities based on selected intensity
+            const filteredActivities = activities.filter(activity => 
+                activity.category === selectedIntensity
+            );
+            
+            filteredActivities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                if (activity.name === selectedActivity.name) {
+                    card.classList.add('selected');
+                }
+                
+                card.innerHTML = `
+                    <div class="activity-icon"><i class="${activity.icon}"></i></div>
+                    <div class="activity-name">${activity.name}</div>
+                    <div class="activity-mets">MET: ${activity.mets}</div>
+                `;
+                
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedActivity = activity;
+                    calculateCalories();
+                });
+                
+                activityCardsContainer.appendChild(card);
+            });
+        }
+        
+        // Filter activities by intensity and search term
+        function filterActivitiesByIntensity(searchTerm = '') {
+            activityCardsContainer.innerHTML = '';
+            
+            let filteredActivities = activities.filter(activity => 
+                activity.category === selectedIntensity
+            );
+            
+            if (searchTerm) {
+                filteredActivities = filteredActivities.filter(activity => 
+                    activity.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            filteredActivities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                if (activity.name === selectedActivity.name) {
+                    card.classList.add('selected');
+                }
+                
+                card.innerHTML = `
+                    <div class="activity-icon"><i class="${activity.icon}"></i></div>
+                    <div class="activity-name">${activity.name}</div>
+                    <div class="activity-mets">MET: ${activity.mets}</div>
+                `;
+                
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedActivity = activity;
+                    calculateCalories();
+                });
+                
+                activityCardsContainer.appendChild(card);
+            });
+        }
+        
+        // Generate METs table
+        function generateMetsTable() {
+            metsTableBody.innerHTML = '';
+            
+            // Group activities by category for the table
+            const categories = {
+                'light': 'Light',
+                'moderate': 'Moderate',
+                'vigorous': 'Vigorous',
+                'very-vigorous': 'Very Vigorous'
+            };
+            
+            for (const [categoryKey, categoryName] of Object.entries(categories)) {
+                const categoryActivities = activities.filter(a => a.category === categoryKey);
+                
+                categoryActivities.forEach(activity => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${activity.name}</td>
+                        <td>${activity.mets}</td>
+                        <td>${categoryName}</td>
+                    `;
+                    metsTableBody.appendChild(row);
+                });
+            }
+        }
+        
+        // Generate food equivalents
+        function generateFoodEquivalents(caloriesBurned) {
+            foodItemsContainer.innerHTML = '';
+            
+            foodItems.forEach(food => {
+                const equivalents = Math.round(caloriesBurned / food.calories * 10) / 10;
+                
+                if (equivalents >= 0.1) {
+                    const item = document.createElement('div');
+                    item.className = 'food-item';
+                    item.innerHTML = `
+                        <div class="food-icon"><i class="${food.icon}"></i></div>
+                        <div class="food-name">${food.name}</div>
+                        <div class="food-calories">${equivalents.toFixed(1)} ${equivalents === 1 ? 'item' : 'items'}</div>
+                    `;
+                    foodItemsContainer.appendChild(item);
+                }
+            });
+            
+            // If no food items match, show a message
+            if (foodItemsContainer.children.length === 0) {
+                const message = document.createElement('div');
+                message.className = 'food-item';
+                message.innerHTML = `
+                    <div class="food-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="food-name">Very low burn</div>
+                    <div class="food-calories">Increase duration or intensity</div>
+                `;
+                foodItemsContainer.appendChild(message);
+            }
+        }
+        
+        // Calculate calories burned
+        function calculateCalories() {
+            // Get input values
+            let weight = parseFloat(weightInput.value);
+            const hours = parseFloat(hoursInput.value) || 0;
+            const minutes = parseFloat(minutesInput.value) || 0;
+            
+            // Convert weight to kg if imperial
+            if (!isMetric) {
+                weight = weight / 2.20462; // Convert lbs to kg
+            }
+            
+            // Calculate total time in hours
+            const totalHours = hours + (minutes / 60);
+            
+            // Calculate calories burned: MET × weight (kg) × time (hours)
+            const caloriesBurned = selectedActivity.mets * weight * totalHours;
+            
+            // Round to nearest whole number
+            const roundedCalories = Math.round(caloriesBurned);
+            
+            // Update display
+            caloriesBurnedEl.textContent = roundedCalories.toLocaleString();
+            
+            // Update summary
+            summaryActivityEl.textContent = selectedActivity.name;
+            
+            // Format duration
+            let durationText = '';
+            if (hours > 0) durationText += `${hours}h `;
+            if (minutes > 0 || hours === 0) durationText += `${minutes}m`;
+            summaryDurationEl.textContent = durationText.trim();
+            
+            // Update weight summary
+            if (isMetric) {
+                summaryWeightEl.textContent = `${parseFloat(weightInput.value)} kg`;
+            } else {
+                summaryWeightEl.textContent = `${parseFloat(weightInput.value)} lbs`;
+            }
+            
+            // Update progress bar (goal: 500 calories)
+            const goal = 500;
+            const progressPercent = Math.min((roundedCalories / goal) * 100, 100);
+            calorieProgressEl.style.width = `${progressPercent}%`;
+            progressGoalEl.textContent = `${goal} cal`;
+            
+            // Generate food equivalents
+            generateFoodEquivalents(roundedCalories);
+            
+            // Show results
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        // Reset the calculator
+        function resetCalculator() {
+            if (isMetric) {
+                weightInput.value = 70;
+                weightRange.value = 70;
+            } else {
+                weightInput.value = 154;
+                weightRange.value = 154;
+            }
+            
+            hoursInput.value = 1;
+            minutesInput.value = 0;
+            
+            // Reset intensity to moderate
+            intensityButtons.forEach(btn => btn.classList.remove('active'));
+            intensityButtons[1].classList.add('active');
+            selectedIntensity = 'moderate';
+            
+            // Reset activity to moderate walking
+            selectedActivity = activities[1];
+            
+            // Reset search
+            activitySearch.value = '';
+            
+            updateWeightDisplay();
+            filterActivitiesByIntensity();
+            calculateCalories();
+        }
+        
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateCalories);
+        resetBtn.addEventListener('click', resetCalculator);
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            updateWeightDisplay();
+            generateActivityCards();
+            generateMetsTable();
+            calculateCalories();
+            
+            // Touch-friendly adjustments for mobile
+            document.querySelectorAll('input, select, button, .measurement-tab, .activity-card, .intensity-btn').forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
